@@ -7,12 +7,12 @@
         android:title="@string/action_settings"/>
     <item
         android:id="@+id/action_new_notebook"
-        android:showAsAction="always|ifRoom"
+        android:showAsAction="always"
         android:title="@string/new_notebook"
         android:icon="@drawable/ic_new_notebook"/>
     <item
         android:id="@+id/action_new_note"
-        android:showAsAction="always|ifRoom"
+        android:showAsAction="always"
         android:title="@string/new_note"
         android:icon="@drawable/ic_new_note"/>
     
