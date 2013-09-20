@@ -4,5 +4,7 @@
     <string name="app_name">Notebooks</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="new_note">Create New Note</string>
+    <string name="new_notebook">Create New Notebook</string>
 
 </resources>
