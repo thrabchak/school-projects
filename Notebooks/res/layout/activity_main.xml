@@ -8,4 +8,16 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
+    <TextView
+        android:id="@+id/tv_no_notebooks"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:fontFamily="sans-serif-light"
+        android:text="@string/string_no_notebooks"
+        android:textColor="@android:color/secondary_text_light"
+        android:textSize="@dimen/normal_text_size"
+        android:textStyle="italic" />
+
 </RelativeLayout>

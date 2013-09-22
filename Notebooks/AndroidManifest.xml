@@ -25,6 +25,11 @@
         <activity
             android:name="com.ctk.notebooks.NoteActivity"
             android:label="@string/activity_new_note">
+            
+            <!-- Parent activity meta-data -->
+	        <meta-data
+	            android:name="android.support.PARENT_ACTIVITY"
+	            android:value="com.ctk.notebooks.MainActivity" />
         </activity>
     </application>
 
