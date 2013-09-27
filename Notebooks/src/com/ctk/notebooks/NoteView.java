@@ -24,7 +24,9 @@ public class NoteView extends View {
 	
 	private int		mPaintColor = 0xFF000000;
 	private float	mPaintWidth	= 10;
+	private String 	fileName="test1";
 	
+
 	public NoteView(Context context) {
 		super(context);
 		
@@ -126,5 +128,19 @@ public class NoteView extends View {
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * @return	The underlying <code>Bitmap</code> image of the NoteView's <code>Canvas</code>.
+	 */
+	public Bitmap getBitmap(){
+		return mBitmap;
+	}
+	
+	/**
+	 * @return	The filename given to the current sheet of notes.
+	 */
+	public String getFileName() {
+		return fileName;
 	}
 }
