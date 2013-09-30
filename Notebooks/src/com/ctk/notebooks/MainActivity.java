@@ -5,13 +5,21 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements OnClickListener {
 
+	Button mOpenNote;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        mOpenNote = (Button) findViewById(R.id.btn_open);
+        mOpenNote.setOnClickListener(this);
     }
 
 
@@ -33,5 +41,18 @@ public class MainActivity extends Activity {
 		}
 		
 		return false;
+	}
+
+
+	@Override
+	public void onClick(View view) {
+		switch (view.getId()) {
+		case R.id.btn_open:
+			Intent openNote = new Intent(this, NoteActivity.class);
+			openNote.putExtra("is_open_note", true)
+					.putExtra("filename", "test1");
+			startActivity(openNote);
+		}
+		
 	}
 }

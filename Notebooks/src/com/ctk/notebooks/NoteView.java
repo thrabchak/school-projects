@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 /**
  * Class extending from View that contains a Canvas on which
@@ -18,18 +19,28 @@ public class NoteView extends View {
 	private Canvas	mCanvas;
 	private float 	mX, mY;
 	private Path	mPath;
-	private Bitmap 	mBitmap;
+	private Bitmap 	mBitmap = null;
 	private Paint   mBitmapPaint;
 	private Paint	mPaint;
 	
 	private int		mPaintColor = 0xFF000000;
 	private float	mPaintWidth	= 10;
-	private String 	fileName="test1";
+	private String 	fileName = "test1";
 	
 
 	public NoteView(Context context) {
 		super(context);
+		init();
+	}
+	
+	public NoteView(Context context, Bitmap bitmap) {
+		super(context);
+		init();
 		
+		mBitmap = bitmap;
+	}
+	
+	public void init() {
 		mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 		mPath = new Path();
 		
@@ -75,8 +86,16 @@ public class NoteView extends View {
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
-		mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-		mCanvas = new Canvas(mBitmap);
+		
+		if (mBitmap == null) {
+			mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+			mCanvas = new Canvas(mBitmap);
+			Toast.makeText(this.getContext(), "turned unsuccessfully",Toast.LENGTH_SHORT).show();
+		} else {
+			mBitmap = Bitmap.createScaledBitmap(mBitmap, w, h, false);
+			mCanvas = new Canvas(mBitmap);
+			Toast.makeText(this.getContext(), "turned successfully", Toast.LENGTH_SHORT).show();
+		}
 	}
 	
 	/**

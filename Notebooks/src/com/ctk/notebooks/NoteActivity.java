@@ -6,7 +6,9 @@ import java.io.IOException;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.NavUtils;
@@ -24,7 +26,15 @@ public class NoteActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mNoteView = new NoteView(this);
+		
+		
+		if (getIntent().hasExtra("is_open_note") && getIntent().getExtras().getBoolean("is_open_note", false)) {
+			String filename = getIntent().getExtras().getString("filename");
+			mNoteView = new NoteView(this, openFile(filename));
+		} else {
+			mNoteView = new NoteView(this);
+		}
+		
 		setContentView(mNoteView);
 		
 		mActionBar = getActionBar();
@@ -38,7 +48,7 @@ public class NoteActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    switch (item.getItemId()) {
 	    case android.R.id.home:
-	    	if (!saveCanvas(mNoteView.getFileName())){
+	    	if (!saveFile(mNoteView.getFileName())){
 	    		Toast.makeText(getApplicationContext(), "nope", Toast.LENGTH_SHORT).show();
 	    	}
 	    	
@@ -50,7 +60,7 @@ public class NoteActivity extends Activity {
 	    return super.onOptionsItemSelected(item);
 	}
 
-	public boolean saveCanvas(String fileName) {
+	public boolean saveFile(String fileName) {
 		try {
 			File bBinderDirectory = new File(BBINDERDIRECTORY);
 			bBinderDirectory.mkdir();
@@ -67,9 +77,16 @@ public class NoteActivity extends Activity {
 		}
 	}
 	
+	public Bitmap openFile(String filename) {
+		BitmapFactory.Options opts = new BitmapFactory.Options();
+		opts.inMutable = true;
+		
+		return BitmapFactory.decodeFile(BBINDERDIRECTORY + "/" + filename + ".png", opts);
+	}
+	
 	@Override
 	protected void onStop() {
-		saveCanvas(mNoteView.getFileName());
+		saveFile(mNoteView.getFileName());
 		super.onStop();
 	}
 }
