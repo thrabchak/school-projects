@@ -42,6 +42,8 @@ public class NoteActivity extends Activity {
 		
 		mNoteView.setPaintColor(0xFFfab41d);
 		mNoteView.setPaintWidth(16);
+		
+		Toast.makeText(this, "new NoteActivity", Toast.LENGTH_SHORT).show();
 	}
 	
 	@Override

@@ -27,7 +27,8 @@
         
         <activity
             android:name="com.ctk.notebooks.NoteActivity"
-            android:label="@string/activity_new_note">
+            android:label="@string/activity_new_note"
+            android:configChanges="orientation|screenSize">
             
             <!-- Parent activity meta-data -->
 	        <meta-data

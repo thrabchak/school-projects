@@ -19,7 +19,7 @@ public class NoteView extends View {
 	private Canvas	mCanvas;
 	private float 	mX, mY;
 	private Path	mPath;
-	private Bitmap 	mBitmap = null;
+	private Bitmap 	mBitmap;
 	private Paint   mBitmapPaint;
 	private Paint	mPaint;
 	
@@ -85,6 +85,8 @@ public class NoteView extends View {
 	 */
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+		int i = 0;
+		
 		super.onSizeChanged(w, h, oldw, oldh);
 		
 		if (mBitmap == null) {
@@ -107,6 +109,10 @@ public class NoteView extends View {
     protected void onDraw(Canvas canvas) {
         canvas.drawColor(0xFFFFFFFF);
         canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
+        
+        if (mBitmap==null)
+        	Toast.makeText(getContext(), "no", Toast.LENGTH_SHORT).show();
+        
         canvas.drawPath(mPath, mPaint);
     }
 
