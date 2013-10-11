@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -33,13 +34,22 @@ public class NoteView extends View {
 		init();
 	}
 	
-	public NoteView(Context context, Bitmap bitmap) {
-		super(context);
-		init();
-		
-		mBitmap = bitmap;
-	}
 	
+	
+	public NoteView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		init();
+	}
+
+
+
+	public NoteView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		init();
+	}
+
+
+
 	public void init() {
 		mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 		mPath = new Path();
@@ -167,5 +177,10 @@ public class NoteView extends View {
 	 */
 	public String getFileName() {
 		return fileName;
+	}
+	
+	
+	public void setBitmap(Bitmap bitmap){
+		mBitmap = bitmap;
 	}
 }

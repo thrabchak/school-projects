@@ -14,6 +14,9 @@ import android.os.Environment;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 public class NoteActivity extends Activity {
@@ -27,15 +30,13 @@ public class NoteActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		setContentView(R.layout.activity_note);
+		mNoteView=(NoteView) findViewById(R.id.noteView);
 		
 		if (getIntent().hasExtra("is_open_note") && getIntent().getExtras().getBoolean("is_open_note", false)) {
 			String filename = getIntent().getExtras().getString("filename");
-			mNoteView = new NoteView(this, openFile(filename));
-		} else {
-			mNoteView = new NoteView(this);
-		}
-		
-		setContentView(mNoteView);
+			mNoteView.setBitmap(openFile(filename));
+		} 
 		
 		mActionBar = getActionBar();
 		mActionBar.setDisplayHomeAsUpEnabled(true);
