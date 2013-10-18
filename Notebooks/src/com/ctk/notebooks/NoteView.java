@@ -8,6 +8,7 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
 
 /**
@@ -51,6 +52,7 @@ public class NoteView extends View {
 
 
 	public void init() {
+		
 		mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 		mPath = new Path();
 		
@@ -136,30 +138,32 @@ public class NoteView extends View {
 		float x = event.getX();
 		float y = event.getY();
 		
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_DOWN:
-			mPath.reset();
-			mPath.moveTo(x, y);
-			mX = x;
-			mY = y;
-			invalidate();
-			return true;
-		case MotionEvent.ACTION_MOVE:
-			float dx = Math.abs(x - mX);
-            float dy = Math.abs(y - mY);
-            if (dx >= 4 || dy >= 4) {
-                mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
-                mX = x;
-                mY = y;
-            }
-            invalidate();
-            return true;
-		case MotionEvent.ACTION_UP:
-			mPath.lineTo(mX, mY);
-            mCanvas.drawPath(mPath, mPaint);
-            mPath.reset();
-            invalidate();
-            return true;
+		if(event.getPointerCount() == 1){
+			switch (event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				mPath.reset();
+				mPath.moveTo(x, y);
+				mX = x;
+				mY = y;
+				invalidate();
+				return true;
+			case MotionEvent.ACTION_MOVE:
+				float dx = Math.abs(x - mX);
+	            float dy = Math.abs(y - mY);
+	            if (dx >= 4 || dy >= 4) {
+	                mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
+	                mX = x;
+	                mY = y;
+	            }
+	            invalidate();
+	            return true;
+			case MotionEvent.ACTION_UP:
+				mPath.lineTo(mX, mY);
+	            mCanvas.drawPath(mPath, mPaint);
+	            mPath.reset();
+	            invalidate();
+	            return true;
+			}
 		}
 		
 		return false;
