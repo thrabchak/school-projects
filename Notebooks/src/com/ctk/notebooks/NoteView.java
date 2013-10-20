@@ -8,7 +8,6 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Toast;
 
 /**
@@ -24,10 +23,10 @@ public class NoteView extends View {
 	private Bitmap 	mBitmap;
 	private Paint   mBitmapPaint;
 	private Paint	mPaint;
-	
 	private int		mPaintColor = 0xFF000000;
 	private float	mPaintWidth	= 10;
 	private String 	fileName = "test1";
+	private boolean	mIsDrawingLocked = false;
 	
 
 	public NoteView(Context context) {
@@ -35,23 +34,20 @@ public class NoteView extends View {
 		init();
 	}
 	
-	
-	
 	public NoteView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init();
 	}
-
-
 
 	public NoteView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init();
 	}
 
-
-
-	public void init() {
+	/**
+	 * Initializes member variables. Called in every constructor above.
+	 */
+	private void init() {
 		
 		mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 		mPath = new Path();
@@ -90,6 +86,15 @@ public class NoteView extends View {
 		mPaint.setStrokeWidth(mPaintWidth);
 		return this;
 	}
+	
+	/**
+	 * Sets whether drawing is currently enabled on the <code>NoteView</code>.
+	 * @param isLocked	<code>true</code> if the <code>NoteView</code> should be locked,
+	 * 					<code>false</code> if the <code>NoteView</code> should be drawn to.
+	 */
+	public void setDrawingLocked(boolean isLocked) {
+		mIsDrawingLocked = isLocked;
+	}
 
 	/**
 	 * Called by the OS when the Canvas size is either
@@ -97,18 +102,14 @@ public class NoteView extends View {
 	 */
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		int i = 0;
-		
 		super.onSizeChanged(w, h, oldw, oldh);
 		
 		if (mBitmap == null) {
 			mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
 			mCanvas = new Canvas(mBitmap);
-			Toast.makeText(this.getContext(), "turned unsuccessfully",Toast.LENGTH_SHORT).show();
 		} else {
 			mBitmap = Bitmap.createScaledBitmap(mBitmap, w, h, false);
 			mCanvas = new Canvas(mBitmap);
-			Toast.makeText(this.getContext(), "turned successfully", Toast.LENGTH_SHORT).show();
 		}
 	}
 	
@@ -138,7 +139,7 @@ public class NoteView extends View {
 		float x = event.getX();
 		float y = event.getY();
 		
-		if(event.getPointerCount() == 1){
+		if (!mIsDrawingLocked) {
 			switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
 				mPath.reset();
@@ -165,8 +166,7 @@ public class NoteView extends View {
 	            return true;
 			}
 		}
-		
-		return false;
+		return true;
 	}
 	
 	/**
@@ -183,7 +183,10 @@ public class NoteView extends View {
 		return fileName;
 	}
 	
-	
+	/**
+	 * Sets the <code>Bitmap</code> image of <code>Canvas</code> of the <code>NoteView</code>.
+	 * @param bitmap	The <code>Bitmap</code> that will become the background of the <code>NoteView</code>
+	 */
 	public void setBitmap(Bitmap bitmap){
 		mBitmap = bitmap;
 	}
