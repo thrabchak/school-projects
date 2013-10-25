@@ -48,29 +48,6 @@ public class NoteActivity extends Activity {
 		mNoteView.setPaintWidth(16);
 	}
 	
-	/**
-	 * Called by the OS when a touch is registered. A MotionEvent is
-	 * passed by the OS, from which it can be determined the type of
-	 * action [ACTION_DOWN, ACTION_MOVE, ACTION_UP, among others].
-	 */
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		
-		if (event.getPointerCount() == 1) {
-			mScrollView.setScrollingLocked(true);
-			mScrollView.requestDisallowInterceptTouchEvent(true);
-			mNoteView.setDrawingLocked(false);
-			mNoteView.onTouchEvent(event);
-		} else if (event.getPointerCount() == 2) {
-			mNoteView.setDrawingLocked(true);
-			mScrollView.setScrollingLocked(false);
-			mScrollView.requestDisallowInterceptTouchEvent(false);
-			mScrollView.onTouchEvent(event);
-		}
-		
-		return true;
-	}
-	
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(Menu.NONE, 1234567, Menu.NONE, "Scroll");
@@ -92,12 +69,12 @@ public class NoteActivity extends Activity {
 	        
 	    case 1234567:
 	    	if (mScrollView.isScrollLocked()) {
-	    		mScrollView.setScrollingLocked(true);
-	    		mNoteView.setDrawingLocked(false);
-	    	}
-	    	else {
 	    		mScrollView.setScrollingLocked(false);
 	    		mNoteView.setDrawingLocked(true);
+	    	}
+	    	else {
+	    		mScrollView.setScrollingLocked(true);
+	    		mNoteView.setDrawingLocked(false);
 	    	}
 	    	return true;
 	    }
