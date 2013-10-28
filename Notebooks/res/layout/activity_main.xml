@@ -27,5 +27,12 @@
         android:layout_below="@+id/tv_no_notebooks"
         android:layout_centerHorizontal="true"
         android:text="Open" />
+    <Button
+        android:id="@+id/btn_randNotebook"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_below="@+id/btn_open"
+        android:layout_centerHorizontal="true"
+        android:text="RandomNotebook" />
 
 </RelativeLayout>

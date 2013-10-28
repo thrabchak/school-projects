@@ -2,6 +2,8 @@ package com.ctk.notebooks;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +14,9 @@ import android.widget.Button;
 public class MainActivity extends Activity implements OnClickListener {
 
 	Button mOpenNote;
+	Button mRandomNote;
+	
+	
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +25,8 @@ public class MainActivity extends Activity implements OnClickListener {
         
         mOpenNote = (Button) findViewById(R.id.btn_open);
         mOpenNote.setOnClickListener(this);
+        mRandomNote=(Button) findViewById(R.id.btn_randNotebook);
+        mRandomNote.setOnClickListener(this);
     }
 
 
@@ -37,6 +44,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			startActivity(new Intent(this, NoteActivity.class));
 			return true;
 		case R.id.action_new_notebook:
+			
 			break;
 		}
 		
@@ -52,6 +60,16 @@ public class MainActivity extends Activity implements OnClickListener {
 			openNote.putExtra("is_open_note", true)
 					.putExtra("filename", "test1");
 			startActivity(openNote);
+			break;
+		case R.id.btn_randNotebook:
+//			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//		    builder.setTitle("Pick a Note");
+//		           .setAdapter(), new DialogInterface.OnClickListener() {
+//		               public void onClick(DialogInterface dialog, int which) {
+//		               // The 'which' argument contains the index position
+//		               // of the selected item
+//		           }
+//		    });
 		}
 		
 	}
