@@ -10,12 +10,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnClickListener {
 
 	Button mOpenNote;
 	Button mRandomNote;
-	
+	DatabaseHelper db = null;
 	
 	
     @Override
@@ -27,6 +28,8 @@ public class MainActivity extends Activity implements OnClickListener {
         mOpenNote.setOnClickListener(this);
         mRandomNote=(Button) findViewById(R.id.btn_randNotebook);
         mRandomNote.setOnClickListener(this);
+        db = new DatabaseHelper(this);
+        Toast.makeText(this, "Number of notebooks = " + db.getNumNotebooks(), Toast.LENGTH_SHORT).show();
     }
 
 

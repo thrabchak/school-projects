@@ -4,6 +4,7 @@ import java.util.Calendar;
 
 import android.R.color;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -41,21 +42,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				  " values ('" + name + "', " + timestamp + ", " + timestamp + ", " + colorHex + ");";
 		  
 		  getWritableDatabase().execSQL(sql);
-		  
+		  close();
 		  
 		  return true;
 	  }
 	  
 	  public boolean addNote(String name, String NotebookName){
-	  
 		  
 		  return true;
+	  }
+	  
+	  public int getNumNotebooks(){
+	
+		  Cursor result = getReadableDatabase().rawQuery("select " + COLUMN_TITLE + " from " + TABLE_BINDER, null);
+		  int count = 0;
+		  while(result.moveToNext()){
+			  count++;
+		  }
+		  result.close();
+		  close();
+		  return count;
 	  }
 	  
 	 
 	  @Override
 	  public void onCreate(SQLiteDatabase database) {
-		  database.execSQL(DATABASE_CREATE);		  
+		  database.execSQL(DATABASE_CREATE);
+		  database.close();
 		  addNotebook("Random notes", color.background_dark);
 	  }
 
