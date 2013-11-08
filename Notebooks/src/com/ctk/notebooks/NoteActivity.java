@@ -46,6 +46,9 @@ public class NoteActivity extends Activity {
 		
 		mNoteView.setPaintColor(0xFFfab41d);
 		mNoteView.setPaintWidth(16);
+		
+		mScrollView.setScrollingLocked(true);
+		mNoteView.setDrawingLocked(false);
 	}
 	
 	@Override

@@ -1,10 +1,17 @@
 package com.ctk.notebooks;
 
+import android.R.color;
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,7 +19,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends FragmentActivity implements OnClickListener {
 
 	Button mOpenNote;
 	Button mRandomNote;
@@ -47,13 +54,20 @@ public class MainActivity extends Activity implements OnClickListener {
 			startActivity(new Intent(this, NoteActivity.class));
 			return true;
 		case R.id.action_new_notebook:
+			NewNotebookDialog.Builder builder = new NewNotebookDialog.Builder(this);
+		    builder.setTitle("Create new notebook").setPositiveButton("Create", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					db.addNotebook(builder.getEntry(), 0x7D26CD);
+				}
+			})
 			
 			break;
 		}
 		
 		return false;
 	}
-
 
 	@Override
 	public void onClick(View view) {
@@ -76,4 +90,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 		
 	}
+	
+	
 }
