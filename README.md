@@ -1,7 +1,7 @@
 Fall 2013 ACM Regional Programming Contest
 ====================
 
-Ken Gorab, Clare McLaughlin, and Tom Hrabchak formed the Team Slipper Salamanders 
+Ken Gorab, Clare McLaughlin, and Tom Hrabchak formed the Team Slippery Salamanders 
 and competed in the Fall 2013 Regional ACM Programming competition at Wilkes University.
 
 Resources and Links
