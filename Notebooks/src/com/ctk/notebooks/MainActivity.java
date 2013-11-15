@@ -33,8 +33,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         
         mOpenNote = (Button) findViewById(R.id.btn_open);
         mOpenNote.setOnClickListener(this);
-        mRandomNote=(Button) findViewById(R.id.btn_randNotebook);
-        mRandomNote.setOnClickListener(this);
         db = new DatabaseHelper(this);
         Toast.makeText(this, "Number of notebooks = " + db.getNumNotebooks(), Toast.LENGTH_SHORT).show();
     }
@@ -46,7 +44,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         return true;
     }
 
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -54,14 +51,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			startActivity(new Intent(this, NoteActivity.class));
 			return true;
 		case R.id.action_new_notebook:
-			NewNotebookDialog.Builder builder = new NewNotebookDialog.Builder(this);
+			final NewNotebookDialog.Builder builder = (new NewNotebookDialog()).new Builder(this);
 		    builder.setTitle("Create new notebook").setPositiveButton("Create", new DialogInterface.OnClickListener() {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					db.addNotebook(builder.getEntry(), 0x7D26CD);
+					Toast.makeText(getApplicationContext(), "Name of new notebook = " + builder.getEntry(), Toast.LENGTH_SHORT).show();
 				}
-			})
+			});
+			builder.show(getSupportFragmentManager(), "ckt");
 			
 			break;
 		}
@@ -78,15 +77,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					.putExtra("filename", "test1");
 			startActivity(openNote);
 			break;
-		case R.id.btn_randNotebook:
-//			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//		    builder.setTitle("Pick a Note");
-//		           .setAdapter(), new DialogInterface.OnClickListener() {
-//		               public void onClick(DialogInterface dialog, int which) {
-//		               // The 'which' argument contains the index position
-//		               // of the selected item
-//		           }
-//		    });
 		}
 		
 	}
