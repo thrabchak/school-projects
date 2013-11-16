@@ -21,6 +21,7 @@ public class NewNotebookDialog extends DialogFragment{
 		public TextView notebookName;
 		
 		public NewNotebookDialog() {
+			//test
 		}
 		
 		@Override
