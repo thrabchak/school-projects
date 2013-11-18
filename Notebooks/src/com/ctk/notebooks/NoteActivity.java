@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.NavUtils;
@@ -59,9 +60,7 @@ public class NoteActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    switch (item.getItemId()) {
 	    case android.R.id.home:
-//	    	if (!saveFile(mNoteView.getFileName())){
-//	    		Toast.makeText(getApplicationContext(), "nope", Toast.LENGTH_SHORT).show();
-//	    	}
+	    	saveFile(mNoteView.getFileName());
 	    	
 	    	// On the ActionBar Up button pressed, allow the OS
 	    	// to return us to this Activity's parent.
@@ -88,21 +87,8 @@ public class NoteActivity extends Activity {
 	 * @return	<code>true</code> if the file was saved without an error,
 	 * 			<code>false</code> otherwise.
 	 */
-	public boolean saveFile(String fileName) {
-		try {
-			File bBinderDirectory = new File(BBINDERDIRECTORY);
-			bBinderDirectory.mkdir();
-			
-			FileOutputStream stream = new FileOutputStream(new File(bBinderDirectory, "/" + fileName + ".png"));
-			mNoteView.getBitmap().compress(CompressFormat.PNG, 80, stream);
-			stream.close();
-			
-			return true;
-		} catch(IOException e) {
-        	Log.e("ckt", "Save file error");
-            e.printStackTrace();
-            return false;
-		}
+	public void saveFile(String fileName) {
+		new SaveNote().execute(fileName);
 	}
 	
 	/**
@@ -119,7 +105,27 @@ public class NoteActivity extends Activity {
 	
 	@Override
 	protected void onStop() {
-		//saveFile(mNoteView.getFileName());
+		saveFile(mNoteView.getFileName());
 		super.onStop();
+	}
+	
+	public class SaveNote extends AsyncTask<String, Void, Void> {
+
+		@Override
+		protected Void doInBackground(String... strings) {
+			try {
+				File bBinderDirectory = new File(BBINDERDIRECTORY);
+				bBinderDirectory.mkdir();
+				
+				FileOutputStream stream = new FileOutputStream(new File(bBinderDirectory, "/" + strings[0] + ".png"));
+				mNoteView.getBitmap().compress(CompressFormat.PNG, 80, stream);
+				stream.close();
+			} catch(IOException e) {
+	        	Log.e("ckt", "Save file error");
+	            e.printStackTrace();
+			}
+			return null;
+		}
+		
 	}
 }
