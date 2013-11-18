@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="card_background">#ffffff</color>
+    <color name="card_shadow">#cccccc</color>
+    <color name="card_clicked">#3f4bc079</color>
+</resources>

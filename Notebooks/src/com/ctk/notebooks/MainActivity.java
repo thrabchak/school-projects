@@ -1,42 +1,89 @@
 package com.ctk.notebooks;
 
-import android.R.color;
+import com.ctk.notebooks.Utils.Notebook;
+import com.ctk.notebooks.Utils.NotebookGridAdapter;
+import com.ctk.notebooks.Utils.NotebookGridAdapter.OnNotebookActionClickListener;
+
 import android.os.Bundle;
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.widget.GridView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends FragmentActivity implements OnClickListener {
+public class MainActivity extends FragmentActivity {
 
-	Button mOpenNote;
-	Button mRandomNote;
-	DatabaseHelper db = null;
-	
+	Context							mContext = this;
+	DatabaseHelper 					mDatabase = null;
+	TextView						mTvNoNotebooks;
+	GridView						mNotebookGrid;
+	NotebookGridAdapter 			mNotebookGridAdapter;
+	OnNotebookActionClickListener	mStandardListener;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        mOpenNote = (Button) findViewById(R.id.btn_open);
-        mOpenNote.setOnClickListener(this);
-        db = new DatabaseHelper(this);
-        Toast.makeText(this, "Number of notebooks = " + db.getNumNotebooks(), Toast.LENGTH_SHORT).show();
+        mTvNoNotebooks = (TextView) findViewById(R.id.tv_no_notebooks);
+        mNotebookGridAdapter = new NotebookGridAdapter(this);
+        mNotebookGrid = (GridView) findViewById(R.id.notebook_grid_list);
+        mDatabase = new DatabaseHelper(this);
+        
+        mStandardListener = new OnNotebookActionClickListener() {
+			
+			@Override
+			public void onNotebookDeleteClick(final Notebook notebook) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+				builder.setTitle("Delete notebook " + notebook.name + "?")
+					   .setMessage("This action will delete this notebook, including all of the notes "
+					   			   + "you have created within it. You cannot undo this action. Are you sure "
+					   			   + "you want to delete this notebook?")
+					   .setPositiveButton("Cancel", new OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.dismiss();
+						}
+					   })
+					   
+					   .setNegativeButton("Delete", new OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							mDatabase.deleteNotebook(notebook.id);
+							mNotebookGridAdapter.removeNotebook(notebook.id);
+							if (mNotebookGridAdapter.getCount() == 0) mTvNoNotebooks.setVisibility(View.VISIBLE);
+						}
+					});
+				builder.show();
+			}
+			
+			@Override
+			public void onNotebookAddNoteClick(Notebook notebook) {
+				Toast.makeText(mContext, "added note to notebook: " + notebook.name, Toast.LENGTH_SHORT).show();				
+			}
+		};
+
+		loadNotebooks();
+		mNotebookGrid.setAdapter(mNotebookGridAdapter);
     }
 
+    private void loadNotebooks() {
+    	mNotebookGridAdapter.empty();
+    	for (Notebook notebook : mDatabase.getNotebooks())
+			mNotebookGridAdapter.addNotebook(notebook, mStandardListener);
+    	
+    	if (mNotebookGridAdapter.getCount() != 0)
+    		mTvNoNotebooks.setVisibility(View.GONE);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -56,8 +103,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					db.addNotebook(builder.getEntry(), 0x7D26CD);
-					Toast.makeText(getApplicationContext(), "Name of new notebook = " + builder.getEntry(), Toast.LENGTH_SHORT).show();
+					mDatabase.addNotebook(builder.getNotebookName(), builder.getNotebookColor());
+					loadNotebooks();
 				}
 			});
 			builder.show(getSupportFragmentManager(), "ckt");
@@ -67,19 +114,4 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		
 		return false;
 	}
-
-	@Override
-	public void onClick(View view) {
-		switch (view.getId()) {
-		case R.id.btn_open:
-			Intent openNote = new Intent(this, NoteActivity.class);
-			openNote.putExtra("is_open_note", true)
-					.putExtra("filename", "test1");
-			startActivity(openNote);
-			break;
-		}
-		
-	}
-	
-	
 }

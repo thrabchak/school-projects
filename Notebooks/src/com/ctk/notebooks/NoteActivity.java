@@ -15,8 +15,6 @@ import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.widget.Toast;
 
 import com.ctk.notebooks.Utils.LockableScrollView;
 
@@ -61,9 +59,9 @@ public class NoteActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    switch (item.getItemId()) {
 	    case android.R.id.home:
-	    	if (!saveFile(mNoteView.getFileName())){
-	    		Toast.makeText(getApplicationContext(), "nope", Toast.LENGTH_SHORT).show();
-	    	}
+//	    	if (!saveFile(mNoteView.getFileName())){
+//	    		Toast.makeText(getApplicationContext(), "nope", Toast.LENGTH_SHORT).show();
+//	    	}
 	    	
 	    	// On the ActionBar Up button pressed, allow the OS
 	    	// to return us to this Activity's parent.
@@ -121,7 +119,7 @@ public class NoteActivity extends Activity {
 	
 	@Override
 	protected void onStop() {
-		saveFile(mNoteView.getFileName());
+		//saveFile(mNoteView.getFileName());
 		super.onStop();
 	}
 }
