@@ -12,23 +12,41 @@ import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-	public static final String TABLE_NOTEBOOKS 	= "notebooks";
-	public static final String COLUMN_ID 		= "_id";
-	public static final String COLUMN_TITLE 	= "notebook_title";
-	public static final String COLUMN_CREATED 	= "date_created";
-	public static final String COLUMN_MODIFIED 	= "date_modified";
-	public static final String COLUMN_COLOR 	= "notebook_color";
+	public static final String TABLE_NOTEBOOKS 				= "notebooks";
+	public static final String NOTEBOOKS_COLUMN_ID 			= "_id";
+	public static final String NOTEBOOKS_COLUMN_TITLE 		= "notebook_title";
+	public static final String NOTEBOOKS_COLUMN_CREATED 	= "date_created";
+	public static final String NOTEBOOKS_COLUMN_MODIFIED 	= "date_modified";
+	public static final String NOTEBOOKS_COLUMN_COLOR 		= "notebook_color";
+	public static final String NOTEBOOKS_COLUMN_NUM_PAGES	= "notebook_num_pages";
+	
+	public static final String TABLE_NOTES 				= "notes";
+	public static final String NOTES_COLUMN_NOTEBOOK_ID = "notebook_id";
+	public static final String NOTES_COLUMN_TITLE 		= "note_title";
+	public static final String NOTES_COLUMN_CREATED 	= "date_created";
+	public static final String NOTES_COLUMN_MODIFIED 	= "date_modified";
+	public static final String NOTES_COLUMN_FILEPATH 	= "filepath";
+	public static final String NOTES_COLUMN_PAGE_NUMBER	= "page_number";
 
 	private static final String DATABASE_NAME = "bbinder.db";
 	private static final int DATABASE_VERSION = 1;
 
-	// Database creation sql statement
-	private static final String CREATE_TABLE_BINDER = "create table " + TABLE_NOTEBOOKS + "(" +
-				COLUMN_ID + " integer primary key autoincrement, " +
-				COLUMN_TITLE + " text not null, " +
-				COLUMN_CREATED + " integer, " +
-				COLUMN_MODIFIED + " integer, " +
-				COLUMN_COLOR + " integer);";
+	private static final String CREATE_TABLE_NOTEBOOKS = "create table " + TABLE_NOTEBOOKS + "(" +
+				NOTEBOOKS_COLUMN_ID + " integer primary key autoincrement, " +
+				NOTEBOOKS_COLUMN_TITLE + " text not null, " +
+				NOTEBOOKS_COLUMN_CREATED + " integer, " +
+				NOTEBOOKS_COLUMN_MODIFIED + " integer, " +
+				NOTEBOOKS_COLUMN_COLOR + " integer, " + 
+				NOTEBOOKS_COLUMN_NUM_PAGES + " integer);";
+	
+	private static final String CREATE_TABLE_NOTES = "create table " + TABLE_NOTES + "(" +
+			NOTES_COLUMN_NOTEBOOK_ID + " integer, " +
+			NOTES_COLUMN_TITLE + " text not null, " +
+			NOTES_COLUMN_CREATED + " integer, " +
+			NOTES_COLUMN_MODIFIED + " integer, " +
+			NOTES_COLUMN_FILEPATH + " text not null, " + 
+			NOTES_COLUMN_PAGE_NUMBER + " integer, " +
+			"primary key(" + NOTES_COLUMN_NOTEBOOK_ID + ", " + NOTES_COLUMN_PAGE_NUMBER + "));";
 
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -36,15 +54,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	@Override
 	public void onCreate(SQLiteDatabase database) {
-		database.execSQL(CREATE_TABLE_BINDER);
+		database.execSQL(CREATE_TABLE_NOTEBOOKS);
+		database.execSQL(CREATE_TABLE_NOTES);
 	}
 	  
 	public boolean addNotebook(String name, int colorHex) {
 		long timestamp = System.currentTimeMillis() / 1000L;
 	  
 		String sql = "insert into " + TABLE_NOTEBOOKS + 
-				" (" + COLUMN_TITLE + "," + COLUMN_CREATED + "," + COLUMN_MODIFIED + "," + COLUMN_COLOR + ")" + 
-				" values ('" + name + "', " + timestamp + ", " + timestamp + ", " + colorHex + ");";
+				" (" + NOTEBOOKS_COLUMN_TITLE + "," + 
+					   NOTEBOOKS_COLUMN_CREATED + "," + 
+					   NOTEBOOKS_COLUMN_MODIFIED + "," +
+					   NOTEBOOKS_COLUMN_COLOR + "," +
+					   NOTEBOOKS_COLUMN_NUM_PAGES + ")" + 
+				" values ('" + name + "', " + timestamp + ", " + timestamp + ", " + colorHex + ", " + 0 + ");";
 		
 		try {
 			getWritableDatabase().execSQL(sql);
@@ -56,10 +79,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 	
 	public boolean deleteNotebook(int notebookId) {
-		String sql = "delete from " + TABLE_NOTEBOOKS + " where " + COLUMN_ID + "=" + notebookId;
+		String sqlDeleteNotebook = "delete from " + TABLE_NOTEBOOKS + " where " + NOTEBOOKS_COLUMN_ID + "=" + notebookId;
+		
+		String sqlSelectNotes = "select " + NOTES_COLUMN_FILEPATH + " from " + TABLE_NOTES + " where " + NOTES_COLUMN_NOTEBOOK_ID + "=?";
+		Cursor notesToDelete = getReadableDatabase().rawQuery(sqlSelectNotes, new String[]{""+notebookId});
+		String sqlDeleteNotes = "delete from " + TABLE_NOTES + " where " + NOTES_COLUMN_NOTEBOOK_ID + "=" + notebookId;
+		
+		// TODO: Use notesToDelete to iterate over all filenames to delete from filesystem.
 		
 		try {
-			getWritableDatabase().execSQL(sql);
+			getWritableDatabase().execSQL(sqlDeleteNotebook);
+			getWritableDatabase().execSQL(sqlDeleteNotes);
 		} catch (Exception e) {
 			return false;
 		}
@@ -74,20 +104,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		
 		if (result.moveToFirst()) {
 			do {
-				notebooks.add(new Notebook(result.getString(result.getColumnIndex(COLUMN_TITLE)), 
-										   result.getInt(result.getColumnIndex(COLUMN_ID)), 
-										   result.getInt(result.getColumnIndex(COLUMN_CREATED)), 
-										   result.getInt(result.getColumnIndex(COLUMN_MODIFIED)), 
-										   result.getInt(result.getColumnIndex(COLUMN_COLOR))));
+				notebooks.add(new Notebook(result.getString(result.getColumnIndex(NOTEBOOKS_COLUMN_TITLE)), 
+										   result.getInt(result.getColumnIndex(NOTEBOOKS_COLUMN_ID)), 
+										   result.getInt(result.getColumnIndex(NOTEBOOKS_COLUMN_CREATED)), 
+										   result.getInt(result.getColumnIndex(NOTEBOOKS_COLUMN_MODIFIED)), 
+										   result.getInt(result.getColumnIndex(NOTEBOOKS_COLUMN_COLOR)),
+										   result.getInt(result.getColumnIndex(NOTEBOOKS_COLUMN_NUM_PAGES))));
 			} while (result.moveToNext());
 		}
 		
 		return notebooks;
-	}
-	
-	public int getPagesInNotebook(int notebookId) {
-		//getReadableDatabase().rawQuery("select sum(, selectionArgs)
-		return 0;
 	}
 	  
 	public boolean addNote(String name, String notebookName) {

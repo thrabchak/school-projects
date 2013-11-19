@@ -26,6 +26,9 @@ public class NoteActivity extends Activity {
 	private ActionBar 			mActionBar;
 	private NoteView 			mNoteView;
 	private LockableScrollView	mScrollView;
+	private boolean				mIsInNotebook = false;
+	private String				mNotebookName;
+	private int					mNotebookId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +38,21 @@ public class NoteActivity extends Activity {
 		mNoteView = (NoteView) findViewById(R.id.note_view);
 		mScrollView = (LockableScrollView) findViewById(R.id.note_scroll_view);
 		
+		mActionBar = getActionBar();
+		mActionBar.setDisplayHomeAsUpEnabled(true);
+		
 		if (getIntent().hasExtra("is_open_note") && getIntent().getExtras().getBoolean("is_open_note", false)) {
 			String filename = getIntent().getExtras().getString("filename");
 			mNoteView.setBitmap(openFile(filename));
-		} 
+		}
 		
-		mActionBar = getActionBar();
-		mActionBar.setDisplayHomeAsUpEnabled(true);
+		if (getIntent().hasExtra("notebook_name") && getIntent().hasExtra("notebook_id")) {
+			mIsInNotebook = true;
+			mNotebookName = getIntent().getExtras().getString("notebook_name", "NULL");
+			mNotebookId = getIntent().getExtras().getInt("notebook_id", -1);
+			mActionBar.setTitle("New note");
+			mActionBar.setSubtitle("in " + mNotebookName);
+		}
 		
 		mNoteView.setPaintColor(0xFFfab41d);
 		mNoteView.setPaintWidth(16);
