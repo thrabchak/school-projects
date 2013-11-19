@@ -6,9 +6,11 @@ import java.io.IOException;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -53,6 +55,7 @@ public class NoteActivity extends Activity {
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(Menu.NONE, 1234567, Menu.NONE, "Scroll");
+        menu.add(Menu.NONE,2468101,Menu.NONE,"Email PDF");
         return true;
     }
 	
@@ -76,6 +79,9 @@ public class NoteActivity extends Activity {
 	    		mScrollView.setScrollingLocked(true);
 	    		mNoteView.setDrawingLocked(false);
 	    	}
+	    	return true;
+	    case 2468101:
+	    	email("test1");
 	    	return true;
 	    }
 	    return super.onOptionsItemSelected(item);
@@ -107,6 +113,19 @@ public class NoteActivity extends Activity {
 	protected void onStop() {
 		saveFile(mNoteView.getFileName());
 		super.onStop();
+	}
+	
+	public void email(String filename){
+		File bBinderDirectory = new File(BBINDERDIRECTORY);
+		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+		
+		emailIntent.setType("plain/text");
+		
+		File file =new File(bBinderDirectory, "/" + filename +".png");
+		Uri uri = Uri.fromFile(file);
+		emailIntent.putExtra(android.content.Intent.EXTRA_STREAM, uri);
+		emailIntent.putExtra(Intent.EXTRA_SUBJECT, filename);
+		startActivity(Intent.createChooser(emailIntent,"Send your email in: "));
 	}
 	
 	public class SaveNote extends AsyncTask<String, Void, Void> {
