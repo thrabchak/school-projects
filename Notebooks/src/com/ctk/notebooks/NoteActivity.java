@@ -13,11 +13,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.NavUtils;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-//import com.ctk.notebooks.Utils.LockableScrollView;
+import com.ctk.notebooks.Utils.LockableScrollView;
 
 public class NoteActivity extends Activity {
 
@@ -25,15 +27,18 @@ public class NoteActivity extends Activity {
 	
 	private ActionBar 			mActionBar;
 	private NoteView 			mNoteView;
-	//private LockableScrollView	mScrollView;
+	private LockableScrollView	mScrollView;
+	private DrawerLayout 		mDrawerLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.activity_note);
-//		mNoteView = (NoteView) findViewById(R.id.note_view);
-//		mScrollView = (LockableScrollView) findViewById(R.id.note_scroll_view);
+		mNoteView = (NoteView) findViewById(R.id.note_view);
+		mScrollView = (LockableScrollView) findViewById(R.id.note_scroll_view);
+		
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.toolbar_drawer);
 		
 		if (getIntent().hasExtra("is_open_note") && getIntent().getExtras().getBoolean("is_open_note", false)) {
 			String filename = getIntent().getExtras().getString("filename");
@@ -46,13 +51,14 @@ public class NoteActivity extends Activity {
 		mNoteView.setPaintColor(0xFFfab41d);
 		mNoteView.setPaintWidth(16);
 		
-//		mScrollView.setScrollingLocked(true);
+		mScrollView.setScrollingLocked(true);
 		mNoteView.setDrawingLocked(false);
 	}
 	
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(Menu.NONE, 1234567, Menu.NONE, "Scroll");
+        menu.add(Menu.NONE, 1234, Menu.NONE, "Toolbar");
         return true;
     }
 	
@@ -68,15 +74,18 @@ public class NoteActivity extends Activity {
 	        return true;
 	        
 	    case 1234567:
-//	    	if (mScrollView.isScrollLocked()) {
-//	    		mScrollView.setScrollingLocked(false);
-//	    		mNoteView.setDrawingLocked(true);
-//	    	}
-//	    	else {
-//	    		mScrollView.setScrollingLocked(true);
-//	    		mNoteView.setDrawingLocked(false);
-//	    	}
+	    	if (mScrollView.isScrollLocked()) {
+	    		mScrollView.setScrollingLocked(false);
+	    		mNoteView.setDrawingLocked(true);
+	    	}
+	    	else {
+	    		mScrollView.setScrollingLocked(true);
+	    		mNoteView.setDrawingLocked(false);
+	    	}
 	    	return true;
+	    	
+	    case 1234:
+	    	mDrawerLayout.openDrawer(Gravity.END);
 	    }
 	    return super.onOptionsItemSelected(item);
 	}
