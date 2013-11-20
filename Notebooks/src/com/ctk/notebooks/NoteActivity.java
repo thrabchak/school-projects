@@ -32,7 +32,7 @@ public class NoteActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.activity_note);
-		mNoteView = (NoteView) findViewById(R.id.note_view);
+//		mNoteView = (NoteView) findViewById(R.id.note_view);
 //		mScrollView = (LockableScrollView) findViewById(R.id.note_scroll_view);
 		
 		if (getIntent().hasExtra("is_open_note") && getIntent().getExtras().getBoolean("is_open_note", false)) {
