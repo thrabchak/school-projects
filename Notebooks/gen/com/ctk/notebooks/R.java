@@ -47,11 +47,11 @@ public final class R {
         public static final int card_notebook_delete=0x7f09001d;
         public static final int color_picker_checkmark=0x7f090006;
         public static final int color_picker_swatch=0x7f090005;
+        public static final int content_frame=0x7f090003;
         public static final int dummy_view=0x7f090007;
         public static final int left_drawer=0x7f090004;
         public static final int new_notebook_name=0x7f090008;
         public static final int note_scroll_view=0x7f090002;
-        public static final int note_view=0x7f090003;
         public static final int notebook_color_grid=0x7f090009;
         public static final int notebook_grid_list=0x7f090001;
         public static final int row_1=0x7f09000a;
