@@ -62,6 +62,7 @@ public class NoteActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(Menu.NONE, 1234567, Menu.NONE, "Scroll");
         menu.add(Menu.NONE,2468101,Menu.NONE,"Email PDF");
+        menu.add(Menu.NONE,1234568,Menu.NONE,"Save");
         return true;
     }
 	
@@ -88,6 +89,10 @@ public class NoteActivity extends Activity {
 	    	return true;
 	    case 2468101:
 	    	email("test1");
+	    	return true;
+	    
+	    case 1234568:
+	    	saveFile("test1");
 	    	return true;
 	    }
 	    return super.onOptionsItemSelected(item);
@@ -122,6 +127,7 @@ public class NoteActivity extends Activity {
 	}
 	
 	public void email(String filename){
+		
 		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 		Document doc = convertToPDF(filename);
 		emailIntent.setType("plain/text");
@@ -140,7 +146,7 @@ public class NoteActivity extends Activity {
 			
 			String impath= BBINDERDIRECTORY +"/"+filename+".png";
 			Image im = Image.getInstance(impath);
-			im.scaleToFit(150f,150f);
+			im.scaleAbsolute(550f,800f);
 			d.add(im);
 			d.close();
 			Toast.makeText(this, "created PDF", Toast.LENGTH_SHORT).show();
