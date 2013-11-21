@@ -39,17 +39,17 @@ public class LockableScrollView extends ScrollView {
         return mIsScrollLocked;
     }
 
-    float x;
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-
-    	if( event.getPointerCount() > 1){
-        	Toast.makeText(getContext(), "scroll loc = " + getScrollY(), Toast.LENGTH_SHORT).show();
-    		return true;
-    	} else if (!mIsScrollLocked) 
+//    	Toast.makeText(getContext(), "ptrs = " + event.getPointerCount(), Toast.LENGTH_SHORT).show();
+    	
+    	if(event.getPointerCount() == 2){
+//    		Toast.makeText(getContext(), "scroll loc = " + getScrollY(), Toast.LENGTH_SHORT).show();
+//    		smoothScrollBy(0, # amount to scroll by); //work here
+    		return super.onInterceptTouchEvent(event);
+    	} else if (!mIsScrollLocked){ 
         	return super.onInterceptTouchEvent(event);
-        else 
+    	} else 
         	return false;
-		
     }
 }
