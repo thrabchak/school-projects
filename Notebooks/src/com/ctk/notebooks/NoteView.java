@@ -26,8 +26,7 @@ public class NoteView extends View {
 	private int		mPaintColor = 0xFF000000;
 	private float	mPaintWidth	= 10;
 	private String 	fileName = "test1";
-	private boolean	mIsDrawingLocked = false;
-	
+	private boolean	mIsDrawingLocked = false;	
 
 	public NoteView(Context context) {
 		super(context);
@@ -138,34 +137,33 @@ public class NoteView extends View {
 	public boolean onTouchEvent(MotionEvent event) {
 		float x = event.getX();
 		float y = event.getY();
-		
-		if (!mIsDrawingLocked) {
-			switch (event.getAction()) {
-			case MotionEvent.ACTION_DOWN:
-				mPath.reset();
-				mPath.moveTo(x, y);
-				mX = x;
-				mY = y;
-				invalidate();
-				return true;
-			case MotionEvent.ACTION_MOVE:
-				float dx = Math.abs(x - mX);
-	            float dy = Math.abs(y - mY);
-	            if (dx >= 4 || dy >= 4) {
-	                mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
-	                mX = x;
-	                mY = y;
-	            }
-	            invalidate();
-	            return true;
-			case MotionEvent.ACTION_UP:
-				mPath.lineTo(mX, mY);
-	            mCanvas.drawPath(mPath, mPaint);
-	            mPath.reset();
-	            invalidate();
-	            return true;
-			}
+
+		switch (event.getAction()) {
+		case MotionEvent.ACTION_DOWN:
+			mPath.reset();
+			mPath.moveTo(x, y);
+			mX = x;
+			mY = y;
+			invalidate();
+			return true;
+		case MotionEvent.ACTION_MOVE:
+			float dx = Math.abs(x - mX);
+            float dy = Math.abs(y - mY);
+        	if (dx >= 4 || dy >= 4) {
+                mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
+                mX = x;
+                mY = y;
+            }
+            invalidate();
+            return true;
+		case MotionEvent.ACTION_UP:
+			mPath.lineTo(mX, mY);
+            mCanvas.drawPath(mPath, mPaint);
+            mPath.reset();
+            invalidate();
+            return true;
 		}
+//		}
 		return true;
 	}
 	

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 public class LockableScrollView extends ScrollView {
 	
@@ -38,23 +39,17 @@ public class LockableScrollView extends ScrollView {
         return mIsScrollLocked;
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        
-		// Checks if scrolling is enabled before passing the touch event
-		// up to the superclass; if scrolling is enabled, allow the superclass
-		// to enact its scroll method, if not return false.
-	    if (!mIsScrollLocked) 
-	    	return super.onTouchEvent(event);
-	    else
-	    	return true;
-    }
-
+    float x;
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        if (!mIsScrollLocked) 
+
+    	if( event.getPointerCount() > 1){
+        	Toast.makeText(getContext(), "scroll loc = " + getScrollY(), Toast.LENGTH_SHORT).show();
+    		return true;
+    	} else if (!mIsScrollLocked) 
         	return super.onInterceptTouchEvent(event);
         else 
         	return false;
+		
     }
 }

@@ -18,6 +18,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.ctk.notebooks.Utils.LockableScrollView;
 
@@ -37,7 +39,6 @@ public class NoteActivity extends Activity {
 		setContentView(R.layout.activity_note);
 		mNoteView = (NoteView) findViewById(R.id.note_view);
 		mScrollView = (LockableScrollView) findViewById(R.id.note_scroll_view);
-		
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.toolbar_drawer);
 		
 		if (getIntent().hasExtra("is_open_note") && getIntent().getExtras().getBoolean("is_open_note", false)) {
