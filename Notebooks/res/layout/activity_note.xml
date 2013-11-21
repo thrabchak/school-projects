@@ -35,36 +35,62 @@
         android:layout_gravity="end"
         android:background="#fff">
 	  	<LinearLayout 
-	  	    android:layout_width="match_parent"
+	  	    android:layout_width="wrap_content"
 	  	    android:layout_height="wrap_content"
 	  	    android:orientation="vertical"
-        	android:gravity="center_horizontal">
+        	android:padding="18dp">
 		  	<TextView
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:text="Toolbox"
-		        android:gravity="center_horizontal"
-		        android:fontFamily="sans-serif-medium"
-		        android:textSize="22sp"/>
-		  	<View
-			    android:layout_width="match_parent"
-			    android:layout_height="1dp"
-			    android:background="@android:color/darker_gray"/>
+		        android:fontFamily="sans-serif-bold"
+		        android:textSize="22sp"
+		        android:textColor="#33B5E5"/>
 		</LinearLayout>
+		<View
+			    android:layout_width="match_parent"
+			    android:layout_height="2dp"
+			    android:background="#0099CC"/>
 		<LinearLayout 
-			android:layout_width="wrap_content"
+			android:layout_width="match_parent"
 	  	    android:layout_height="wrap_content"
 	  	    android:orientation="vertical"
+        	android:padding="12dp"
         	android:gravity="center_horizontal">
 		  	<TextView
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:text="Change Color"
+		        android:text="Color"
 		        android:fontFamily="sans-serif-medium"
-		        android:textSize="18sp"/>
+		        android:textSize="18sp"
+		        android:padding="5dp"/>
+		  	<com.ctk.notebooks.Utils.ColorPickerSwatch
+		        android:id="@+id/swatch_1"
+		        android:layout_margin="4dp"
+		        android:layout_width="50dp"
+		        android:layout_height="50dp"/>
+		    <com.ctk.notebooks.Utils.ColorPickerSwatch
+		        android:id="@+id/swatch_2"
+		        android:layout_margin="4dp"
+		        android:layout_width="50dp"
+		        android:layout_height="50dp"/>
+		    <com.ctk.notebooks.Utils.ColorPickerSwatch
+		        android:id="@+id/swatch_3"
+		        android:layout_margin="4dp"
+		        android:layout_width="50dp"
+		        android:layout_height="50dp"/>
+		    <com.ctk.notebooks.Utils.ColorPickerSwatch
+		        android:id="@+id/swatch_4"
+		        android:layout_margin="4dp"
+		        android:layout_width="50dp"
+		        android:layout_height="50dp"/>
+		    <com.ctk.notebooks.Utils.ColorPickerSwatch
+		        android:id="@+id/swatch_5"
+		        android:layout_margin="4dp"
+		        android:layout_width="50dp"
+		        android:layout_height="50dp"/>
         </LinearLayout>
 	</LinearLayout>
-
-    
+	
 </android.support.v4.widget.DrawerLayout>
 
