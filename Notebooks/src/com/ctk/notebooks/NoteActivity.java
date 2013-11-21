@@ -1,6 +1,7 @@
 package com.ctk.notebooks;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -18,8 +19,13 @@ import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.ctk.notebooks.Utils.LockableScrollView;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfWriter;
 
 public class NoteActivity extends Activity {
 
@@ -116,16 +122,35 @@ public class NoteActivity extends Activity {
 	}
 	
 	public void email(String filename){
-		File bBinderDirectory = new File(BBINDERDIRECTORY);
 		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-		
+		Document doc = convertToPDF(filename);
 		emailIntent.setType("plain/text");
-		
-		File file =new File(bBinderDirectory, "/" + filename +".png");
-		Uri uri = Uri.fromFile(file);
+		Uri uri = Uri.fromFile(new File(BBINDERDIRECTORY +"/"+ filename+".pdf"));
 		emailIntent.putExtra(android.content.Intent.EXTRA_STREAM, uri);
 		emailIntent.putExtra(Intent.EXTRA_SUBJECT, filename);
 		startActivity(Intent.createChooser(emailIntent,"Send your email in: "));
+	}
+	
+	
+	public Document convertToPDF(String filename){
+		Document d = new Document();
+		try{
+			PdfWriter.getInstance(d,new FileOutputStream(BBINDERDIRECTORY +"/"+filename +".pdf"));
+			d.open();
+			
+			String impath= BBINDERDIRECTORY +"/"+filename+".png";
+			Image im = Image.getInstance(impath);
+			im.scaleToFit(150f,150f);
+			d.add(im);
+			d.close();
+			Toast.makeText(this, "created PDF", Toast.LENGTH_SHORT).show();
+		}catch(DocumentException e){
+			e.printStackTrace();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return d;
+		
 	}
 	
 	public class SaveNote extends AsyncTask<String, Void, Void> {
