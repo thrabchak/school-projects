@@ -3,6 +3,7 @@ package com.ctk.notebooks;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
@@ -60,6 +61,8 @@ public class NoteView extends View {
 		mPaint.setStyle(Paint.Style.STROKE);
 		mPaint.setAntiAlias(true);
 		mPaint.setDither(true);
+		this.setBackgroundColor(Color.TRANSPARENT);
+		
 	}
 	
 	/**

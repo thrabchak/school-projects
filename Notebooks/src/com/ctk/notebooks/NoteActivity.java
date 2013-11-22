@@ -127,36 +127,60 @@ public class NoteActivity extends Activity {
 	}
 	
 	public void email(String filename){
-		
-		Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-		Document doc = convertToPDF(filename);
-		emailIntent.setType("plain/text");
-		Uri uri = Uri.fromFile(new File(BBINDERDIRECTORY +"/"+ filename+".pdf"));
-		emailIntent.putExtra(android.content.Intent.EXTRA_STREAM, uri);
-		emailIntent.putExtra(Intent.EXTRA_SUBJECT, filename);
-		startActivity(Intent.createChooser(emailIntent,"Send your email in: "));
+		new EmailNote().execute(filename);	
 	}
 	
-	
-	public Document convertToPDF(String filename){
-		Document d = new Document();
-		try{
-			PdfWriter.getInstance(d,new FileOutputStream(BBINDERDIRECTORY +"/"+filename +".pdf"));
-			d.open();
-			
-			String impath= BBINDERDIRECTORY +"/"+filename+".png";
-			Image im = Image.getInstance(impath);
-			im.scaleAbsolute(550f,800f);
-			d.add(im);
-			d.close();
-			Toast.makeText(this, "created PDF", Toast.LENGTH_SHORT).show();
-		}catch(DocumentException e){
-			e.printStackTrace();
-		}catch(Exception e){
-			e.printStackTrace();
+	public class EmailNote extends AsyncTask<String, Void, Void> {
+		String name;
+		@Override
+		protected void onPostExecute(Void result) {
+			Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+			Document doc = convertToPDF(name);
+			emailIntent.setType("plain/text");
+			Uri uri = Uri.fromFile(new File(BBINDERDIRECTORY +"/"+ name+".pdf"));
+			emailIntent.putExtra(android.content.Intent.EXTRA_STREAM, uri);
+			emailIntent.putExtra(Intent.EXTRA_SUBJECT, name);
+			startActivity(Intent.createChooser(emailIntent,"Send your email in: "));
+			super.onPostExecute(result);
 		}
-		return d;
+
+		@Override
+		protected Void doInBackground(String... params) {
+			name = params[0];
+			try {
+				File bBinderDirectory = new File(BBINDERDIRECTORY);
+				bBinderDirectory.mkdir();
+				
+				FileOutputStream stream = new FileOutputStream(new File(bBinderDirectory, "/" + params[0] + ".png"));
+				mNoteView.getBitmap().compress(CompressFormat.PNG, 80, stream);
+				stream.close();
+			} catch(IOException e) {
+	        	Log.e("ckt", "Save file error");
+	            e.printStackTrace();
+			}
+			return null;
+		}
 		
+		public Document convertToPDF(String filename){
+			Document d = new Document();
+			try{
+				PdfWriter.getInstance(d,new FileOutputStream(BBINDERDIRECTORY +"/"+filename +".pdf"));
+				d.open();
+				
+				String impath= BBINDERDIRECTORY +"/"+filename+".png";
+				Image im = Image.getInstance(impath);
+				im.scaleAbsolute(550f,800f);
+				d.add(im);
+				d.close();
+			}catch(DocumentException e){
+				e.printStackTrace();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			return d;
+			
+		}
+	
 	}
 	
 	public class SaveNote extends AsyncTask<String, Void, Void> {
