@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -41,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	private static final String CREATE_TABLE_NOTES = "create table " + TABLE_NOTES + "(" +
 			NOTES_COLUMN_NOTEBOOK_ID + " integer, " +
-			NOTES_COLUMN_TITLE + " text not null, " +
+			NOTES_COLUMN_TITLE + " text, " +
 			NOTES_COLUMN_CREATED + " integer, " +
 			NOTES_COLUMN_MODIFIED + " integer, " +
 			NOTES_COLUMN_FILEPATH + " text not null, " + 
@@ -115,8 +116,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		
 		return notebooks;
 	}
+	
+	public boolean addNote(String name, String filepath, int notebookId) {
+		long timestamp = System.currentTimeMillis() / 1000L;
+		
+		String sql = "select " + NOTEBOOKS_COLUMN_NUM_PAGES + " from " + TABLE_NOTEBOOKS + " where " + NOTEBOOKS_COLUMN_ID + "=?";
+		Cursor result = getReadableDatabase().rawQuery(sql, new String[]{""+notebookId});
+		result.moveToFirst();
+		int numPages = result.getInt(result.getColumnIndex(NOTEBOOKS_COLUMN_NUM_PAGES));
+		
+		String sqlInsertNote = "insert into " + TABLE_NOTES + 
+				" (" + NOTES_COLUMN_NOTEBOOK_ID + "," + 
+					   NOTES_COLUMN_TITLE + "," + 
+					   NOTES_COLUMN_CREATED + "," +
+					   NOTES_COLUMN_MODIFIED + "," +
+					   NOTES_COLUMN_FILEPATH + "," +
+					   NOTES_COLUMN_PAGE_NUMBER + ")" + 
+				" values (" + notebookId + ", '" + name + "', " + timestamp + ", " + timestamp + ", '" + filepath + "', " + (numPages + 1) + ");";
+		
+		try {
+			getWritableDatabase().execSQL(sqlInsertNote);
+		} catch (Exception e) {
+			return false;
+		}
+		
+		return true;
+	}
 	  
-	public boolean addNote(String name, String notebookName) {
+	public boolean addNote(String filepath, int notebookId) {
 		return true;
 	}
   
