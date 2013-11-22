@@ -1,14 +1,17 @@
 package com.ctk.notebooks;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,8 +19,13 @@ import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.ctk.notebooks.Utils.LockableScrollView;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfWriter;
 
 public class NoteActivity extends Activity {
 
@@ -64,6 +72,8 @@ public class NoteActivity extends Activity {
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(Menu.NONE, 1234567, Menu.NONE, "Scroll");
+        menu.add(Menu.NONE,2468101,Menu.NONE,"Email PDF");
+        menu.add(Menu.NONE,1234568,Menu.NONE,"Save");
         return true;
     }
 	
@@ -87,6 +97,13 @@ public class NoteActivity extends Activity {
 	    		mScrollView.setScrollingLocked(true);
 	    		mNoteView.setDrawingLocked(false);
 	    	}
+	    	return true;
+	    case 2468101:
+	    	email("test1");
+	    	return true;
+	    
+	    case 1234568:
+	    	saveFile("test1");
 	    	return true;
 	    }
 	    return super.onOptionsItemSelected(item);
@@ -118,6 +135,63 @@ public class NoteActivity extends Activity {
 	protected void onStop() {
 		saveFile(mNoteView.getFileName());
 		super.onStop();
+	}
+	
+	public void email(String filename){
+		new EmailNote().execute(filename);	
+	}
+	
+	public class EmailNote extends AsyncTask<String, Void, Void> {
+		String name;
+		@Override
+		protected void onPostExecute(Void result) {
+			Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+			Document doc = convertToPDF(name);
+			emailIntent.setType("plain/text");
+			Uri uri = Uri.fromFile(new File(BBINDERDIRECTORY +"/"+ name+".pdf"));
+			emailIntent.putExtra(android.content.Intent.EXTRA_STREAM, uri);
+			emailIntent.putExtra(Intent.EXTRA_SUBJECT, name);
+			startActivity(Intent.createChooser(emailIntent,"Send your email in: "));
+			super.onPostExecute(result);
+		}
+
+		@Override
+		protected Void doInBackground(String... params) {
+			name = params[0];
+			try {
+				File bBinderDirectory = new File(BBINDERDIRECTORY);
+				bBinderDirectory.mkdir();
+				
+				FileOutputStream stream = new FileOutputStream(new File(bBinderDirectory, "/" + params[0] + ".png"));
+				mNoteView.getBitmap().compress(CompressFormat.PNG, 80, stream);
+				stream.close();
+			} catch(IOException e) {
+	        	Log.e("ckt", "Save file error");
+	            e.printStackTrace();
+			}
+			return null;
+		}
+		
+		public Document convertToPDF(String filename){
+			Document d = new Document();
+			try{
+				PdfWriter.getInstance(d,new FileOutputStream(BBINDERDIRECTORY +"/"+filename +".pdf"));
+				d.open();
+				
+				String impath= BBINDERDIRECTORY +"/"+filename+".png";
+				Image im = Image.getInstance(impath);
+				im.scaleAbsolute(550f,800f);
+				d.add(im);
+				d.close();
+			}catch(DocumentException e){
+				e.printStackTrace();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			return d;
+			
+		}
+	
 	}
 	
 	public class SaveNote extends AsyncTask<String, Void, Void> {
