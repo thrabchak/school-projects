@@ -1,19 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.ctk.notebooks.Utils.LockableScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/note_scroll_view"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toolbar_drawer"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content">   
- 
-    <LinearLayout 
+	android:layout_height="match_parent">   
+    
+    <!-- The main content view -->
+	<FrameLayout
+        android:id="@+id/content_frame"
         android:layout_width="match_parent"
- 		android:layout_height="wrap_content"
- 		android:orientation="vertical" >
- 		
-	   	<com.ctk.notebooks.NoteView
-	        android:id="@+id/note_view"
-	        android:layout_width="match_parent"
-	        android:layout_height="1280dp" >	        
-	   
-	   	</com.ctk.notebooks.NoteView>
-  	</LinearLayout>
-</com.ctk.notebooks.Utils.LockableScrollView>
+        android:layout_height="match_parent"  >
+	  	<com.ctk.notebooks.Utils.LockableScrollView
+	  	    android:id="@+id/note_scroll_view"
+	  	    android:layout_width="match_parent"
+	 		android:layout_height="wrap_content">
+	  	    <LinearLayout 
+		        android:layout_width="match_parent"
+		 		android:layout_height="wrap_content"
+		 		android:orientation="vertical" >
+			   	<com.ctk.notebooks.NoteView
+			        android:id="@+id/note_view"
+			        android:layout_width="match_parent"
+			        android:layout_height="1280dp" >	
+			   	</com.ctk.notebooks.NoteView>
+	  		</LinearLayout>
+	 	</com.ctk.notebooks.Utils.LockableScrollView>
+	 </FrameLayout>   
+    
+    <!-- The navigation drawer -->
+    <LinearLayout android:id="@+id/toolbar"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_gravity="end"
+        android:background="#fff">
+	  	<LinearLayout 
+	  	    android:layout_width="wrap_content"
+	  	    android:layout_height="wrap_content"
+	  	    android:orientation="vertical"
+        	android:padding="18dp">
+		  	<TextView
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Toolbox"
+		        android:fontFamily="sans-serif-bold"
+		        android:textSize="22sp"
+		        android:textColor="#33B5E5"/>
+		</LinearLayout>
+		<View
+			    android:layout_width="match_parent"
+			    android:layout_height="2dp"
+			    android:background="#0099CC"/>
+		<LinearLayout 
+			android:layout_width="match_parent"
+	  	    android:layout_height="wrap_content"
+	  	    android:orientation="vertical"
+        	android:padding="12dp"
+        	android:gravity="center_horizontal">
+		  	<TextView
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="Color"
+		        android:fontFamily="sans-serif-medium"
+		        android:textSize="18sp"
+		        android:padding="5dp"/>
+		  	<com.ctk.notebooks.Utils.ColorPickerSwatch
+		        android:id="@+id/swatch_1"
+		        android:layout_margin="4dp"
+		        android:layout_width="50dp"
+		        android:layout_height="50dp"/>
+		    <com.ctk.notebooks.Utils.ColorPickerSwatch
+		        android:id="@+id/swatch_2"
+		        android:layout_margin="4dp"
+		        android:layout_width="50dp"
+		        android:layout_height="50dp"/>
+		    <com.ctk.notebooks.Utils.ColorPickerSwatch
+		        android:id="@+id/swatch_3"
+		        android:layout_margin="4dp"
+		        android:layout_width="50dp"
+		        android:layout_height="50dp"/>
+		    <com.ctk.notebooks.Utils.ColorPickerSwatch
+		        android:id="@+id/swatch_4"
+		        android:layout_margin="4dp"
+		        android:layout_width="50dp"
+		        android:layout_height="50dp"/>
+		    <com.ctk.notebooks.Utils.ColorPickerSwatch
+		        android:id="@+id/swatch_5"
+		        android:layout_margin="4dp"
+		        android:layout_width="50dp"
+		        android:layout_height="50dp"/>
+        </LinearLayout>
+	</LinearLayout>
+	
+</android.support.v4.widget.DrawerLayout>
+
