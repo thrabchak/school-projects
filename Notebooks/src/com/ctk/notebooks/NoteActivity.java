@@ -34,18 +34,19 @@ public class NoteActivity extends Activity {
 	private final static String	BBINDERDIRECTORY	= Environment
 															.getExternalStorageDirectory()
 															+ "/bBinder";
-	final int					NUM_SWATCHES		= 5;
+	final int					NUM_SWATCHES		= 6;
 
 	private ActionBar			mActionBar;
 	private NoteView			mNoteView;
 	private LockableScrollView	mScrollView;
 	private DrawerLayout		mDrawerLayout;
 	private int					mSelectedColor;
-	private final int			mSwatchColors[]		= { 0xff33b5e5, 0xffaa66cc,
-			0xffff4444, 0xffffbb33, 0xff99cc00		};
+	private final int			mSwatchColors[]		= { 0xff000000, 0xff33b5e5,
+			0xffaa66cc, 0xffff4444, 0xffffbb33, 0xff99cc00 };
 	ColorPickerSwatch			mSwatches[]			= new ColorPickerSwatch[NUM_SWATCHES];
 	private final int			mSwatchIds[]		= { R.id.swatch_1,
-			R.id.swatch_2, R.id.swatch_3, R.id.swatch_4, R.id.swatch_5 };
+			R.id.swatch_2, R.id.swatch_3, R.id.swatch_4, R.id.swatch_5,
+			R.id.swatch_6							};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +99,7 @@ public class NoteActivity extends Activity {
 						}
 					});
 		}
+		mSwatches[mSelectedColor].setChecked(true);
 	}
 
 	@Override

@@ -88,6 +88,11 @@
 		        android:layout_margin="4dp"
 		        android:layout_width="50dp"
 		        android:layout_height="50dp"/>
+		    <com.ctk.notebooks.Utils.ColorPickerSwatch
+		        android:id="@+id/swatch_6"
+		        android:layout_margin="4dp"
+		        android:layout_width="50dp"
+		        android:layout_height="50dp"/>
         </LinearLayout>
 	</LinearLayout>
 	
