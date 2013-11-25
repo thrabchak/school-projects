@@ -20,6 +20,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -50,6 +53,7 @@ public class NoteActivity extends Activity {
 			R.id.swatch_2, R.id.swatch_3, R.id.swatch_4, R.id.swatch_5,
 			R.id.swatch_6							};
 	private Spinner				mStrokeWidthSpinner;
+	private int					mDefaultStrokeSize;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -77,16 +81,9 @@ public class NoteActivity extends Activity {
 		mNoteView.setDrawingLocked(false);
 
 		mSelectedColor = 0;
+		mDefaultStrokeSize = 5;
 		initSwatches();
-
-		mStrokeWidthSpinner = (Spinner) findViewById(R.id.pen_size_spinner);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-				this, R.array.toolbar_sizes_array,
-				android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		mStrokeWidthSpinner.setAdapter(adapter);
-		mStrokeWidthSpinner.setSelection(5, false);
-
+		initStrokeWidthSpinner();
 	}
 
 	private void initSwatches() {
@@ -112,6 +109,30 @@ public class NoteActivity extends Activity {
 					});
 		}
 		mSwatches[mSelectedColor].setChecked(true);
+	}
+
+	private void initStrokeWidthSpinner() {
+		mStrokeWidthSpinner = (Spinner) findViewById(R.id.pen_size_spinner);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+				this, R.array.toolbar_sizes_array,
+				android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		mStrokeWidthSpinner.setAdapter(adapter);
+		mStrokeWidthSpinner.setSelection(mDefaultStrokeSize, false);
+		mStrokeWidthSpinner
+				.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+					@Override
+					public void onItemSelected(AdapterView<?> parent,
+							View view, int pos, long id) {
+						mNoteView.setPaintWidth(pos);
+					}
+
+					@Override
+					public void onNothingSelected(AdapterView<?> parent) {
+						// Nothing - needed by default
+					}
+				});
 	}
 
 	@Override
