@@ -74,8 +74,7 @@ public class NoteActivity extends Activity {
 		mActionBar = getActionBar();
 		mActionBar.setDisplayHomeAsUpEnabled(true);
 
-		mNoteView.setPaintColor(0xFFfab41d);
-		mNoteView.setPaintWidth(16);
+		mNoteView.setPaintColor(0xFF000000);
 
 		mScrollView.setScrollingLocked(true);
 		mNoteView.setDrawingLocked(false);
@@ -133,6 +132,7 @@ public class NoteActivity extends Activity {
 						// Nothing - needed by default
 					}
 				});
+		mNoteView.setPaintWidth(mDefaultStrokeSize);
 	}
 
 	@Override
