@@ -20,6 +20,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.ctk.notebooks.Utils.ColorPickerSwatch;
 import com.ctk.notebooks.Utils.ColorPickerSwatch.OnColorSelectedListener;
@@ -47,6 +49,7 @@ public class NoteActivity extends Activity {
 	private final int			mSwatchIds[]		= { R.id.swatch_1,
 			R.id.swatch_2, R.id.swatch_3, R.id.swatch_4, R.id.swatch_5,
 			R.id.swatch_6							};
+	private Spinner				mStrokeWidthSpinner;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +78,15 @@ public class NoteActivity extends Activity {
 
 		mSelectedColor = 0;
 		initSwatches();
+
+		mStrokeWidthSpinner = (Spinner) findViewById(R.id.pen_size_spinner);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+				this, R.array.toolbar_sizes_array,
+				android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		mStrokeWidthSpinner.setAdapter(adapter);
+		mStrokeWidthSpinner.setSelection(5, false);
+
 	}
 
 	private void initSwatches() {

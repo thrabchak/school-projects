@@ -24,7 +24,7 @@ public class NoteView extends View {
 	private Paint			mBitmapPaint;
 	private Paint			mPaint;
 	private int				mPaintColor			= 0xFF000000;
-	private float			mPaintWidth			= 10;
+	private float			mPaintWidth			= 0;
 	private final String	fileName			= "test1";
 	private boolean			mIsDrawingLocked	= false;
 
@@ -55,8 +55,8 @@ public class NoteView extends View {
 		// to change the draw color and width.
 		mPaint = new Paint();
 		mPaint.setColor(mPaintColor);
-		mPaint.setStrokeWidth(mPaintWidth);
 		mPaint.setStyle(Paint.Style.STROKE);
+		mPaint.setStrokeWidth(mPaintWidth);
 		mPaint.setAntiAlias(true);
 		mPaint.setDither(true);
 		this.setBackgroundColor(Color.TRANSPARENT);
