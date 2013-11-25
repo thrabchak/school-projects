@@ -1,11 +1,13 @@
 package com.ctk.notebooks;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.drawable.NinePatchDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -61,7 +63,7 @@ public class NoteView extends View {
 		mPaint.setStyle(Paint.Style.STROKE);
 		mPaint.setAntiAlias(true);
 		mPaint.setDither(true);
-		this.setBackgroundColor(Color.TRANSPARENT);
+		
 		
 	}
 	
@@ -108,7 +110,7 @@ public class NoteView extends View {
 		super.onSizeChanged(w, h, oldw, oldh);
 		
 		if (mBitmap == null) {
-			mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+			mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_4444);
 			mCanvas = new Canvas(mBitmap);
 		} else {
 			mBitmap = Bitmap.createScaledBitmap(mBitmap, w, h, false);

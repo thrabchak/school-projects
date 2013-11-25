@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -140,6 +141,17 @@ public class NoteActivity extends Activity {
 	
 	public class EmailNote extends AsyncTask<String, Void, Void> {
 		String name;
+		ProgressDialog pd;
+		@Override
+		protected void onPreExecute() {
+			pd = new ProgressDialog(NoteActivity.this);
+			pd.setTitle("Converting to PDF ...");
+			pd.setCancelable(false);
+			pd.setIndeterminate(true);
+			pd.show();
+			super.onPreExecute();
+		}
+
 		@Override
 		protected void onPostExecute(Void result) {
 			Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
@@ -148,7 +160,11 @@ public class NoteActivity extends Activity {
 			Uri uri = Uri.fromFile(new File(BBINDERDIRECTORY +"/"+ name+".pdf"));
 			emailIntent.putExtra(android.content.Intent.EXTRA_STREAM, uri);
 			emailIntent.putExtra(Intent.EXTRA_SUBJECT, name);
+			if(pd!=null){
+				pd.dismiss();
+			}
 			startActivity(Intent.createChooser(emailIntent,"Send your email in: "));
+			
 			super.onPostExecute(result);
 		}
 

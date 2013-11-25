@@ -16,11 +16,13 @@
 	  	    <LinearLayout 
 		        android:layout_width="match_parent"
 		 		android:layout_height="wrap_content"
-		 		android:orientation="vertical" >
+		 		android:orientation="vertical" 
+		 		>
 			   	<com.ctk.notebooks.NoteView
 			        android:id="@+id/note_view"
 			        android:layout_width="match_parent"
-			        android:layout_height="1280dp" >	
+			        android:layout_height="1280dp"
+			        android:background ="@drawable/linedpaper">	
 			   	</com.ctk.notebooks.NoteView>
 	  		</LinearLayout>
 	 	</com.ctk.notebooks.Utils.LockableScrollView>
