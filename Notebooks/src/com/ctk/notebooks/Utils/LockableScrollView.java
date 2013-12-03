@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 public class LockableScrollView extends ScrollView {
 
@@ -42,40 +41,47 @@ public class LockableScrollView extends ScrollView {
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent ev) {
+	public boolean onTouchEvent(MotionEvent event) {
+		if (mY == -1)
+			mY = event.getAxisValue(MotionEvent.AXIS_Y);
+
+		switch (event.getAction() & MotionEvent.ACTION_MASK) {
+		case MotionEvent.ACTION_MOVE:
+			float new_y = event.getAxisValue(MotionEvent.AXIS_Y);
+			// Log.d("ckt", "old: " + mY + " new: " + new_y + " scrollBy: "
+			// + (int) (new_y - mY));
+			smoothScrollBy(0, (int) (mY - new_y));
+			mY = event.getAxisValue(MotionEvent.AXIS_Y);
+			break;
+		case MotionEvent.ACTION_POINTER_UP:
+			twoFingersDown = false;
+			break;
+		default:
+			break;
+		}
 		return true;
 	}
 
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent event) {
-		// Toast.makeText(getContext(), "ptrs = " + event.getPointerCount(),
-		// Toast.LENGTH_SHORT).show();
-		Toast.makeText(getContext(), event.toString(), Toast.LENGTH_SHORT)
-				.show();
-		if (event.getPointerCount() == 2) {
-
-			if (mY == -1) {
-				mY = event.getY();
-			} else {
-				float newY = event.getY();
-				float dy = newY - mY;
-				smoothScrollBy(0, (int) dy);
-				mY = newY;
-			}
+		switch (event.getAction() & MotionEvent.ACTION_MASK) {
+		case MotionEvent.ACTION_POINTER_DOWN:
+			twoFingersDown = true;
 			return true;
-			// Toast.makeText(getContext(), "scroll loc = " + getScrollY(),
-			// Toast.LENGTH_SHORT).show();
-			// smoothScrollBy(0, # amount to scroll by); //work here
-			// return super.onInterceptTouchEvent(event);
-		} else if (!mIsScrollLocked) {
+		case MotionEvent.ACTION_MOVE:
+			if (twoFingersDown)
+				return true;
+			else
+				return false;
+		case MotionEvent.ACTION_POINTER_UP:
+			twoFingersDown = false;
 			mY = -1;
-			return super.onInterceptTouchEvent(event);
-		} else {
-			mY = -1;
+			return true;
+		default:
 			return false;
 		}
-
 	}
 
-	private float	mY	= -1;
+	private float	mY				= -1;
+	private boolean	twoFingersDown	= false;
 }
