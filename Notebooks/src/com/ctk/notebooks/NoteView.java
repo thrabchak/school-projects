@@ -1,5 +1,7 @@
 package com.ctk.notebooks;
 
+import com.ctk.notebooks.Utils.LockableScrollView;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -7,6 +9,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -19,6 +24,8 @@ import android.widget.Toast;
  */
 public class NoteView extends View {
 
+	private LayerDrawable 	mLayers;
+	private Drawable		myImage;
 	private Canvas			mCanvas;
 	private float			mX, mY;
 	private Path			mPath;
@@ -29,6 +36,7 @@ public class NoteView extends View {
 	private float			mPaintWidth			= 0;
 	private final String	fileName			= "test1";
 	private boolean			mIsDrawingLocked	= false;
+	
 
 	public NoteView(Context context) {
 		super(context);
@@ -49,7 +57,18 @@ public class NoteView extends View {
 	 * Initializes member variables. Called in every constructor above.
 	 */
 	private void init() {
-
+		Resources res = getContext().getResources();
+		myImage = res.getDrawable(R.drawable.lined_paper);
+		Drawable[] layers = new Drawable[2];
+		layers[1]=myImage;
+		mBitmap = Bitmap.createBitmap(45,74, Bitmap.Config.ARGB_4444);
+		layers[0]=new BitmapDrawable (getResources(),mBitmap);
+		layers[0].setAlpha(0);
+		layers[1].setAlpha(255);
+		mLayers = new LayerDrawable(layers);
+		mCanvas = new Canvas(mBitmap);
+		
+		mLayers.draw(mCanvas);
 		mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 		mPath = new Path();
 
