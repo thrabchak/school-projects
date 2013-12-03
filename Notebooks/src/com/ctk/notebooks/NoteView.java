@@ -23,7 +23,7 @@ public class NoteView extends View {
 	private Paint			mBitmapPaint;
 	private Paint			mPaint;
 	private int				mPaintColor			= 0xFF000000;
-	private float			mPaintWidth			= 10;
+	private float			mPaintWidth			= 0;
 	private final String	fileName			= "test1";
 	private boolean			mIsDrawingLocked	= false;
 
@@ -54,8 +54,8 @@ public class NoteView extends View {
 		// to change the draw color and width.
 		mPaint = new Paint();
 		mPaint.setColor(mPaintColor);
-		mPaint.setStrokeWidth(mPaintWidth);
 		mPaint.setStyle(Paint.Style.STROKE);
+		mPaint.setStrokeWidth(mPaintWidth);
 		mPaint.setAntiAlias(true);
 		mPaint.setDither(true);
 	}
@@ -110,7 +110,7 @@ public class NoteView extends View {
 		super.onSizeChanged(w, h, oldw, oldh);
 
 		if (mBitmap == null) {
-			mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+			mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_4444);
 			mCanvas = new Canvas(mBitmap);
 		} else {
 			mBitmap = Bitmap.createScaledBitmap(mBitmap, w, h, false);
@@ -141,38 +141,36 @@ public class NoteView extends View {
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		float x = 0, y = 0;
-		if (event.getAction() != MotionEvent.ACTION_CANCEL) {
-			x = event.getX();
-			y = event.getY();
-		}
+		float x = event.getX();
+		float y = event.getY();
 
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_DOWN:
-			mPath.reset();
-			mPath.moveTo(x, y);
-			mX = x;
-			mY = y;
-			invalidate();
-			return true;
-		case MotionEvent.ACTION_MOVE:
-			float dx = Math.abs(x - mX);
-			float dy = Math.abs(y - mY);
-			if (dx >= 4 || dy >= 4) {
-				mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
+		if (!mIsDrawingLocked) {
+			switch (event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				mPath.reset();
+				mPath.moveTo(x, y);
 				mX = x;
 				mY = y;
+				invalidate();
+				return true;
+			case MotionEvent.ACTION_MOVE:
+				float dx = Math.abs(x - mX);
+				float dy = Math.abs(y - mY);
+				if (dx >= 4 || dy >= 4) {
+					mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
+					mX = x;
+					mY = y;
+				}
+				invalidate();
+				return true;
+			case MotionEvent.ACTION_UP:
+				mPath.lineTo(mX, mY);
+				mCanvas.drawPath(mPath, mPaint);
+				mPath.reset();
+				invalidate();
+				return true;
 			}
-			invalidate();
-			return true;
-		case MotionEvent.ACTION_UP:
-			mPath.lineTo(mX, mY);
-			mCanvas.drawPath(mPath, mPaint);
-			mPath.reset();
-			invalidate();
-			return true;
 		}
-		// }
 		return true;
 	}
 
