@@ -1,10 +1,12 @@
 package com.ctk.notebooks;
 
+import com.ctk.notebooks.Utils.LinedDrawable;
 import com.ctk.notebooks.Utils.LockableScrollView;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -36,7 +38,7 @@ public class NoteView extends View {
 	private float			mPaintWidth			= 0;
 	private final String	fileName			= "test1";
 	private boolean			mIsDrawingLocked	= false;
-	
+	private boolean 		mIsLinedPaper		= true;
 
 	public NoteView(Context context) {
 		super(context);
@@ -57,21 +59,12 @@ public class NoteView extends View {
 	 * Initializes member variables. Called in every constructor above.
 	 */
 	private void init() {
-		Resources res = getContext().getResources();
-		myImage = res.getDrawable(R.drawable.lined_paper);
-		Drawable[] layers = new Drawable[2];
-		layers[1]=myImage;
-		mBitmap = Bitmap.createBitmap(45,74, Bitmap.Config.ARGB_4444);
-		layers[0]=new BitmapDrawable (getResources(),mBitmap);
-		layers[0].setAlpha(0);
-		layers[1].setAlpha(255);
-		mLayers = new LayerDrawable(layers);
-		mCanvas = new Canvas(mBitmap);
 		
-		mLayers.draw(mCanvas);
 		mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 		mPath = new Path();
-
+		if(mIsLinedPaper){
+			createLinedBackground();
+		}
 		// Create new Paint object, here we will be able
 		// to change the draw color and width.
 		mPaint = new Paint();
@@ -80,6 +73,40 @@ public class NoteView extends View {
 		mPaint.setStrokeWidth(mPaintWidth);
 		mPaint.setAntiAlias(true);
 		mPaint.setDither(true);
+	}
+	
+	public void createBlankBackground(){
+		Toast.makeText(getContext(), "blank", Toast.LENGTH_SHORT).show();
+		mBitmap = Bitmap.createScaledBitmap(mBitmap, mCanvas.getWidth(),mCanvas.getHeight(), false);
+		mCanvas = new Canvas(mBitmap);
+		mLayers=null;
+		Drawable drawable =new BitmapDrawable (getResources(),mBitmap);
+		drawable.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
+		drawable.draw(mCanvas);
+	}
+	
+	public void createLinedBackground(){
+		LinedDrawable d = new LinedDrawable();
+		Canvas c = new Canvas();
+		d.draw(c);
+		Drawable q = (Drawable) d;
+		Resources res = getContext().getResources();
+		myImage = res.getDrawable(R.drawable.linedbackground);
+		Drawable[] layers = new Drawable[2];
+		layers[1]=myImage;
+		mBitmap = Bitmap.createBitmap(44,75, Bitmap.Config.ARGB_8888);
+		
+		layers[0]=new BitmapDrawable (getResources(),mBitmap);
+		
+		mLayers = new LayerDrawable(layers);
+		
+		Drawable drawable = mLayers.mutate();
+		mBitmap = Bitmap.createBitmap(mLayers.getIntrinsicWidth(),mLayers.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
+		mCanvas = new Canvas(mBitmap);
+		drawable.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
+		drawable.draw(mCanvas);
+		mLayers.draw(mCanvas);
+		
 	}
 
 	/**
@@ -154,6 +181,17 @@ public class NoteView extends View {
 			Toast.makeText(getContext(), "no", Toast.LENGTH_SHORT).show();
 
 		canvas.drawPath(mPath, mPaint);
+	}
+
+	public void setmIsLinedPaper() {
+		boolean b = !(mIsLinedPaper);
+		this.mIsLinedPaper = b;
+		if (mIsLinedPaper){
+			createLinedBackground();
+		}
+		else{
+			createBlankBackground();
+		}
 	}
 
 	/**

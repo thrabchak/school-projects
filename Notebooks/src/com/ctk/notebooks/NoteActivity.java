@@ -142,6 +142,7 @@ public class NoteActivity extends Activity {
 		menu.add(Menu.NONE, 2468101, Menu.NONE, "Email PDF");
 		menu.add(Menu.NONE, 1234568, Menu.NONE, "Save");
 		menu.add(Menu.NONE, 1234, Menu.NONE, "Toolbar");
+		menu.add(Menu.NONE, 4,Menu.NONE,"Lined Paper");
 		return true;
 	}
 
@@ -174,6 +175,8 @@ public class NoteActivity extends Activity {
 		case 1234:
 			mDrawerLayout.openDrawer(Gravity.END);
 			return true;
+		case 4:
+			mNoteView.setmIsLinedPaper();
 		}
 		return super.onOptionsItemSelected(item);
 	}
