@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -24,6 +25,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.ctk.notebooks.Utils.LockableScrollView;
+import com.ctk.notebooks.Utils.Note;
+import com.ctk.notebooks.Utils.RandomStringGenerator;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.DocumentException;
@@ -33,19 +36,28 @@ public class NoteActivity extends Activity {
 
 	private final static String BBINDERDIRECTORY = Environment.getExternalStorageDirectory() + "/bBinder";
 	
-	private ActionBar 			mActionBar;
-	private NoteView 			mNoteView;
-	private LockableScrollView	mScrollView;
-	private boolean				mIsInNotebook = false;
-	private String				mNotebookName;
-	private int					mNotebookId;
-	private DrawerLayout 		mDrawerLayout;
+	private ActionBar 				mActionBar;
+	private NoteView 				mNoteView;
+	private LockableScrollView		mScrollView;
+	private boolean					mIsInNotebook = false;
+	private String					mNotebookName;
+	private int						mNotebookId;
+	private int						mNotePageNumber;
+	private DrawerLayout 			mDrawerLayout;
+	private DatabaseHelper			mDatabase;
+	private String					mNoteName = null;
+	private String					mFileName;
+	private RandomStringGenerator	mRandomStringGenerator;
+	private Context					mContext;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.activity_note);
+		
+		mContext = this;
+		
 		mNoteView = (NoteView) findViewById(R.id.note_view);
 		mScrollView = (LockableScrollView) findViewById(R.id.note_scroll_view);
 		
@@ -53,18 +65,26 @@ public class NoteActivity extends Activity {
 		mActionBar.setDisplayHomeAsUpEnabled(true);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.toolbar_drawer);
 		
+		mDatabase = new DatabaseHelper(this);
+		mRandomStringGenerator = new RandomStringGenerator(16);
+		
 		if (getIntent().hasExtra("is_open_note") && getIntent().getExtras().getBoolean("is_open_note", false)) {
-			String filename = getIntent().getExtras().getString("filename");
-			mNoteView.setBitmap(openFile(filename));
+			mFileName = getIntent().getExtras().getString("filename");
+			mNoteView.setBitmap(openFile(mFileName));
+		} else {
+			mFileName = mRandomStringGenerator.nextString();
 		}
 		
-		if (getIntent().hasExtra("notebook_name") && getIntent().hasExtra("notebook_id")) {
+		if (getIntent().hasExtra("notebook_name") && getIntent().hasExtra("notebook_id") && getIntent().hasExtra("note_page_number")) {
 			mIsInNotebook = true;
 			mNotebookName = getIntent().getExtras().getString("notebook_name", "NULL");
 			mNotebookId = getIntent().getExtras().getInt("notebook_id", -1);
-			mActionBar.setTitle("New note");
+			mNotePageNumber = getIntent().getExtras().getInt("note_page_number", -1);
+			mActionBar.setTitle("Page " + mNotePageNumber);
 			mActionBar.setSubtitle("in " + mNotebookName);
 		}
+		
+		Toast.makeText(this, "" + mNotePageNumber, Toast.LENGTH_LONG).show();
 		
 		mNoteView.setPaintColor(0xFFfab41d);
 		mNoteView.setPaintWidth(16);
@@ -86,7 +106,7 @@ public class NoteActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    switch (item.getItemId()) {
 	    case android.R.id.home:
-	    	saveFile(mNoteView.getFileName());
+	    	//saveFile(mNoteView.getFileName());
 	    	
 	    	// On the ActionBar Up button pressed, allow the OS
 	    	// to return us to this Activity's parent.
@@ -107,7 +127,7 @@ public class NoteActivity extends Activity {
 	    	email("test1");
 	    	return true;
 	    case 1234568:
-	    	saveFile("test1");
+	    	saveFile();
 	    	return true;
 	    case 1234:
 	    	mDrawerLayout.openDrawer(Gravity.END);
@@ -122,8 +142,8 @@ public class NoteActivity extends Activity {
 	 * @return	<code>true</code> if the file was saved without an error,
 	 * 			<code>false</code> otherwise.
 	 */
-	public void saveFile(String fileName) {
-		new SaveNote().execute(fileName);
+	public void saveFile() {
+		new SaveNote().execute(mFileName);
 	}
 	
 	/**
@@ -140,7 +160,7 @@ public class NoteActivity extends Activity {
 	
 	@Override
 	protected void onStop() {
-		saveFile(mNoteView.getFileName());
+		//saveFile(mNoteView.getFileName());
 		super.onStop();
 	}
 	
@@ -150,6 +170,7 @@ public class NoteActivity extends Activity {
 	
 	public class EmailNote extends AsyncTask<String, Void, Void> {
 		String name;
+		
 		@Override
 		protected void onPostExecute(Void result) {
 			Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
@@ -165,6 +186,7 @@ public class NoteActivity extends Activity {
 		@Override
 		protected Void doInBackground(String... params) {
 			name = params[0];
+			
 			try {
 				File bBinderDirectory = new File(BBINDERDIRECTORY);
 				bBinderDirectory.mkdir();
@@ -176,13 +198,15 @@ public class NoteActivity extends Activity {
 	        	Log.e("ckt", "Save file error");
 	            e.printStackTrace();
 			}
+			
 			return null;
 		}
 		
-		public Document convertToPDF(String filename){
+		public Document convertToPDF(String filename) {
 			Document d = new Document();
+			
 			try{
-				PdfWriter.getInstance(d,new FileOutputStream(BBINDERDIRECTORY +"/"+filename +".pdf"));
+				PdfWriter.getInstance(d,new FileOutputStream(BBINDERDIRECTORY + "/" + filename + ".pdf"));
 				d.open();
 				
 				String impath= BBINDERDIRECTORY +"/"+filename+".png";
@@ -190,26 +214,30 @@ public class NoteActivity extends Activity {
 				im.scaleAbsolute(550f,800f);
 				d.add(im);
 				d.close();
-			}catch(DocumentException e){
+			
+			} catch(DocumentException e) {
 				e.printStackTrace();
-			}catch(Exception e){
+			} catch(Exception e) {
 				e.printStackTrace();
 			}
-			return d;
 			
+			return d;
 		}
-	
 	}
 	
 	public class SaveNote extends AsyncTask<String, Void, Void> {
 
+		String filepath;
+		
 		@Override
 		protected Void doInBackground(String... strings) {
+			filepath = strings[0];
+			
 			try {
 				File bBinderDirectory = new File(BBINDERDIRECTORY);
 				bBinderDirectory.mkdir();
 				
-				FileOutputStream stream = new FileOutputStream(new File(bBinderDirectory, "/" + strings[0] + ".png"));
+				FileOutputStream stream = new FileOutputStream(new File(bBinderDirectory, "/" + filepath + ".png"));
 				mNoteView.getBitmap().compress(CompressFormat.PNG, 80, stream);
 				stream.close();
 			} catch(IOException e) {
@@ -218,6 +246,20 @@ public class NoteActivity extends Activity {
 			}
 			return null;
 		}
-		
+
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			if (mDatabase.doesNoteExist(mNotebookId, mNotePageNumber)) {
+				mDatabase.updateNote(mNotebookId, mNotePageNumber);
+				Toast.makeText(mContext, "updated", Toast.LENGTH_LONG).show();
+			} else {
+				Toast.makeText(mContext, "added", Toast.LENGTH_LONG).show();
+				if (mNoteName == null)
+					mDatabase.addNote(filepath, mNotebookId, mNotePageNumber);
+				else
+					mDatabase.addNote(mNoteName, filepath, mNotebookId, mNotePageNumber);
+			}
+		}
 	}
 }

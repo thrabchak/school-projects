@@ -82,5 +82,6 @@ public class NotebookGridAdapter extends BaseAdapter {
 	public interface OnNotebookActionClickListener {
 		public void onNotebookDeleteClick(Notebook notebook);
 		public void onNotebookAddNoteClick(Notebook notebook);
+		public void onNotebookClicked(Notebook notebook);
 	}
 }

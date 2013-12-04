@@ -18,13 +18,13 @@
         android:textStyle="italic" />
 
     <GridView
+        android:layoutAnimation="@anim/grid_anim"
         android:id="@+id/notebook_grid_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:columnWidth="280dp"
         android:gravity="center"
         android:horizontalSpacing="18dp"
-        android:numColumns="5"
+        android:numColumns="1"
         android:padding="18dp"
         android:stretchMode="columnWidth"
         android:verticalSpacing="18dp" >

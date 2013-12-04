@@ -2,5 +2,7 @@
 <resources>
     <color name="card_background">#ffffff</color>
     <color name="card_shadow">#cccccc</color>
-    <color name="card_clicked">#3f4bc079</color>
+    <color name="card_clicked">#19000000</color>
+    
+    <color name="button_clicked">#19000000</color>
 </resources>

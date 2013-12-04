@@ -1,13 +1,16 @@
 package com.ctk.notebooks;
 
+import java.io.File;
 import java.util.ArrayList;
 
+import com.ctk.notebooks.Utils.Note;
 import com.ctk.notebooks.Utils.Notebook;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -48,6 +51,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			NOTES_COLUMN_FILEPATH + " text not null, " + 
 			NOTES_COLUMN_PAGE_NUMBER + " integer, " +
 			"primary key(" + NOTES_COLUMN_NOTEBOOK_ID + ", " + NOTES_COLUMN_PAGE_NUMBER + "));";
+	
+	private final static String BBINDERDIRECTORY = Environment.getExternalStorageDirectory() + "/bBinder";
 
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -79,25 +84,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return true;
 	}
 	
-	public boolean deleteNotebook(int notebookId) {
-		String sqlDeleteNotebook = "delete from " + TABLE_NOTEBOOKS + " where " + NOTEBOOKS_COLUMN_ID + "=" + notebookId;
-		
-		String sqlSelectNotes = "select " + NOTES_COLUMN_FILEPATH + " from " + TABLE_NOTES + " where " + NOTES_COLUMN_NOTEBOOK_ID + "=?";
-		Cursor notesToDelete = getReadableDatabase().rawQuery(sqlSelectNotes, new String[]{""+notebookId});
-		String sqlDeleteNotes = "delete from " + TABLE_NOTES + " where " + NOTES_COLUMN_NOTEBOOK_ID + "=" + notebookId;
-		
-		// TODO: Use notesToDelete to iterate over all filenames to delete from filesystem.
-		
-		try {
-			getWritableDatabase().execSQL(sqlDeleteNotebook);
-			getWritableDatabase().execSQL(sqlDeleteNotes);
-		} catch (Exception e) {
-			return false;
-		}
-		
-		return true;
-	}
-	
 	public ArrayList<Notebook> getNotebooks() {
 		ArrayList<Notebook> notebooks = new ArrayList<Notebook>();
 		
@@ -116,37 +102,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		
 		return notebooks;
 	}
-	
-	public boolean addNote(String name, String filepath, int notebookId) {
-		long timestamp = System.currentTimeMillis() / 1000L;
+
+	public boolean deleteNotebook(int notebookId) {
+		String sqlDeleteNotebook = "delete from " + TABLE_NOTEBOOKS + " where " + NOTEBOOKS_COLUMN_ID + "=" + notebookId;
 		
-		String sql = "select " + NOTEBOOKS_COLUMN_NUM_PAGES + " from " + TABLE_NOTEBOOKS + " where " + NOTEBOOKS_COLUMN_ID + "=?";
-		Cursor result = getReadableDatabase().rawQuery(sql, new String[]{""+notebookId});
-		result.moveToFirst();
-		int numPages = result.getInt(result.getColumnIndex(NOTEBOOKS_COLUMN_NUM_PAGES));
+		String sqlSelectNotes = "select " + NOTES_COLUMN_FILEPATH + " from " + TABLE_NOTES + " where " + NOTES_COLUMN_NOTEBOOK_ID + "=?";
+		Cursor notesToDelete = getReadableDatabase().rawQuery(sqlSelectNotes, new String[]{""+notebookId});
+		String sqlDeleteNotes = "delete from " + TABLE_NOTES + " where " + NOTES_COLUMN_NOTEBOOK_ID + "=" + notebookId;
 		
-		String sqlInsertNote = "insert into " + TABLE_NOTES + 
-				" (" + NOTES_COLUMN_NOTEBOOK_ID + "," + 
-					   NOTES_COLUMN_TITLE + "," + 
-					   NOTES_COLUMN_CREATED + "," +
-					   NOTES_COLUMN_MODIFIED + "," +
-					   NOTES_COLUMN_FILEPATH + "," +
-					   NOTES_COLUMN_PAGE_NUMBER + ")" + 
-				" values (" + notebookId + ", '" + name + "', " + timestamp + ", " + timestamp + ", '" + filepath + "', " + (numPages + 1) + ");";
+		File fileToDelete = null;
+		String filename;
+		if (notesToDelete.moveToFirst()) {
+			do {
+				filename = notesToDelete.getString(notesToDelete.getColumnIndex(NOTES_COLUMN_FILEPATH));
+				fileToDelete = new File(BBINDERDIRECTORY + "/" + filename + ".png"); 
+				if (!fileToDelete.delete())
+					Log.d("onDeleteNote", "Note " + filename + ".png failed to delete");
+			} while (notesToDelete.moveToNext());
+		}
 		
 		try {
-			getWritableDatabase().execSQL(sqlInsertNote);
+			getWritableDatabase().execSQL(sqlDeleteNotebook);
+			getWritableDatabase().execSQL(sqlDeleteNotes);
 		} catch (Exception e) {
 			return false;
 		}
 		
 		return true;
 	}
-	  
-	public boolean addNote(String filepath, int notebookId) {
-		return true;
-	}
-  
+	
 	public int getNumNotebooks() {
 		Cursor result = null;
 		int count = -1;
@@ -160,7 +144,88 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		
 		return count;
 	}
- 
+
+	public boolean addNote(String name, String filepath, int notebookId, int pageNumber) {
+		long timestamp = System.currentTimeMillis() / 1000L;
+		
+		String sqlInsertNote = "insert into " + TABLE_NOTES + 
+				" (" + NOTES_COLUMN_NOTEBOOK_ID + "," + 
+					   NOTES_COLUMN_TITLE + "," + 
+					   NOTES_COLUMN_CREATED + "," +
+					   NOTES_COLUMN_MODIFIED + "," +
+					   NOTES_COLUMN_FILEPATH + "," +
+					   NOTES_COLUMN_PAGE_NUMBER + ")" + 
+				" values (" + notebookId + ", '" + name + "', " + timestamp + ", " + timestamp + ", '" + filepath + "', " + pageNumber + ");";
+		
+		String sqlUpdateNotebook = "update " + TABLE_NOTEBOOKS + 
+								   " set " + NOTEBOOKS_COLUMN_NUM_PAGES + "=" + pageNumber + ", " + NOTEBOOKS_COLUMN_MODIFIED + "=" + timestamp +
+								   " where " + NOTEBOOKS_COLUMN_ID + "=" + notebookId;
+		
+		try {
+			getWritableDatabase().execSQL(sqlInsertNote);
+			getWritableDatabase().execSQL(sqlUpdateNotebook);
+		} catch (Exception e) {
+			Log.e("bBinder", e.toString());
+			return false;
+		}
+		
+		return true;
+	}
+	  
+	public boolean addNote(String filepath, int notebookId, int pageNumber) {
+		addNote("Page " + pageNumber, filepath, notebookId, pageNumber);
+		return true;
+	}
+	
+	public boolean doesNoteExist(int notebookId, int pageNumber) {
+		String sql = "select count(*) from " + TABLE_NOTES + " where " + NOTES_COLUMN_PAGE_NUMBER + "=? and " +NOTES_COLUMN_NOTEBOOK_ID + "=?";
+		Cursor result = getReadableDatabase().rawQuery(sql, new String[]{"" + pageNumber, "" + notebookId});
+		result.moveToFirst();
+		
+		return result.getInt(0) == 1;
+	}
+	
+	public boolean updateNote(int notebookId, int pageNumber) {
+		long timestamp = System.currentTimeMillis() / 1000L;
+		
+		String sqlUpdateNote = "update " + TABLE_NOTES +
+							   " set " + NOTES_COLUMN_MODIFIED + "=" + timestamp +
+							   " where " + NOTES_COLUMN_NOTEBOOK_ID + "=" + notebookId + " and " + NOTES_COLUMN_PAGE_NUMBER + "=" + pageNumber;
+		
+		String sqlUpdateNotebook = "update " + TABLE_NOTEBOOKS + 
+				   " set " + NOTEBOOKS_COLUMN_MODIFIED + "=" + timestamp +
+				   " where " + NOTEBOOKS_COLUMN_ID + "=" + notebookId;
+
+		try {
+			getWritableDatabase().execSQL(sqlUpdateNote);
+			getWritableDatabase().execSQL(sqlUpdateNotebook);
+		} catch (Exception e) {
+			Log.e("bBinder", e.toString());
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public ArrayList<Note> getNotes(int notebookId) {
+		ArrayList<Note> notes = new ArrayList<Note>();
+		
+		Cursor result = getReadableDatabase().query(TABLE_NOTES, null, null, null, null, null, null);
+		
+		if (result.moveToFirst()) {
+			do {
+				notes.add(new Note(result.getString(result.getColumnIndex(NOTES_COLUMN_TITLE)), 
+								   result.getInt(result.getColumnIndex(NOTES_COLUMN_NOTEBOOK_ID)), 
+								   result.getInt(result.getColumnIndex(NOTES_COLUMN_PAGE_NUMBER)), 
+								   result.getLong(result.getColumnIndex(NOTES_COLUMN_CREATED)), 
+								   result.getLong(result.getColumnIndex(NOTES_COLUMN_MODIFIED)), 
+								   result.getString(result.getColumnIndex(NOTES_COLUMN_FILEPATH))));
+			} while (result.moveToNext());
+		}
+		
+		return notes;
+	}
+	
 	public void closeDB() {
 		SQLiteDatabase db = getReadableDatabase();
 		if (db != null && db.isOpen())

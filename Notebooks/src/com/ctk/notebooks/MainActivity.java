@@ -46,9 +46,19 @@ public class MainActivity extends FragmentActivity {
 			
 			@Override
 			public void onNotebookAddNoteClick(Notebook notebook) {
-				if (mDatabase.addNote("", "", notebook.id)) {
-					Toast.makeText(mContext, "it worked", Toast.LENGTH_SHORT).show();
-				}
+				Intent i = new Intent(mContext, NoteActivity.class);
+				i.putExtra("notebook_id", notebook.id)
+				 .putExtra("notebook_name", notebook.name)
+				 .putExtra("note_page_number", notebook.numPages + 1);
+				startActivity(i);
+			}
+
+			@Override
+			public void onNotebookClicked(Notebook notebook) {
+				Intent i = new Intent(mContext, NotebookNotesActivity.class);
+				i.putExtra("notebook_id", notebook.id)
+				 .putExtra("notebook_name", notebook.name);
+				startActivity(i);
 			}
 		};
 

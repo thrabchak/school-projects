@@ -63,6 +63,14 @@ public class NotebookCard {
 				mActionListener.onNotebookAddNoteClick(mNotebook);
 			}
 		});
+		
+		mLayout.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mActionListener.onNotebookClicked(mNotebook);
+			}
+		});
 	}
 	
 	private void setLastModified() {
