@@ -2,13 +2,13 @@
 <resources>
 
     <string name="app_name">bBinder</string>
-    
     <string name="action_settings">Settings</string>
     <string name="action_new_note">Create New Note</string>
     <string name="action_new_notebook">Create New Notebook</string>
-    
     <string name="activity_new_note">New Note</string>
-    
     <string name="string_no_notebooks">You have no notebooks. Click above to create one.</string>
+    <string name="toolbox_name">Toolbox</string>
+    <string name="toolbox_color">Color</string>
+    <string name="toolbox_size">Size</string>
 
 </resources>
