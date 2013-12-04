@@ -16,8 +16,7 @@
 	  	    <LinearLayout 
 		        android:layout_width="match_parent"
 		 		android:layout_height="wrap_content"
-		 		android:orientation="vertical" 
-		 		>
+		 		android:orientation="vertical">
 			   	<com.ctk.notebooks.NoteView
 			        android:id="@+id/note_view"
 			        android:layout_width="match_parent"
@@ -25,91 +24,97 @@
 			   	</com.ctk.notebooks.NoteView>
 	  		</LinearLayout>
 	 	</com.ctk.notebooks.Utils.LockableScrollView>
-	 </FrameLayout>   
+	</FrameLayout>   
     
     <!-- The navigation drawer -->
-    <LinearLayout android:id="@+id/toolbar"
-        android:layout_width="wrap_content"
+	<ScrollView
+	    android:id="@+id/toolbar"
+	    android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:layout_gravity="end"
-        android:background="#fff">
-	  	<LinearLayout 
-	  	    android:layout_width="wrap_content"
-	  	    android:layout_height="wrap_content"
-	  	    android:orientation="vertical"
-        	android:padding="12dp">
-		  	<TextView
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="Toolbox"
-		        android:fontFamily="sans-serif-bold"
-		        android:textSize="22sp"
-		        android:textColor="#33B5E5"/>
-		</LinearLayout>
-		<View
+        android:orientation="vertical">
+	    <LinearLayout 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical"
+	        android:background="#fff"
+	        android:isScrollContainer="true">
+	  	    <!-- Toolbar Header -->
+		  	<LinearLayout 
+		  	    android:layout_width="wrap_content"
+		  	    android:layout_height="wrap_content"
+		  	    android:orientation="vertical"
+	        	android:padding="12dp">
+			  	<TextView
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="@string/toolbox_name"
+			        android:fontFamily="sans-serif-bold"
+			        android:textSize="22sp"
+			        android:textColor="#33B5E5"/>
+			</LinearLayout>
+			<View
 			    android:layout_width="match_parent"
 			    android:layout_height="2dp"
 			    android:background="#0099CC"/>
-		<LinearLayout
-			android:layout_width="match_parent"
-	  	    android:layout_height="wrap_content"
-	  	    android:orientation="vertical"
-        	android:padding="12dp"
-        	android:gravity="center_horizontal">
-		  	<TextView
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="Color"
-		        android:fontFamily="sans-serif-medium"
-		        android:textSize="18sp"
-		        android:padding="8dp"/>
-		  	<com.ctk.notebooks.Utils.ColorPickerSwatch
-		        android:id="@+id/swatch_1"
-		        android:layout_margin="4dp"
-		        android:layout_width="50dp"
-		        android:layout_height="50dp"/>
-		    <com.ctk.notebooks.Utils.ColorPickerSwatch
-		        android:id="@+id/swatch_2"
-		        android:layout_margin="4dp"
-		        android:layout_width="50dp"
-		        android:layout_height="50dp"/>
-		    <com.ctk.notebooks.Utils.ColorPickerSwatch
-		        android:id="@+id/swatch_3"
-		        android:layout_margin="4dp"
-		        android:layout_width="50dp"
-		        android:layout_height="50dp"/>
-		    <com.ctk.notebooks.Utils.ColorPickerSwatch
-		        android:id="@+id/swatch_4"
-		        android:layout_margin="4dp"
-		        android:layout_width="50dp"
-		        android:layout_height="50dp"/>
-		    <com.ctk.notebooks.Utils.ColorPickerSwatch
-		        android:id="@+id/swatch_5"
-		        android:layout_margin="4dp"
-		        android:layout_width="50dp"
-		        android:layout_height="50dp"/>
-		    <com.ctk.notebooks.Utils.ColorPickerSwatch
-		        android:id="@+id/swatch_6"
-		        android:layout_margin="4dp"
-		        android:layout_width="50dp"
-		        android:layout_height="50dp"/>
-		    <TextView
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:text="Size"
-		        android:fontFamily="sans-serif-medium"
-		        android:textSize="18sp"
-		        android:padding="8dp"/>
-		    <Spinner
-			    android:id="@+id/pen_size_spinner"
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content" />
-        </LinearLayout>
-        
-		
-	</LinearLayout>
-	
+			<!-- Toolbar Contents -->
+			<LinearLayout
+				android:layout_width="match_parent"
+		  	    android:layout_height="wrap_content"
+		  	    android:orientation="vertical"
+	        	android:padding="12dp"
+	        	android:gravity="center_horizontal">
+			  	<TextView
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="@string/toolbox_color"
+			        android:fontFamily="sans-serif-medium"
+			        android:textSize="18sp"
+			        android:padding="8dp"/>
+			  	<com.ctk.notebooks.Utils.ColorPickerSwatch
+			        android:id="@+id/swatch_1"
+			        android:layout_margin="4dp"
+			        android:layout_width="50dp"
+			        android:layout_height="50dp"/>
+			    <com.ctk.notebooks.Utils.ColorPickerSwatch
+			        android:id="@+id/swatch_2"
+			        android:layout_margin="4dp"
+			        android:layout_width="50dp"
+			        android:layout_height="50dp"/>
+			    <com.ctk.notebooks.Utils.ColorPickerSwatch
+			        android:id="@+id/swatch_3"
+			        android:layout_margin="4dp"
+			        android:layout_width="50dp"
+			        android:layout_height="50dp"/>
+			    <com.ctk.notebooks.Utils.ColorPickerSwatch
+			        android:id="@+id/swatch_4"
+			        android:layout_margin="4dp"
+			        android:layout_width="50dp"
+			        android:layout_height="50dp"/>
+			    <com.ctk.notebooks.Utils.ColorPickerSwatch
+			        android:id="@+id/swatch_5"
+			        android:layout_margin="4dp"
+			        android:layout_width="50dp"
+			        android:layout_height="50dp"/>
+			    <com.ctk.notebooks.Utils.ColorPickerSwatch
+			        android:id="@+id/swatch_6"
+			        android:layout_margin="4dp"
+			        android:layout_width="50dp"
+			        android:layout_height="50dp"/>
+			    <TextView
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="@string/toolbox_size"
+			        android:fontFamily="sans-serif-medium"
+			        android:textSize="18sp"
+			        android:padding="8dp"/>
+			    <Spinner
+				    android:id="@+id/pen_size_spinner"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content" />
+	        </LinearLayout>
+		</LinearLayout>
+	</ScrollView>
 </android.support.v4.widget.DrawerLayout>
 
 

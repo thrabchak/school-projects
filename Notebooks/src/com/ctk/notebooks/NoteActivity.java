@@ -232,7 +232,7 @@ public class NoteActivity extends Activity {
 		@Override
 		protected void onPostExecute(Void result) {
 			Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-			Document doc = convertToPDF(name);
+			// can we get rid of this?-- Document doc = convertToPDF(name);
 			emailIntent.setType("plain/text");
 			Uri uri = Uri.fromFile(new File(BBINDERDIRECTORY + "/" + name
 					+ ".pdf"));
