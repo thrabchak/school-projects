@@ -10,6 +10,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -37,7 +38,7 @@ public class NoteView extends View {
 	private float			mPaintWidth			= 0;
 	private final String	fileName			= "test1";
 	private boolean			mIsDrawingLocked	= false;
-	private boolean 		mIsLinedPaper		= true;
+	private boolean 		mIsLinedPaper		= false;
 
 	public NoteView(Context context) {
 		super(context);
@@ -61,6 +62,7 @@ public class NoteView extends View {
 		
 		mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 		mPath = new Path();
+		mBitmap=null;
 		if(mIsLinedPaper){
 			createLinedBackground();
 		}
@@ -75,36 +77,58 @@ public class NoteView extends View {
 	}
 	
 	public void createBlankBackground(){
-		Toast.makeText(getContext(), "blank", Toast.LENGTH_SHORT).show();
-		mBitmap = Bitmap.createScaledBitmap(mBitmap, mCanvas.getWidth(),mCanvas.getHeight(), false);
-		mCanvas = new Canvas(mBitmap);
-		mLayers=null;
-		Drawable drawable =new BitmapDrawable (getResources(),mBitmap);
+		Resources res = getContext().getResources();
+		myImage = res.getDrawable(R.drawable.blank);
+		Drawable[] layers = new Drawable[2];
+		layers[0]=myImage;
+		Drawable drawable = null;
+		if(mBitmap==null){
+			mBitmap = Bitmap.createBitmap(44,55, Bitmap.Config.ARGB_8888);
+			mCanvas = new Canvas(mBitmap);
+			layers[1]=new BitmapDrawable (getResources(),mBitmap);		
+			mLayers = new LayerDrawable(layers);			
+			drawable = mLayers.mutate();			
+			mBitmap = Bitmap.createBitmap(mLayers.getIntrinsicWidth(),mLayers.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
+		}else{		
+			layers[1]=new BitmapDrawable (getResources(),mBitmap);
+			mLayers = new LayerDrawable(layers);
+			drawable = mLayers.mutate();
+		
+		}
 		drawable.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
 		drawable.draw(mCanvas);
 	}
 	
 	public void createLinedBackground(){
-		LinedDrawable d = new LinedDrawable();
-		Canvas c = new Canvas();
-		d.draw(c);
-		Drawable q = (Drawable) d;
+		
 		Resources res = getContext().getResources();
-		myImage = res.getDrawable(R.drawable.linedbackground);
+		myImage = res.getDrawable(R.drawable.mylines);
 		Drawable[] layers = new Drawable[2];
-		layers[1]=myImage;
-		mBitmap = Bitmap.createBitmap(44,75, Bitmap.Config.ARGB_8888);
+		layers[0]=myImage;
+		Drawable drawable;
+		if(mBitmap==null){
+			mBitmap = Bitmap.createBitmap(44,55, Bitmap.Config.ARGB_8888);
+			mCanvas = new Canvas(mBitmap);
+			layers[1]=new BitmapDrawable (getResources(),mBitmap);			
+			mLayers = new LayerDrawable(layers);			
+			drawable = mLayers.mutate();			
+			mBitmap = Bitmap.createBitmap(mLayers.getIntrinsicWidth(),mLayers.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
+			drawable.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
+			drawable.draw(mCanvas);
+		}else{		
+			layers[1]=new BitmapDrawable (getResources(),mBitmap);
+			mLayers = new LayerDrawable(layers);
+			layers[1].draw(mCanvas);
+			drawable = mLayers.mutate();
+			drawable.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
+			drawable.draw(mCanvas);
+			if(mBitmap == null)
+				Toast.makeText(getContext(), "oh", Toast.LENGTH_SHORT).show();
+			mCanvas.drawBitmap(mBitmap, 0, 0, mPaint);
+			
+			
 		
-		layers[0]=new BitmapDrawable (getResources(),mBitmap);
-		
-		mLayers = new LayerDrawable(layers);
-		
-		Drawable drawable = mLayers.mutate();
-		mBitmap = Bitmap.createBitmap(mLayers.getIntrinsicWidth(),mLayers.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
-		mCanvas = new Canvas(mBitmap);
-		drawable.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
-		drawable.draw(mCanvas);
-		mLayers.draw(mCanvas);
+		}
 		
 	}
 

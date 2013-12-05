@@ -138,7 +138,6 @@ public class NoteActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(Menu.NONE, 1234567, Menu.NONE, "Scroll");
 		menu.add(Menu.NONE, 2468101, Menu.NONE, "Email PDF");
 		menu.add(Menu.NONE, 1234568, Menu.NONE, "Save");
 		menu.add(Menu.NONE, 1234, Menu.NONE, "Toolbar");
@@ -156,16 +155,6 @@ public class NoteActivity extends Activity {
 			// to return us to this Activity's parent.
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
-
-		case 1234567:
-			if (mScrollView.isScrollLocked()) {
-				mScrollView.setScrollingLocked(false);
-				mNoteView.setDrawingLocked(true);
-			} else {
-				mScrollView.setScrollingLocked(true);
-				mNoteView.setDrawingLocked(false);
-			}
-			return true;
 		case 2468101:
 			email("test1");
 			return true;
@@ -176,6 +165,7 @@ public class NoteActivity extends Activity {
 			mDrawerLayout.openDrawer(Gravity.END);
 			return true;
 		case 4:
+			
 			mNoteView.setmIsLinedPaper();
 		}
 		return super.onOptionsItemSelected(item);
