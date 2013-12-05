@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -26,10 +27,12 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.ctk.notebooks.Utils.ColorPickerSwatch;
 import com.ctk.notebooks.Utils.ColorPickerSwatch.OnColorSelectedListener;
 import com.ctk.notebooks.Utils.LockableScrollView;
+import com.ctk.notebooks.Utils.RandomStringGenerator;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
@@ -37,15 +40,22 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 public class NoteActivity extends Activity {
 
-	private final static String	BBINDERDIRECTORY	= Environment
-															.getExternalStorageDirectory()
-															+ "/bBinder";
-	final int					NUM_SWATCHES		= 6;
-
-	private ActionBar			mActionBar;
-	private NoteView			mNoteView;
-	private LockableScrollView	mScrollView;
-	private DrawerLayout		mDrawerLayout;
+	private final static String BBINDERDIRECTORY = Environment.getExternalStorageDirectory() + "/bBinder";
+	
+	private ActionBar 				mActionBar;
+	private NoteView 				mNoteView;
+	private LockableScrollView		mScrollView;
+	private boolean					mIsInNotebook = false;
+	private String					mNotebookName;
+	private int						mNotebookId;
+	private int						mNotePageNumber;
+	private DrawerLayout 			mDrawerLayout;
+	private DatabaseHelper			mDatabase;
+	private String					mNoteName = null;
+	private String					mFileName;
+	private RandomStringGenerator	mRandomStringGenerator;
+	private Context					mContext;
+	private final int					NUM_SWATCHES		= 6;
 	private int					mSelectedColor;
 	private final int			mSwatchColors[]		= { 0xff000000, 0xff33b5e5,
 			0xffaa66cc, 0xffff4444, 0xffffbb33, 0xff99cc00 };
@@ -61,22 +71,39 @@ public class NoteActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_note);
+		
+		mContext = this;
+		
 		mNoteView = (NoteView) findViewById(R.id.note_view);
 		mScrollView = (LockableScrollView) findViewById(R.id.note_scroll_view);
-
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.toolbar_drawer);
-
-		if (getIntent().hasExtra("is_open_note")
-				&& getIntent().getExtras().getBoolean("is_open_note", false)) {
-			String filename = getIntent().getExtras().getString("filename");
-			mNoteView.setBitmap(openFile(filename));
-		}
-
 		mActionBar = getActionBar();
 		mActionBar.setDisplayHomeAsUpEnabled(true);
-
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.toolbar_drawer);
+		
+		mDatabase = new DatabaseHelper(this);
+		mRandomStringGenerator = new RandomStringGenerator(16);
+		
+		if (getIntent().hasExtra("is_open_note") && getIntent().getExtras().getBoolean("is_open_note", false)) {
+			mFileName = getIntent().getExtras().getString("filename");
+			mNoteView.setBitmap(openFile(mFileName));
+		} else {
+			mFileName = mRandomStringGenerator.nextString();
+		}
+		
+		if (getIntent().hasExtra("notebook_name") && getIntent().hasExtra("notebook_id") && getIntent().hasExtra("note_page_number")) {
+			mIsInNotebook = true;
+			mNotebookName = getIntent().getExtras().getString("notebook_name", "NULL");
+			mNotebookId = getIntent().getExtras().getInt("notebook_id", -1);
+			mNotePageNumber = getIntent().getExtras().getInt("note_page_number", -1);
+			mActionBar.setTitle("Page " + mNotePageNumber);
+			mActionBar.setSubtitle("in " + mNotebookName);
+		}
+		
+		Toast.makeText(this, "" + mNotePageNumber, Toast.LENGTH_LONG).show();
+		
 		mNoteView.setPaintColor(0xFF000000);
-
+		mNoteView.setPaintWidth(16);
+		
 		mScrollView.setScrollingLocked(true);
 		mNoteView.setDrawingLocked(false);
 
@@ -147,35 +174,36 @@ public class NoteActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			saveFile(mNoteView.getFileName());
-
-			// On the ActionBar Up button pressed, allow the OS
-			// to return us to this Activity's parent.
-			NavUtils.navigateUpFromSameTask(this);
-			return true;
-
-		case 1234567:
-			if (mScrollView.isScrollLocked()) {
-				mScrollView.setScrollingLocked(false);
-				mNoteView.setDrawingLocked(true);
-			} else {
-				mScrollView.setScrollingLocked(true);
-				mNoteView.setDrawingLocked(false);
-			}
-			return true;
-		case 2468101:
-			email("test1");
-			return true;
-		case 1234568:
-			saveFile("test1");
-			return true;
-		case 1234:
-			mDrawerLayout.openDrawer(Gravity.END);
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
+	    switch (item.getItemId()) {
+	    case android.R.id.home:
+	    	//saveFile(mNoteView.getFileName());
+	    	
+	    	// On the ActionBar Up button pressed, allow the OS
+	    	// to return us to this Activity's parent.
+	        NavUtils.navigateUpFromSameTask(this);
+	        return true;
+	        
+	    case 1234567:
+	    	if (mScrollView.isScrollLocked()) {
+	    		mScrollView.setScrollingLocked(false);
+	    		mNoteView.setDrawingLocked(true);
+	    	}
+	    	else {
+	    		mScrollView.setScrollingLocked(true);
+	    		mNoteView.setDrawingLocked(false);
+	    	}
+	    	return true;
+	    case 2468101:
+	    	email("test1");
+	    	return true;
+	    case 1234568:
+	    	saveFile();
+	    	return true;
+	    case 1234:
+	    	mDrawerLayout.openDrawer(Gravity.END);
+	    	return true;
+	    }
+	    return super.onOptionsItemSelected(item);
 	}
 
 	/**
@@ -186,8 +214,8 @@ public class NoteActivity extends Activity {
 	 * @return <code>true</code> if the file was saved without an error,
 	 *         <code>false</code> otherwise.
 	 */
-	public void saveFile(String fileName) {
-		new SaveNote().execute(fileName);
+	public void saveFile() {
+		new SaveNote().execute(mFileName);
 	}
 
 	/**
@@ -207,7 +235,7 @@ public class NoteActivity extends Activity {
 
 	@Override
 	protected void onStop() {
-		saveFile(mNoteView.getFileName());
+		//saveFile(mNoteView.getFileName());
 		super.onStop();
 	}
 
@@ -216,7 +244,7 @@ public class NoteActivity extends Activity {
 	}
 
 	public class EmailNote extends AsyncTask<String, Void, Void> {
-		String			name;
+		String name;
 		ProgressDialog	pd;
 
 		@Override
@@ -249,6 +277,7 @@ public class NoteActivity extends Activity {
 		@Override
 		protected Void doInBackground(String... params) {
 			name = params[0];
+			
 			try {
 				File bBinderDirectory = new File(BBINDERDIRECTORY);
 				bBinderDirectory.mkdir();
@@ -261,9 +290,10 @@ public class NoteActivity extends Activity {
 				Log.e("ckt", "Save file error");
 				e.printStackTrace();
 			}
+			
 			return null;
 		}
-
+		
 		public Document convertToPDF(String filename) {
 			Document d = new Document();
 			try {
@@ -289,14 +319,18 @@ public class NoteActivity extends Activity {
 
 	public class SaveNote extends AsyncTask<String, Void, Void> {
 
+		String filepath;
+		
 		@Override
 		protected Void doInBackground(String... strings) {
+			filepath = strings[0];
+			
 			try {
 				File bBinderDirectory = new File(BBINDERDIRECTORY);
 				bBinderDirectory.mkdir();
+				
+				FileOutputStream stream = new FileOutputStream(new File(bBinderDirectory, "/" + filepath + ".png"));
 
-				FileOutputStream stream = new FileOutputStream(new File(
-						bBinderDirectory, "/" + strings[0] + ".png"));
 				mNoteView.getBitmap().compress(CompressFormat.PNG, 80, stream);
 				stream.close();
 			} catch (IOException e) {
@@ -306,5 +340,19 @@ public class NoteActivity extends Activity {
 			return null;
 		}
 
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			if (mDatabase.doesNoteExist(mNotebookId, mNotePageNumber)) {
+				mDatabase.updateNote(mNotebookId, mNotePageNumber);
+				Toast.makeText(mContext, "updated", Toast.LENGTH_LONG).show();
+			} else {
+				Toast.makeText(mContext, "added", Toast.LENGTH_LONG).show();
+				if (mNoteName == null)
+					mDatabase.addNote(filepath, mNotebookId, mNotePageNumber);
+				else
+					mDatabase.addNote(mNoteName, filepath, mNotebookId, mNotePageNumber);
+			}
+		}
 	}
 }

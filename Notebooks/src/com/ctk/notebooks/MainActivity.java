@@ -40,42 +40,32 @@ public class MainActivity extends FragmentActivity {
         mStandardListener = new OnNotebookActionClickListener() {
 			
 			@Override
-			public void onNotebookDeleteClick(final Notebook notebook) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-				builder.setTitle("Delete notebook " + notebook.name + "?")
-					   .setMessage("This action will delete this notebook, including all of the notes "
-					   			   + "you have created within it. You cannot undo this action. Are you sure "
-					   			   + "you want to delete this notebook?")
-					   .setPositiveButton("Cancel", new OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.dismiss();
-						}
-					   })
-					   
-					   .setNegativeButton("Delete", new OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							mDatabase.deleteNotebook(notebook.id);
-							mNotebookGridAdapter.removeNotebook(notebook.id);
-							if (mNotebookGridAdapter.getCount() == 0) mTvNoNotebooks.setVisibility(View.VISIBLE);
-						}
-					});
-				builder.show();
+			public void onNotebookDeleteClick(Notebook notebook) {
+				showConfirmDeleteDialog(notebook);
 			}
 			
 			@Override
 			public void onNotebookAddNoteClick(Notebook notebook) {
-				Toast.makeText(mContext, "added note to notebook: " + notebook.name, Toast.LENGTH_SHORT).show();				
+				Intent i = new Intent(mContext, NoteActivity.class);
+				i.putExtra("notebook_id", notebook.id)
+				 .putExtra("notebook_name", notebook.name)
+				 .putExtra("note_page_number", notebook.numPages + 1);
+				startActivity(i);
+			}
+
+			@Override
+			public void onNotebookClicked(Notebook notebook) {
+				Intent i = new Intent(mContext, NotebookNotesActivity.class);
+				i.putExtra("notebook_id", notebook.id)
+				 .putExtra("notebook_name", notebook.name);
+				startActivity(i);
 			}
 		};
 
 		loadNotebooks();
 		mNotebookGrid.setAdapter(mNotebookGridAdapter);
     }
-
+    
     private void loadNotebooks() {
     	mNotebookGridAdapter.empty();
     	for (Notebook notebook : mDatabase.getNotebooks())
@@ -113,5 +103,31 @@ public class MainActivity extends FragmentActivity {
 		}
 		
 		return false;
+	}
+
+	private void showConfirmDeleteDialog(final Notebook notebook) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+		builder.setTitle("Delete notebook " + notebook.name + "?")
+			   .setMessage("This action will delete this notebook, including all of the notes "
+			   			   + "you have created within it. You cannot undo this action. Are you sure "
+			   			   + "you want to delete this notebook?")
+			   .setPositiveButton("Cancel", new OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			   })
+			   
+			   .setNegativeButton("Delete", new OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					mDatabase.deleteNotebook(notebook.id);
+					mNotebookGridAdapter.removeNotebook(notebook.id);
+					if (mNotebookGridAdapter.getCount() == 0) mTvNoNotebooks.setVisibility(View.VISIBLE);
+				}
+			});
+		builder.show();
 	}
 }

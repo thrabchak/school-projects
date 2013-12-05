@@ -44,7 +44,7 @@ public class NotebookCard {
 		setLastModified();
 		
 		mTvNotebookPages = (TextView) mLayout.findViewById(R.id.tv_card_notebook_number_of_pages);
-		setNumberOfPages();
+		mTvNotebookPages.setText(mNotebook.numPages + " pages");
 		
 		mDeleteButton = mLayout.findViewById(R.id.card_notebook_delete);
 		mDeleteButton.setOnClickListener(new OnClickListener() {
@@ -61,6 +61,14 @@ public class NotebookCard {
 			@Override
 			public void onClick(View v) {
 				mActionListener.onNotebookAddNoteClick(mNotebook);
+			}
+		});
+		
+		mLayout.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mActionListener.onNotebookClicked(mNotebook);
 			}
 		});
 	}
@@ -98,11 +106,6 @@ public class NotebookCard {
 		}
 		
 		mTvNotebookModified.setText(modified);
-	}
-	
-	private void setNumberOfPages() {
-		DatabaseHelper database = new DatabaseHelper(mContext);
-		mTvNotebookPages.setText(database.getPagesInNotebook(mNotebook.id) + " pages");
 	}
 	
 	@SuppressWarnings("deprecation")

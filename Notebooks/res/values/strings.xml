@@ -7,6 +7,7 @@
     <string name="action_new_notebook">Create New Notebook</string>
     <string name="activity_new_note">New Note</string>
     <string name="string_no_notebooks">You have no notebooks. Click above to create one.</string>
+    <string name="string_no_notes">You have no notes in this notebook. Click above to create one.</string>
     <string name="toolbox_name">Toolbox</string>
     <string name="toolbox_color">Color</string>
     <string name="toolbox_size">Size</string>
