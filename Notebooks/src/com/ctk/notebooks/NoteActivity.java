@@ -165,45 +165,38 @@ public class NoteActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(Menu.NONE, 1234567, Menu.NONE, "Scroll");
 		menu.add(Menu.NONE, 2468101, Menu.NONE, "Email PDF");
 		menu.add(Menu.NONE, 1234568, Menu.NONE, "Save");
 		menu.add(Menu.NONE, 1234, Menu.NONE, "Toolbar");
+		menu.add(Menu.NONE, 4,Menu.NONE,"Lined Paper");
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    switch (item.getItemId()) {
-	    case android.R.id.home:
-	    	//saveFile(mNoteView.getFileName());
-	    	
-	    	// On the ActionBar Up button pressed, allow the OS
-	    	// to return us to this Activity's parent.
-	        NavUtils.navigateUpFromSameTask(this);
-	        return true;
-	        
-	    case 1234567:
-	    	if (mScrollView.isScrollLocked()) {
-	    		mScrollView.setScrollingLocked(false);
-	    		mNoteView.setDrawingLocked(true);
-	    	}
-	    	else {
-	    		mScrollView.setScrollingLocked(true);
-	    		mNoteView.setDrawingLocked(false);
-	    	}
-	    	return true;
-	    case 2468101:
-	    	email("test1");
-	    	return true;
-	    case 1234568:
-	    	saveFile();
-	    	return true;
-	    case 1234:
-	    	mDrawerLayout.openDrawer(Gravity.END);
-	    	return true;
-	    }
-	    return super.onOptionsItemSelected(item);
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			saveFile();
+
+			// On the ActionBar Up button pressed, allow the OS
+			// to return us to this Activity's parent.
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
+		case 2468101:
+			//TODO email useful file name
+			email("test");
+			return true;
+		case 1234568:
+			saveFile();
+			return true;
+		case 1234:
+			mDrawerLayout.openDrawer(Gravity.END);
+			return true;
+		case 4:
+			
+			mNoteView.setmIsLinedPaper();
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	/**
