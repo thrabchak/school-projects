@@ -66,7 +66,7 @@ public class NoteActivity extends Activity {
 			R.id.swatch_2, R.id.swatch_3, R.id.swatch_4, R.id.swatch_5,
 			R.id.swatch_6, R.id.swatch_7				};
 	private Spinner					mStrokeWidthSpinner;
-	private int						mDefaultStrokeSize;
+	private int						mStrokeSize;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +113,7 @@ public class NoteActivity extends Activity {
 		mScrollView.setScrollingLocked(true);
 
 		mSelectedColor = 0;
-		mDefaultStrokeSize = 5;
+		mStrokeSize = 5;
 		initSwatches();
 		initStrokeWidthSpinner();
 	}
@@ -132,6 +132,7 @@ public class NoteActivity extends Activity {
 							mSelectedColor = color;
 							mNoteView.setPaintColor(color);
 							mNoteView.setEraser(false);
+							mNoteView.setPaintWidth(mStrokeSize);
 
 							mSwatches[temp].setChecked(true);
 							for (int j = 0; j < NUM_SWATCHES; j++) {
@@ -150,6 +151,7 @@ public class NoteActivity extends Activity {
 				mSelectedColor = color;
 				mNoteView.setPaintColor(color);
 				mNoteView.setEraser(true);
+				mNoteView.setPaintWidth(mStrokeSize*10);
 
 				mSwatches[6].setChecked(true);
 				for (int j = 0; j < NUM_SWATCHES; j++) {
@@ -169,7 +171,7 @@ public class NoteActivity extends Activity {
 				android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mStrokeWidthSpinner.setAdapter(adapter);
-		mStrokeWidthSpinner.setSelection(mDefaultStrokeSize, false);
+		mStrokeWidthSpinner.setSelection(mStrokeSize, false);
 		mStrokeWidthSpinner
 				.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -184,7 +186,7 @@ public class NoteActivity extends Activity {
 						// Nothing - needed by default
 					}
 				});
-		mNoteView.setPaintWidth(mDefaultStrokeSize);
+		mNoteView.setPaintWidth(mStrokeSize);
 	}
 
 	@Override

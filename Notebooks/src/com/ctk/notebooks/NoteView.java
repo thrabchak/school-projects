@@ -152,6 +152,8 @@ public class NoteView extends View {
 	 * @return The current NoteView, to allow for method chaining.
 	 */
 	public NoteView setPaintWidth(float width) {
+		if(isEraserSelected)
+			mPaintWidth = width * 10;
 		mPaintWidth = width;
 		mPaint.setStrokeWidth(mPaintWidth);
 		return this;
@@ -237,7 +239,6 @@ public class NoteView extends View {
 			mPath.reset();
 			invalidate();
 			return true;
-
 		}
 		return true;
 	}
