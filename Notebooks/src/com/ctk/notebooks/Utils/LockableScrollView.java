@@ -6,13 +6,13 @@ import android.view.MotionEvent;
 import android.widget.ScrollView;
 
 public class LockableScrollView extends ScrollView {
-	
-	private boolean mIsScrollLocked = false;
 
-    public LockableScrollView(Context context) {
+	private boolean	mIsScrollLocked	= false;
+
+	public LockableScrollView(Context context) {
 		super(context);
 	}
-    
+
 	public LockableScrollView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
@@ -23,38 +23,65 @@ public class LockableScrollView extends ScrollView {
 
 	/**
 	 * Toggle whether the <code>LockableScrollView</code> can be scrolled.
-	 * @param isScrollLocked	Pass <code>true</code> if scrolling should be locked,
-	 * 							<code>false</code> otherwise.
+	 * 
+	 * @param isScrollLocked
+	 *            Pass <code>true</code> if scrolling should be locked,
+	 *            <code>false</code> otherwise.
 	 */
-    public void setScrollingLocked(boolean isScrollLocked) {
-        mIsScrollLocked = isScrollLocked;
-    }
+	public void setScrollingLocked(boolean isScrollLocked) {
+		mIsScrollLocked = isScrollLocked;
+	}
 
-    /**
-     * @return	<code>true</code> if the <code>LockableScrollView</code> is scrollable,
-     * 			<code>false</code> otherwise.
-     */
-    public boolean isScrollLocked() {
-        return mIsScrollLocked;
-    }
+	/**
+	 * @return <code>true</code> if the <code>LockableScrollView</code> is
+	 *         scrollable, <code>false</code> otherwise.
+	 */
+	public boolean isScrollLocked() {
+		return mIsScrollLocked;
+	}
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        
-		// Checks if scrolling is enabled before passing the touch event
-		// up to the superclass; if scrolling is enabled, allow the superclass
-		// to enact its scroll method, if not return false.
-	    if (!mIsScrollLocked) 
-	    	return super.onTouchEvent(event);
-	    else
-	    	return true;
-    }
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		if (mY == -1)
+			mY = event.getAxisValue(MotionEvent.AXIS_Y);
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent event) {
-        if (!mIsScrollLocked) 
-        	return super.onInterceptTouchEvent(event);
-        else 
-        	return false;
-    }
+		switch (event.getAction() & MotionEvent.ACTION_MASK) {
+		case MotionEvent.ACTION_MOVE:
+			float new_y = event.getAxisValue(MotionEvent.AXIS_Y);
+			// Log.d("ckt", "old: " + mY + " new: " + new_y + " scrollBy: "
+			// + (int) (new_y - mY));
+			smoothScrollBy(0, (int) (mY - new_y));
+			mY = event.getAxisValue(MotionEvent.AXIS_Y);
+			break;
+		case MotionEvent.ACTION_POINTER_UP:
+			twoFingersDown = false;
+			break;
+		default:
+			break;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean onInterceptTouchEvent(MotionEvent event) {
+		switch (event.getAction() & MotionEvent.ACTION_MASK) {
+		case MotionEvent.ACTION_POINTER_DOWN:
+			twoFingersDown = true;
+			return true;
+		case MotionEvent.ACTION_MOVE:
+			if (twoFingersDown)
+				return true;
+			else
+				return false;
+		case MotionEvent.ACTION_POINTER_UP:
+			twoFingersDown = false;
+			mY = -1;
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	private float	mY				= -1;
+	private boolean	twoFingersDown	= false;
 }
