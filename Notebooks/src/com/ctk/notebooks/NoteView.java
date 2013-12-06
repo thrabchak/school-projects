@@ -1,19 +1,14 @@
 package com.ctk.notebooks;
 
-import com.ctk.notebooks.Utils.LockableScrollView;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.NinePatchDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,21 +20,21 @@ import android.widget.Toast;
  */
 public class NoteView extends View {
 
-	private LayerDrawable 	mLayers;
-	private Drawable		myImage;
-	private Canvas			mCanvas;
-	private float			mX, mY;
-	private Path			mPath;
-	private Bitmap			mBitmap;
-	private Paint			mBitmapPaint;
-	private Paint			mPaint;
-	private int				mPaintColor			= 0xFF000000;
-	private float			mPaintWidth			= 0;
-	private final String	fileName			= "test1";
-	private boolean			mIsDrawingLocked	= false;
-	private boolean 		mIsLinedPaper		= false;
-	private Drawable[]		layers 				= new Drawable[2];
-	private Drawable		drawable			= null;
+	private LayerDrawable		mLayers;
+	private Drawable			myImage;
+	private Canvas				mCanvas;
+	private float				mX, mY;
+	private Path				mPath;
+	private Bitmap				mBitmap;
+	private Paint				mBitmapPaint;
+	private Paint				mPaint;
+	private int					mPaintColor			= 0xFF000000;
+	private float				mPaintWidth			= 0;
+	private final String		fileName			= "test1";
+	private boolean				mIsLinedPaper		= false;
+	private final Drawable[]	layers				= new Drawable[2];
+	private Drawable			drawable			= null;
+	private boolean				isEraserSelected	= false;
 
 	public NoteView(Context context) {
 		super(context);
@@ -60,14 +55,13 @@ public class NoteView extends View {
 	 * Initializes member variables. Called in every constructor above.
 	 */
 	private void init() {
-		
+
 		mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 		mPath = new Path();
-		mBitmap=null;
-		if(mIsLinedPaper){
+		mBitmap = null;
+		if (mIsLinedPaper) {
 			createLinedBackground();
-		}
-		else{
+		} else {
 			createBlankBackground();
 		}
 		mPaint = new Paint();
@@ -77,46 +71,48 @@ public class NoteView extends View {
 		mPaint.setAntiAlias(true);
 		mPaint.setDither(true);
 	}
-	
-	public void createBlankBackground(){
+
+	public void createBlankBackground() {
 		Resources res = getContext().getResources();
 		myImage = res.getDrawable(R.drawable.blank);
-		layers[0]=myImage;
-		if(mBitmap==null){
-			mBitmap = Bitmap.createBitmap(44,55, Bitmap.Config.ARGB_8888);
+		layers[0] = myImage;
+		if (mBitmap == null) {
+			mBitmap = Bitmap.createBitmap(44, 55, Bitmap.Config.ARGB_8888);
 			mCanvas = new Canvas(mBitmap);
-			layers[1]=new BitmapDrawable (getResources(),mBitmap);		
-			mLayers = new LayerDrawable(layers);			
-			drawable = mLayers.mutate();			
-			mBitmap = Bitmap.createBitmap(mLayers.getIntrinsicWidth(),mLayers.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
+			layers[1] = new BitmapDrawable(getResources(), mBitmap);
+			mLayers = new LayerDrawable(layers);
+			drawable = mLayers.mutate();
+			mBitmap = Bitmap.createBitmap(mLayers.getIntrinsicWidth(),
+					mLayers.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
 			drawable.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
 			drawable.draw(mCanvas);
-		}else{		
-			layers[1]=new BitmapDrawable (getResources(),mBitmap);
+		} else {
+			layers[1] = new BitmapDrawable(getResources(), mBitmap);
 			mLayers = new LayerDrawable(layers);
 			layers[1].draw(mCanvas);
 			drawable = mLayers.mutate();
 			drawable.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
 			drawable.draw(mCanvas);
-			
+
 		}
 	}
-	
-	public void createLinedBackground(){
+
+	public void createLinedBackground() {
 		Resources res = getContext().getResources();
 		myImage = res.getDrawable(R.drawable.lineback);
-		layers[0]=myImage;
-		if(mBitmap==null){
-			mBitmap = Bitmap.createBitmap(44,55, Bitmap.Config.ARGB_8888);
+		layers[0] = myImage;
+		if (mBitmap == null) {
+			mBitmap = Bitmap.createBitmap(44, 55, Bitmap.Config.ARGB_8888);
 			mCanvas = new Canvas(mBitmap);
-			layers[1]=new BitmapDrawable (getResources(),mBitmap);			
-			mLayers = new LayerDrawable(layers);			
-			drawable = mLayers.mutate();			
-			mBitmap = Bitmap.createBitmap(mLayers.getIntrinsicWidth(),mLayers.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
+			layers[1] = new BitmapDrawable(getResources(), mBitmap);
+			mLayers = new LayerDrawable(layers);
+			drawable = mLayers.mutate();
+			mBitmap = Bitmap.createBitmap(mLayers.getIntrinsicWidth(),
+					mLayers.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
 			drawable.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
 			drawable.draw(mCanvas);
-		}else{		
-			layers[1]=new BitmapDrawable (getResources(),mBitmap);
+		} else {
+			layers[1] = new BitmapDrawable(getResources(), mBitmap);
 			layers[1].setAlpha(0);
 			mLayers = new LayerDrawable(layers);
 			layers[0].draw(mCanvas);
@@ -124,7 +120,11 @@ public class NoteView extends View {
 			drawable.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
 			drawable.draw(mCanvas);
 		}
-		
+
+	}
+
+	public void setEraser(boolean isSelected) {
+		this.isEraserSelected = isSelected;
 	}
 
 	/**
@@ -155,18 +155,6 @@ public class NoteView extends View {
 		mPaintWidth = width;
 		mPaint.setStrokeWidth(mPaintWidth);
 		return this;
-	}
-
-	/**
-	 * Sets whether drawing is currently enabled on the <code>NoteView</code>.
-	 * 
-	 * @param isLocked
-	 *            <code>true</code> if the <code>NoteView</code> should be
-	 *            locked, <code>false</code> if the <code>NoteView</code> should
-	 *            be drawn to.
-	 */
-	public void setDrawingLocked(boolean isLocked) {
-		mIsDrawingLocked = isLocked;
 	}
 
 	/**
@@ -204,10 +192,9 @@ public class NoteView extends View {
 	public void setmIsLinedPaper() {
 		boolean b = !(mIsLinedPaper);
 		this.mIsLinedPaper = b;
-		if (mIsLinedPaper){
+		if (mIsLinedPaper) {
 			createLinedBackground();
-		}
-		else{
+		} else {
 			createBlankBackground();
 		}
 	}
@@ -219,35 +206,38 @@ public class NoteView extends View {
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		float x = event.getX();
-		float y = event.getY();
+		float x, y;
 
-		if (!mIsDrawingLocked) {
-			switch (event.getAction()) {
-			case MotionEvent.ACTION_DOWN:
-				mPath.reset();
-				mPath.moveTo(x, y);
+		switch (event.getAction()) {
+		case MotionEvent.ACTION_DOWN:
+			x = event.getX();
+			y = event.getY();
+			mCanvas.drawPath(mPath, mPaint);
+			mPath.reset();
+			mPath.moveTo(x, y);
+			mX = x;
+			mY = y;
+			invalidate();
+			return true;
+		case MotionEvent.ACTION_MOVE:
+			x = event.getX();
+			y = event.getY();
+			float dx = Math.abs(x - mX);
+			float dy = Math.abs(y - mY);
+			if (dx >= 4 || dy >= 4) {
+				mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
 				mX = x;
 				mY = y;
-				invalidate();
-				return true;
-			case MotionEvent.ACTION_MOVE:
-				float dx = Math.abs(x - mX);
-				float dy = Math.abs(y - mY);
-				if (dx >= 4 || dy >= 4) {
-					mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
-					mX = x;
-					mY = y;
-				}
-				invalidate();
-				return true;
-			case MotionEvent.ACTION_UP:
-				mPath.lineTo(mX, mY);
-				mCanvas.drawPath(mPath, mPaint);
-				mPath.reset();
-				invalidate();
-				return true;
 			}
+			invalidate();
+			return true;
+		case MotionEvent.ACTION_UP:
+			mPath.lineTo(mX, mY);
+			mCanvas.drawPath(mPath, mPaint);
+			mPath.reset();
+			invalidate();
+			return true;
+
 		}
 		return true;
 	}

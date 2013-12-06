@@ -6,8 +6,8 @@ import java.io.IOException;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Context;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -40,72 +40,77 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 public class NoteActivity extends Activity {
 
-	private final static String BBINDERDIRECTORY = Environment.getExternalStorageDirectory() + "/bBinder";
-	
-	private ActionBar 				mActionBar;
-	private NoteView 				mNoteView;
+	private final static String		BBINDERDIRECTORY	= Environment
+																.getExternalStorageDirectory()
+																+ "/bBinder";
+
+	private ActionBar				mActionBar;
+	private NoteView				mNoteView;
 	private LockableScrollView		mScrollView;
-	private boolean					mIsInNotebook = false;
 	private String					mNotebookName;
 	private int						mNotebookId;
 	private int						mNotePageNumber;
-	private DrawerLayout 			mDrawerLayout;
+	private DrawerLayout			mDrawerLayout;
 	private DatabaseHelper			mDatabase;
-	private String					mNoteName = null;
+	private final String			mNoteName			= null;
 	private String					mFileName;
 	private RandomStringGenerator	mRandomStringGenerator;
 	private Context					mContext;
-	private final int					NUM_SWATCHES		= 6;
-	private int					mSelectedColor;
-	private final int			mSwatchColors[]		= { 0xff000000, 0xff33b5e5,
-			0xffaa66cc, 0xffff4444, 0xffffbb33, 0xff99cc00 };
-	ColorPickerSwatch			mSwatches[]			= new ColorPickerSwatch[NUM_SWATCHES];
-	private final int			mSwatchIds[]		= { R.id.swatch_1,
+	private final int				NUM_SWATCHES		= 7;
+	private int						mSelectedColor;
+	private final int				mSwatchColors[]		= { 0xff000000,
+			0xff33b5e5, 0xffaa66cc, 0xffff4444, 0xffffbb33, 0xff99cc00,
+			0xffffffff									};
+	ColorPickerSwatch				mSwatches[]			= new ColorPickerSwatch[NUM_SWATCHES];
+	private final int				mSwatchIds[]		= { R.id.swatch_1,
 			R.id.swatch_2, R.id.swatch_3, R.id.swatch_4, R.id.swatch_5,
-			R.id.swatch_6							};
-	private Spinner				mStrokeWidthSpinner;
-	private int					mDefaultStrokeSize;
+			R.id.swatch_6, R.id.swatch_7				};
+	private Spinner					mStrokeWidthSpinner;
+	private int						mDefaultStrokeSize;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_note);
-		
+
 		mContext = this;
-		
+
 		mNoteView = (NoteView) findViewById(R.id.note_view);
 		mScrollView = (LockableScrollView) findViewById(R.id.note_scroll_view);
 		mActionBar = getActionBar();
 		mActionBar.setDisplayHomeAsUpEnabled(true);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.toolbar_drawer);
-		
+
 		mDatabase = new DatabaseHelper(this);
 		mRandomStringGenerator = new RandomStringGenerator(16);
-		
-		if (getIntent().hasExtra("is_open_note") && getIntent().getExtras().getBoolean("is_open_note", false)) {
+
+		if (getIntent().hasExtra("is_open_note")
+				&& getIntent().getExtras().getBoolean("is_open_note", false)) {
 			mFileName = getIntent().getExtras().getString("filename");
 			mNoteView.setBitmap(openFile(mFileName));
 		} else {
 			mFileName = mRandomStringGenerator.nextString();
 		}
-		
-		if (getIntent().hasExtra("notebook_name") && getIntent().hasExtra("notebook_id") && getIntent().hasExtra("note_page_number")) {
-			mIsInNotebook = true;
-			mNotebookName = getIntent().getExtras().getString("notebook_name", "NULL");
+
+		if (getIntent().hasExtra("notebook_name")
+				&& getIntent().hasExtra("notebook_id")
+				&& getIntent().hasExtra("note_page_number")) {
+			mNotebookName = getIntent().getExtras().getString("notebook_name",
+					"NULL");
 			mNotebookId = getIntent().getExtras().getInt("notebook_id", -1);
-			mNotePageNumber = getIntent().getExtras().getInt("note_page_number", -1);
+			mNotePageNumber = getIntent().getExtras().getInt(
+					"note_page_number", -1);
 			mActionBar.setTitle("Page " + mNotePageNumber);
 			mActionBar.setSubtitle("in " + mNotebookName);
 		}
-		
+
 		Toast.makeText(this, "" + mNotePageNumber, Toast.LENGTH_LONG).show();
-		
+
 		mNoteView.setPaintColor(0xFF000000);
 		mNoteView.setPaintWidth(16);
-		
+
 		mScrollView.setScrollingLocked(true);
-		mNoteView.setDrawingLocked(false);
 
 		mSelectedColor = 0;
 		mDefaultStrokeSize = 5;
@@ -126,6 +131,7 @@ public class NoteActivity extends Activity {
 						public void onColorSelected(int color) {
 							mSelectedColor = color;
 							mNoteView.setPaintColor(color);
+							mNoteView.setEraser(false);
 
 							mSwatches[temp].setChecked(true);
 							for (int j = 0; j < NUM_SWATCHES; j++) {
@@ -135,6 +141,24 @@ public class NoteActivity extends Activity {
 						}
 					});
 		}
+
+		// Handle the special case of the eraser
+		mSwatches[6].setAsEraser();
+		mSwatches[6].setOnColorSelectedListener(new OnColorSelectedListener() {
+			@Override
+			public void onColorSelected(int color) {
+				mSelectedColor = color;
+				mNoteView.setPaintColor(color);
+				mNoteView.setEraser(true);
+
+				mSwatches[6].setChecked(true);
+				for (int j = 0; j < NUM_SWATCHES; j++) {
+					if (j != 6)
+						mSwatches[j].setChecked(false);
+				}
+			}
+		});
+
 		mSwatches[mSelectedColor].setChecked(true);
 	}
 
@@ -168,7 +192,7 @@ public class NoteActivity extends Activity {
 		menu.add(Menu.NONE, 2468101, Menu.NONE, "Email PDF");
 		menu.add(Menu.NONE, 1234568, Menu.NONE, "Save");
 		menu.add(Menu.NONE, 1234, Menu.NONE, "Toolbar");
-		menu.add(Menu.NONE, 4,Menu.NONE,"Lined Paper");
+		menu.add(Menu.NONE, 4, Menu.NONE, "Lined Paper");
 		return true;
 	}
 
@@ -183,7 +207,7 @@ public class NoteActivity extends Activity {
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case 2468101:
-			//TODO email useful file name
+			// TODO email useful file name
 			email("test");
 			return true;
 		case 1234568:
@@ -193,7 +217,7 @@ public class NoteActivity extends Activity {
 			mDrawerLayout.openDrawer(Gravity.END);
 			return true;
 		case 4:
-			
+
 			mNoteView.setmIsLinedPaper();
 		}
 		return super.onOptionsItemSelected(item);
@@ -228,7 +252,7 @@ public class NoteActivity extends Activity {
 
 	@Override
 	protected void onStop() {
-		//saveFile(mNoteView.getFileName());
+		// saveFile(mNoteView.getFileName());
 		super.onStop();
 	}
 
@@ -237,7 +261,7 @@ public class NoteActivity extends Activity {
 	}
 
 	public class EmailNote extends AsyncTask<String, Void, Void> {
-		String name;
+		String			name;
 		ProgressDialog	pd;
 
 		@Override
@@ -270,7 +294,7 @@ public class NoteActivity extends Activity {
 		@Override
 		protected Void doInBackground(String... params) {
 			name = params[0];
-			
+
 			try {
 				File bBinderDirectory = new File(BBINDERDIRECTORY);
 				bBinderDirectory.mkdir();
@@ -283,10 +307,10 @@ public class NoteActivity extends Activity {
 				Log.e("ckt", "Save file error");
 				e.printStackTrace();
 			}
-			
+
 			return null;
 		}
-		
+
 		public Document convertToPDF(String filename) {
 			Document d = new Document();
 			try {
@@ -312,17 +336,18 @@ public class NoteActivity extends Activity {
 
 	public class SaveNote extends AsyncTask<String, Void, Void> {
 
-		String filepath;
-		
+		String	filepath;
+
 		@Override
 		protected Void doInBackground(String... strings) {
 			filepath = strings[0];
-			
+
 			try {
 				File bBinderDirectory = new File(BBINDERDIRECTORY);
 				bBinderDirectory.mkdir();
-				
-				FileOutputStream stream = new FileOutputStream(new File(bBinderDirectory, "/" + filepath + ".png"));
+
+				FileOutputStream stream = new FileOutputStream(new File(
+						bBinderDirectory, "/" + filepath + ".png"));
 
 				mNoteView.getBitmap().compress(CompressFormat.PNG, 80, stream);
 				stream.close();
@@ -344,7 +369,8 @@ public class NoteActivity extends Activity {
 				if (mNoteName == null)
 					mDatabase.addNote(filepath, mNotebookId, mNotePageNumber);
 				else
-					mDatabase.addNote(mNoteName, filepath, mNotebookId, mNotePageNumber);
+					mDatabase.addNote(mNoteName, filepath, mNotebookId,
+							mNotePageNumber);
 			}
 		}
 	}

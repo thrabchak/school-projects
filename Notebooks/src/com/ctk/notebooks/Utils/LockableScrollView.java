@@ -48,14 +48,13 @@ public class LockableScrollView extends ScrollView {
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_MOVE:
 			float new_y = event.getAxisValue(MotionEvent.AXIS_Y);
-			// Log.d("ckt", "old: " + mY + " new: " + new_y + " scrollBy: "
-			// + (int) (new_y - mY));
 			smoothScrollBy(0, (int) (mY - new_y));
 			mY = event.getAxisValue(MotionEvent.AXIS_Y);
 			break;
 		case MotionEvent.ACTION_POINTER_UP:
 			twoFingersDown = false;
-			break;
+			mY = -1;
+			return false;
 		default:
 			break;
 		}
@@ -67,16 +66,12 @@ public class LockableScrollView extends ScrollView {
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_POINTER_DOWN:
 			twoFingersDown = true;
-			return true;
+			return false;
 		case MotionEvent.ACTION_MOVE:
 			if (twoFingersDown)
 				return true;
 			else
 				return false;
-		case MotionEvent.ACTION_POINTER_UP:
-			twoFingersDown = false;
-			mY = -1;
-			return true;
 		default:
 			return false;
 		}
