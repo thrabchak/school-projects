@@ -45,7 +45,7 @@ public class NoteActivity extends Activity {
 	private ActionBar 				mActionBar;
 	private NoteView 				mNoteView;
 	private LockableScrollView		mScrollView;
-	private boolean					mIsInNotebook = false;
+	private boolean 				mSaveNote = true;
 	private String					mNotebookName;
 	private int						mNotebookId;
 	private int						mNotePageNumber;
@@ -55,16 +55,15 @@ public class NoteActivity extends Activity {
 	private String					mFileName;
 	private RandomStringGenerator	mRandomStringGenerator;
 	private Context					mContext;
-	private final int					NUM_SWATCHES		= 6;
-	private int					mSelectedColor;
-	private final int			mSwatchColors[]		= { 0xff000000, 0xff33b5e5,
-			0xffaa66cc, 0xffff4444, 0xffffbb33, 0xff99cc00 };
-	ColorPickerSwatch			mSwatches[]			= new ColorPickerSwatch[NUM_SWATCHES];
-	private final int			mSwatchIds[]		= { R.id.swatch_1,
-			R.id.swatch_2, R.id.swatch_3, R.id.swatch_4, R.id.swatch_5,
-			R.id.swatch_6							};
-	private Spinner				mStrokeWidthSpinner;
-	private int					mDefaultStrokeSize;
+	private final int				NUM_SWATCHES = 6;
+	private int						mSelectedColor;
+	private final int				mSwatchColors[] = { 0xff000000, 0xff33b5e5, 0xffaa66cc, 
+														0xffff4444, 0xffffbb33, 0xff99cc00 };
+	ColorPickerSwatch				mSwatches[] = new ColorPickerSwatch[NUM_SWATCHES];
+	private final int				mSwatchIds[] = { R.id.swatch_1, R.id.swatch_2, R.id.swatch_3, 
+													 R.id.swatch_4, R.id.swatch_5, R.id.swatch_6 };
+	private Spinner					mStrokeWidthSpinner;
+	private int						mDefaultStrokeSize;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +90,6 @@ public class NoteActivity extends Activity {
 		}
 		
 		if (getIntent().hasExtra("notebook_name") && getIntent().hasExtra("notebook_id") && getIntent().hasExtra("note_page_number")) {
-			mIsInNotebook = true;
 			mNotebookName = getIntent().getExtras().getString("notebook_name", "NULL");
 			mNotebookId = getIntent().getExtras().getInt("notebook_id", -1);
 			mNotePageNumber = getIntent().getExtras().getInt("note_page_number", -1);
@@ -165,10 +163,7 @@ public class NoteActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(Menu.NONE, 2468101, Menu.NONE, "Email PDF");
-		menu.add(Menu.NONE, 1234568, Menu.NONE, "Save");
-		menu.add(Menu.NONE, 1234, Menu.NONE, "Toolbar");
-		menu.add(Menu.NONE, 4,Menu.NONE,"Lined Paper");
+		getMenuInflater().inflate(R.menu.note_activity, menu);
 		return true;
 	}
 
@@ -176,25 +171,20 @@ public class NoteActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			saveFile();
-
-			// On the ActionBar Up button pressed, allow the OS
-			// to return us to this Activity's parent.
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
-		case 2468101:
-			//TODO email useful file name
-			email("test");
+		case R.id.action_send_note:
+			sendNote();
 			return true;
-		case 1234568:
-			saveFile();
+		case R.id.action_show_toolbar:
+			if (mDrawerLayout.isDrawerOpen(Gravity.END))
+				mDrawerLayout.closeDrawer(Gravity.END);
+			else
+				mDrawerLayout.openDrawer(Gravity.END);
 			return true;
-		case 1234:
-			mDrawerLayout.openDrawer(Gravity.END);
-			return true;
-		case 4:
-			
-			mNoteView.setmIsLinedPaper();
+		case R.id.action_discard_note:
+			mSaveNote = false;
+			NavUtils.navigateUpFromSameTask(this);
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -207,7 +197,7 @@ public class NoteActivity extends Activity {
 	 * @return <code>true</code> if the file was saved without an error,
 	 *         <code>false</code> otherwise.
 	 */
-	public void saveFile() {
+	public void saveNote() {
 		new SaveNote().execute(mFileName);
 	}
 
@@ -227,16 +217,17 @@ public class NoteActivity extends Activity {
 	}
 
 	@Override
-	protected void onStop() {
-		//saveFile(mNoteView.getFileName());
-		super.onStop();
+	protected void onPause() {
+		if (mSaveNote)
+			saveNote();
+		super.onPause();
 	}
 
-	public void email(String filename) {
-		new EmailNote().execute(filename);
+	public void sendNote() {
+		new SendNote().execute(mFileName);
 	}
 
-	public class EmailNote extends AsyncTask<String, Void, Void> {
+	public class SendNote extends AsyncTask<String, Void, Void> {
 		String name;
 		ProgressDialog	pd;
 
@@ -248,12 +239,13 @@ public class NoteActivity extends Activity {
 			pd.setIndeterminate(true);
 			pd.show();
 			super.onPreExecute();
+			
+			new SaveNote().execute(name);
 		}
 
 		@Override
 		protected void onPostExecute(Void result) {
 			Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-			// can we get rid of this?-- Document doc = convertToPDF(name);
 			emailIntent.setType("plain/text");
 			Uri uri = Uri.fromFile(new File(BBINDERDIRECTORY + "/" + name
 					+ ".pdf"));
@@ -263,7 +255,7 @@ public class NoteActivity extends Activity {
 				pd.dismiss();
 			}
 			startActivity(Intent.createChooser(emailIntent,
-					"Send your email in: "));
+					"Send with: "));
 			super.onPostExecute(result);
 		}
 
@@ -271,19 +263,23 @@ public class NoteActivity extends Activity {
 		protected Void doInBackground(String... params) {
 			name = params[0];
 			
-			try {
-				File bBinderDirectory = new File(BBINDERDIRECTORY);
-				bBinderDirectory.mkdir();
-
-				FileOutputStream stream = new FileOutputStream(new File(
-						bBinderDirectory, "/" + params[0] + ".png"));
-				mNoteView.getBitmap().compress(CompressFormat.PNG, 80, stream);
-				stream.close();
-			} catch (IOException e) {
-				Log.e("ckt", "Save file error");
-				e.printStackTrace();
-			}
+//			try {
+//				File bBinderDirectory = new File(BBINDERDIRECTORY);
+//				bBinderDirectory.mkdir();
+//
+//				FileOutputStream stream = new FileOutputStream(new File(
+//						bBinderDirectory, "/" + params[0] + ".png"));
+//				mNoteView.getBitmap().compress(CompressFormat.PNG, 80, stream);
+//				stream.close();
+//			} catch (IOException e) {
+//				Log.e("ckt", "Save file error");
+//				e.printStackTrace();
+//			}
+//			
+//			return null;
+		
 			
+			convertToPDF(name);
 			return null;
 		}
 		

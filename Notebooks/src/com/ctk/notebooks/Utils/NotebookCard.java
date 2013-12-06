@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-import com.ctk.notebooks.DatabaseHelper;
 import com.ctk.notebooks.R;
 import com.ctk.notebooks.Utils.NotebookGridAdapter.OnNotebookActionClickListener;
 
@@ -44,7 +43,7 @@ public class NotebookCard {
 		setLastModified();
 		
 		mTvNotebookPages = (TextView) mLayout.findViewById(R.id.tv_card_notebook_number_of_pages);
-		mTvNotebookPages.setText(mNotebook.numPages + " pages");
+		mTvNotebookPages.setText(mNotebook.numPages + (mNotebook.numPages == 1 ? " page" : " pages"));
 		
 		mDeleteButton = mLayout.findViewById(R.id.card_notebook_delete);
 		mDeleteButton.setOnClickListener(new OnClickListener() {

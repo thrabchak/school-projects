@@ -5,4 +5,5 @@
     <color name="card_clicked">#19000000</color>
     
     <color name="button_clicked">#19000000</color>
+    <color name="button_selected">#26000000</color>
 </resources>
