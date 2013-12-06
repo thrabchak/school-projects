@@ -240,7 +240,7 @@ public class NoteActivity extends Activity {
 			pd.show();
 			super.onPreExecute();
 			
-			new SaveNote().execute(name);
+	//		new SaveNote().execute(name);
 		}
 
 		@Override
@@ -263,23 +263,20 @@ public class NoteActivity extends Activity {
 		protected Void doInBackground(String... params) {
 			name = params[0];
 			
-//			try {
-//				File bBinderDirectory = new File(BBINDERDIRECTORY);
-//				bBinderDirectory.mkdir();
-//
-//				FileOutputStream stream = new FileOutputStream(new File(
-//						bBinderDirectory, "/" + params[0] + ".png"));
-//				mNoteView.getBitmap().compress(CompressFormat.PNG, 80, stream);
-//				stream.close();
-//			} catch (IOException e) {
-//				Log.e("ckt", "Save file error");
-//				e.printStackTrace();
-//			}
-//			
-//			return null;
-		
+			try {
+				File bBinderDirectory = new File(BBINDERDIRECTORY);
+				bBinderDirectory.mkdir();
+
+				FileOutputStream stream = new FileOutputStream(new File(
+						bBinderDirectory, "/" + params[0] + ".png"));
+				mNoteView.getBitmap().compress(CompressFormat.PNG, 80, stream);
+				stream.close();
+			} catch (IOException e) {
+				Log.e("ckt", "Save file error");
+				e.printStackTrace();
+			}	
 			
-			convertToPDF(name);
+			Document d = convertToPDF(name);    
 			return null;
 		}
 		
@@ -310,10 +307,19 @@ public class NoteActivity extends Activity {
 
 		String filepath;
 		
+		
 		@Override
 		protected Void doInBackground(String... strings) {
 			filepath = strings[0];
 			
+			if (mDatabase.doesNoteExist(mNotebookId, mNotePageNumber)) {
+				mDatabase.updateNote(mNotebookId, mNotePageNumber);
+			} else {
+				if (mNoteName == null)
+					mDatabase.addNote(filepath, mNotebookId, mNotePageNumber);
+				else
+					mDatabase.addNote(mNoteName, filepath, mNotebookId, mNotePageNumber);
+			}
 			try {
 				File bBinderDirectory = new File(BBINDERDIRECTORY);
 				bBinderDirectory.mkdir();
@@ -329,19 +335,5 @@ public class NoteActivity extends Activity {
 			return null;
 		}
 
-		@Override
-		protected void onPostExecute(Void result) {
-			super.onPostExecute(result);
-			if (mDatabase.doesNoteExist(mNotebookId, mNotePageNumber)) {
-				mDatabase.updateNote(mNotebookId, mNotePageNumber);
-				Toast.makeText(mContext, "updated", Toast.LENGTH_LONG).show();
-			} else {
-				Toast.makeText(mContext, "added", Toast.LENGTH_LONG).show();
-				if (mNoteName == null)
-					mDatabase.addNote(filepath, mNotebookId, mNotePageNumber);
-				else
-					mDatabase.addNote(mNoteName, filepath, mNotebookId, mNotePageNumber);
-			}
-		}
 	}
 }
