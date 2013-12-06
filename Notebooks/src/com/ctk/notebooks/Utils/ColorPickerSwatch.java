@@ -23,6 +23,7 @@ public class ColorPickerSwatch extends FrameLayout implements
 	private ImageView				mSwatchImage;
 	private ImageView				mCheckmarkImage;
 	private OnColorSelectedListener	mOnColorSelectedListener	= null;
+	private boolean					isChecked					= false;
 
 	/**
 	 * Interface for a callback when a color square is selected.
@@ -86,14 +87,20 @@ public class ColorPickerSwatch extends FrameLayout implements
 
 	public void setChecked(boolean checked) {
 		if (checked) {
+			isChecked = true;
 			mCheckmarkImage.setVisibility(View.VISIBLE);
 		} else {
 			mCheckmarkImage.setVisibility(View.GONE);
+			isChecked = false;
 		}
 	}
 
 	public void setAsEraser() {
 		mSwatchImage.setBackgroundResource(R.drawable.color_swatch_outline);
+	}
+
+	public boolean getIsChecked() {
+		return isChecked;
 	}
 
 	@Override

@@ -28,13 +28,12 @@ public class NoteView extends View {
 	private Bitmap				mBitmap;
 	private Paint				mBitmapPaint;
 	private Paint				mPaint;
-	private int					mPaintColor			= 0xFF000000;
-	private float				mPaintWidth			= 0;
-	private final String		fileName			= "test1";
-	private boolean				mIsLinedPaper		= false;
-	private final Drawable[]	layers				= new Drawable[2];
-	private Drawable			drawable			= null;
-	private boolean				isEraserSelected	= false;
+	private int					mPaintColor		= 0xFF000000;
+	private float				mPaintWidth		= 0;
+	private final String		fileName		= "test1";
+	private boolean				mIsLinedPaper	= false;
+	private final Drawable[]	layers			= new Drawable[2];
+	private Drawable			drawable		= null;
 
 	public NoteView(Context context) {
 		super(context);
@@ -123,10 +122,6 @@ public class NoteView extends View {
 
 	}
 
-	public void setEraser(boolean isSelected) {
-		this.isEraserSelected = isSelected;
-	}
-
 	/**
 	 * Sets the color of the paintbrush.
 	 * 
@@ -152,8 +147,6 @@ public class NoteView extends View {
 	 * @return The current NoteView, to allow for method chaining.
 	 */
 	public NoteView setPaintWidth(float width) {
-		if(isEraserSelected)
-			mPaintWidth = width * 10;
 		mPaintWidth = width;
 		mPaint.setStrokeWidth(mPaintWidth);
 		return this;

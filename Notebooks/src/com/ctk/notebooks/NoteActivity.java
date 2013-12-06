@@ -131,7 +131,6 @@ public class NoteActivity extends Activity {
 						public void onColorSelected(int color) {
 							mSelectedColor = color;
 							mNoteView.setPaintColor(color);
-							mNoteView.setEraser(false);
 							mNoteView.setPaintWidth(mStrokeSize);
 
 							mSwatches[temp].setChecked(true);
@@ -150,8 +149,7 @@ public class NoteActivity extends Activity {
 			public void onColorSelected(int color) {
 				mSelectedColor = color;
 				mNoteView.setPaintColor(color);
-				mNoteView.setEraser(true);
-				mNoteView.setPaintWidth(mStrokeSize*10);
+				mNoteView.setPaintWidth(mStrokeSize * 10);
 
 				mSwatches[6].setChecked(true);
 				for (int j = 0; j < NUM_SWATCHES; j++) {
@@ -178,7 +176,11 @@ public class NoteActivity extends Activity {
 					@Override
 					public void onItemSelected(AdapterView<?> parent,
 							View view, int pos, long id) {
-						mNoteView.setPaintWidth(pos);
+						mStrokeSize = pos;
+						if (mSwatches[6].getIsChecked())
+							mNoteView.setPaintWidth(pos * 10);
+						else
+							mNoteView.setPaintWidth(pos);
 					}
 
 					@Override
@@ -309,7 +311,7 @@ public class NoteActivity extends Activity {
 				Log.e("ckt", "Save file error");
 				e.printStackTrace();
 			}
-			Document d =convertToPDF(params[0]);
+			Document d = convertToPDF(params[0]);
 			return null;
 		}
 
