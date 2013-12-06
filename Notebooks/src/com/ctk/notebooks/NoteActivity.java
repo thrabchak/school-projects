@@ -307,7 +307,7 @@ public class NoteActivity extends Activity {
 				Log.e("ckt", "Save file error");
 				e.printStackTrace();
 			}
-
+			Document d =convertToPDF(params[0]);
 			return null;
 		}
 
