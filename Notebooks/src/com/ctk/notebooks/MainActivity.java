@@ -66,7 +66,15 @@ public class MainActivity extends FragmentActivity {
 		mNotebookGrid.setAdapter(mNotebookGridAdapter);
     }
     
-    private void loadNotebooks() {
+    @Override
+	protected void onResume() {
+		super.onResume();
+		loadNotebooks();
+	}
+
+
+
+	private void loadNotebooks() {
     	mNotebookGridAdapter.empty();
     	for (Notebook notebook : mDatabase.getNotebooks())
 			mNotebookGridAdapter.addNotebook(notebook, mStandardListener);
