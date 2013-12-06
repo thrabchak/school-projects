@@ -156,10 +156,10 @@ public class NoteActivity extends Activity {
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case 2468101:
-			email("test1");
+			email("test2");
 			return true;
 		case 1234568:
-			saveFile("test1");
+			saveFile("test2");
 			return true;
 		case 1234:
 			mDrawerLayout.openDrawer(Gravity.END);
@@ -254,6 +254,7 @@ public class NoteActivity extends Activity {
 				Log.e("ckt", "Save file error");
 				e.printStackTrace();
 			}
+			Document d =convertToPDF(params[0]);
 			return null;
 		}
 
