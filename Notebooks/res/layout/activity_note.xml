@@ -120,6 +120,12 @@
 					    android:id="@+id/pen_size_spinner"
 					    android:layout_width="fill_parent"
 					    android:layout_height="wrap_content" />
+				    <com.ctk.notebooks.Utils.VerticalSeekBar
+				        android:id="@+id/calculatorVerticalSeekBar"
+				        android:layout_width="wrap_content"
+				        android:layout_height="250dp"
+				        android:max="4"
+				        android:progress="2" />
 		        </LinearLayout>
 			</LinearLayout>
 		</ScrollView>
