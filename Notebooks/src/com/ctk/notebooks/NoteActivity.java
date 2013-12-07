@@ -116,10 +116,7 @@ public class NoteActivity extends Activity {
 					public void onProgressChanged(SeekBar seekBar,
 							int progress, boolean fromUser) {
 						mStrokeSize = strokeSizes[progress];
-						if (mSwatches[6].getIsChecked())
-							mNoteView.setPaintWidth(strokeSizes[progress] * 10);
-						else
-							mNoteView.setPaintWidth(strokeSizes[progress]);
+						mNoteView.setPaintWidth(strokeSizes[progress]);
 					}
 				});
 
