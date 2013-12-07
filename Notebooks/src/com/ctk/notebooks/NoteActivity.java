@@ -22,6 +22,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
@@ -50,15 +52,16 @@ public class NoteActivity extends Activity {
 	private final String			mNoteName			= null;
 	private String					mFileName;
 	private RandomStringGenerator	mRandomStringGenerator;
-	private final int				NUM_SWATCHES		= 7;
+	private final int				NUM_SWATCHES		= 6;
 	private int						mSelectedColor;
+	private LinearLayout			mSecondarySwatchGroup;
 	private final int				mSwatchColors[]		= { 0xff000000,
-			0xff33b5e5, 0xffaa66cc, 0xffff4444, 0xffffbb33, 0xff99cc00,
-			0xffffffff									};
+			0xff33b5e5, 0xffaa66cc, 0xffff4444, 0xffffbb33, 0xff99cc00, };
 	ColorPickerSwatch				mSwatches[]			= new ColorPickerSwatch[NUM_SWATCHES];
 	private final int				mSwatchIds[]		= { R.id.swatch_1,
 			R.id.swatch_2, R.id.swatch_3, R.id.swatch_4, R.id.swatch_5,
-			R.id.swatch_6, R.id.swatch_7				};
+			R.id.swatch_6,								};
+	private ColorPickerSwatch		mSwatchMain;
 	private int						mStrokeSize;
 	private VerticalSeekBar			mVerticalSeekBar;
 	private final int[]				strokeSizes			= { 2, 5, 8, 12, 20, 50 };
@@ -129,6 +132,20 @@ public class NoteActivity extends Activity {
 	}
 
 	private void initSwatches() {
+		mSecondarySwatchGroup = (LinearLayout) mDrawerLayout
+				.findViewById(R.id.swatch_secondary_group);
+		mSecondarySwatchGroup.setVisibility(View.GONE);
+		mSwatchMain = (ColorPickerSwatch) mDrawerLayout
+				.findViewById(R.id.swatch_main);
+		mSwatchMain.setColor(0xfffffff); // starting color black
+		mSwatchMain.setOnColorSelectedListener(new OnColorSelectedListener() {
+
+			@Override
+			public void onColorSelected(int color) {
+				mSwatchMain.setVisibility(View.GONE);
+				mSecondarySwatchGroup.setVisibility(View.VISIBLE);
+			}
+		});
 		for (int i = 0; i < NUM_SWATCHES; i++) {
 			final int temp = i;
 			mSwatches[i] = (ColorPickerSwatch) mDrawerLayout
@@ -139,36 +156,21 @@ public class NoteActivity extends Activity {
 
 						@Override
 						public void onColorSelected(int color) {
+							mSwatches[temp].setChecked(true);
 							mSelectedColor = color;
 							mNoteView.setPaintColor(color);
 							mNoteView.setPaintWidth(mStrokeSize);
 
-							mSwatches[temp].setChecked(true);
 							for (int j = 0; j < NUM_SWATCHES; j++) {
 								if (j != temp)
 									mSwatches[j].setChecked(false);
 							}
+							mSwatchMain.setColor(color);
+							mSecondarySwatchGroup.setVisibility(View.GONE);
+							mSwatchMain.setVisibility(View.VISIBLE);
 						}
 					});
 		}
-
-		// Handle the special case of the eraser
-		mSwatches[6].setAsEraser();
-		mSwatches[6].setOnColorSelectedListener(new OnColorSelectedListener() {
-			@Override
-			public void onColorSelected(int color) {
-				mSelectedColor = color;
-				mNoteView.setPaintColor(color);
-				mNoteView.setPaintWidth(mStrokeSize * 10);
-
-				mSwatches[6].setChecked(true);
-				for (int j = 0; j < NUM_SWATCHES; j++) {
-					if (j != 6)
-						mSwatches[j].setChecked(false);
-				}
-			}
-		});
-
 		mSwatches[mSelectedColor].setChecked(true);
 	}
 

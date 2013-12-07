@@ -103,6 +103,10 @@ public class ColorPickerSwatch extends FrameLayout implements
 		return isChecked;
 	}
 
+	public int getColor() {
+		return mColor;
+	}
+
 	@Override
 	public void onClick(View v) {
 		if (mOnColorSelectedListener != null) {

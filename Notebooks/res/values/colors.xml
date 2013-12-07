@@ -4,7 +4,7 @@
     <color name="card_shadow">#cccccc</color>
     <color name="card_clicked">#19000000</color>
     <color name="button_clicked">#19000000</color>
-    <color name="translucent">#ffffffff</color>
-    <color name="black">#000000</color>
+    <color name="translucent">#00ffffff</color>
+    <color name="black">#ff0000</color>
     <color name="button_selected">#26000000</color>
 </resources>
