@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import com.ctk.notebooks.NewNotebookDialog.Builder;
+import com.ctk.notebooks.NoteActivity.SendNote;
 import com.ctk.notebooks.Utils.Note;
 import com.ctk.notebooks.Utils.Notebook;
 import com.ctk.notebooks.Utils.NotebookNotesGridAdapter;
@@ -13,6 +14,8 @@ import com.ctk.notebooks.Utils.NotebookNotesGridAdapter.OnNoteActionClickListene
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import android.app.ActionBar;
@@ -29,6 +32,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,7 +53,7 @@ public class NotebookNotesActivity extends FragmentActivity {
 	private DatabaseHelper				mDatabase = null;
 	private Context 					mContext;
 	private TextView 					mTvNoNotes;
-	private ArrayList<Note>				mNotesArray;
+	public ArrayList<Note>				mNotesArray;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +95,7 @@ public class NotebookNotesActivity extends FragmentActivity {
 
 			@Override
 			public void onSendClicked(Note note) {
-				// TODO: Get send to work
-				Toast.makeText(mContext, note.name + " send", Toast.LENGTH_SHORT).show();
+				new SendNote().execute(note.filepath);
 			}
 
 			@Override
@@ -128,6 +131,10 @@ public class NotebookNotesActivity extends FragmentActivity {
 			 .putExtra("note_page_number", mNotebookNotesGrid.getCount() + 1);
 			startActivity(i);
 			return true;
+		case R.id.action_send_note:
+			new SendNotebook().execute(mNotebookName);
+			File f = new File(BBINDERDIRECTORY + "/" + mNotebookName
+					+ ".pdf");
 		}
 		
 		return super.onOptionsItemSelected(item);
@@ -159,6 +166,95 @@ public class NotebookNotesActivity extends FragmentActivity {
 		builder.show();
 	}
 	
+	
+	public class SendNotebook extends AsyncTask<String, Void, Void>{
+		String notebookName;
+		ProgressDialog pd;
+		private ArrayList<Note>	mNotes = mNotesArray;
+		
+		
+		@Override
+		protected void onPreExecute() {
+			pd = new ProgressDialog(mContext);
+			pd.setTitle("Converting to PDF ...");
+			pd.setCancelable(false);
+			pd.setIndeterminate(true);
+			pd.show();
+			super.onPreExecute();
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+			emailIntent.setType("plain/text");
+			File f = new File(BBINDERDIRECTORY + "/" + notebookName
+					+ ".pdf");
+			Uri uri = Uri.fromFile(f);
+			emailIntent.putExtra(android.content.Intent.EXTRA_STREAM, uri);
+			Time t =new Time();
+			t.setToNow();
+			emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, notebookName +"\n"+ t.format3339(false));
+			if (pd != null) {
+				pd.dismiss();
+			}
+			startActivity(Intent.createChooser(emailIntent,
+					"Send with: "));
+			
+			super.onPostExecute(result);
+		}
+
+		@Override
+		protected Void doInBackground(String... params) {
+			notebookName = params[0];
+			
+			Document d = convertToPDF(params[0]);
+			
+			return null;
+		}
+		
+		public Document convertToPDF(String filename) {
+			Document d = new Document();
+			String file;
+			Note n;
+			try{
+				File f =new File(BBINDERDIRECTORY
+						+ "/" + notebookName + ".pdf");
+				if(f.exists()){
+					f.delete();
+					f=new File(BBINDERDIRECTORY
+							+ "/" + notebookName + ".pdf");
+				}
+				PdfWriter.getInstance(d, new FileOutputStream(f));
+				
+				d.open();
+				
+			} catch (DocumentException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			for (int i=0; i< mNotesArray.size(); i++){
+				n= mNotesArray.get(i);
+				file = n.filepath;
+				try {
+					String impath = BBINDERDIRECTORY + "/" + file + ".png";
+					Image im = Image.getInstance(impath);
+					im.scaleAbsolute(550f, 800f);
+					d.add(im);
+					d.newPage();
+				} catch (DocumentException e) {
+					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}d.close();
+			return d;
+
+		}
+		
+		
+	}
 	public class SendNote extends AsyncTask<String, Void, Void> {
 		String name;
 		ProgressDialog	pd;
@@ -181,6 +277,9 @@ public class NotebookNotesActivity extends FragmentActivity {
 					+ ".pdf"));
 			emailIntent.putExtra(android.content.Intent.EXTRA_STREAM, uri);
 			emailIntent.putExtra(Intent.EXTRA_SUBJECT, name);
+			Time t =new Time();
+			t.setToNow();
+			emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, name +"\n"+ t.format3339(false));
 			if (pd != null) {
 				pd.dismiss();
 			}
@@ -193,19 +292,7 @@ public class NotebookNotesActivity extends FragmentActivity {
 		protected Void doInBackground(String... params) {
 			name = params[0];
 			
-//			try {
-//				File bBinderDirectory = new File(BBINDERDIRECTORY);
-//				bBinderDirectory.mkdir();
-//
-//				FileOutputStream stream = new FileOutputStream(new File(
-//						bBinderDirectory, "/" + params[0] + ".png"));
-//				//mNoteView.getBitmap().compress(CompressFormat.PNG, 80, stream);
-//				stream.close();
-//			} catch (IOException e) {
-//				Log.e("ckt", "Save file error");
-//				e.printStackTrace();
-//			}
-			
+			Document d = convertToPDF(params[0]);
 			
 			return null;
 		}
