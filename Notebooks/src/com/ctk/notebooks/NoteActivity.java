@@ -125,7 +125,6 @@ public class NoteActivity extends Activity {
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
 				mNoteView.setPaintWidth(strokeSizes[progress]);
-				Log.d("ckt",""+progress);				
 			}
 		});
 
