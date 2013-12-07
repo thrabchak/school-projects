@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity {
 
@@ -66,7 +65,13 @@ public class MainActivity extends FragmentActivity {
 		mNotebookGrid.setAdapter(mNotebookGridAdapter);
     }
     
-    private void loadNotebooks() {
+    @Override
+	protected void onResume() {
+		super.onResume();
+		loadNotebooks();
+	}
+
+	private void loadNotebooks() {
     	mNotebookGridAdapter.empty();
     	for (Notebook notebook : mDatabase.getNotebooks())
 			mNotebookGridAdapter.addNotebook(notebook, mStandardListener);
@@ -85,19 +90,29 @@ public class MainActivity extends FragmentActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_new_note:
-			startActivity(new Intent(this, NoteActivity.class));
-			return true;
-		case R.id.action_new_notebook:
-			final NewNotebookDialog.Builder builder = (new NewNotebookDialog()).new Builder(this);
-		    builder.setTitle("Create new notebook").setPositiveButton("Create", new DialogInterface.OnClickListener() {
+			final NewNoteDialog.Builder noteBuilder = (new NewNoteDialog()).new Builder(this);
+		    noteBuilder.setTitle("New note").setPositiveButton("Create", new DialogInterface.OnClickListener() {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					mDatabase.addNotebook(builder.getNotebookName(), builder.getNotebookColor());
+					//
+				}
+			});
+			noteBuilder.show(getSupportFragmentManager(), "ckt");
+			break;
+//			startActivity(new Intent(this, NoteActivity.class));
+//			return true;
+		case R.id.action_new_notebook:
+			final NewNotebookDialog.Builder notebookBuilder = (new NewNotebookDialog()).new Builder(this);
+		    notebookBuilder.setTitle("Create new notebook").setPositiveButton("Create", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					mDatabase.addNotebook(notebookBuilder.getNotebookName(), notebookBuilder.getNotebookColor());
 					loadNotebooks();
 				}
 			});
-			builder.show(getSupportFragmentManager(), "ckt");
+			notebookBuilder.show(getSupportFragmentManager(), "ckt");
 			
 			break;
 		}

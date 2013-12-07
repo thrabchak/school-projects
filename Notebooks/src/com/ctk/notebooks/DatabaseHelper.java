@@ -12,7 +12,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -199,6 +198,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		try {
 			getWritableDatabase().execSQL(sqlUpdateNote);
 			getWritableDatabase().execSQL(sqlUpdateNotebook);
+		} catch (Exception e) {
+			Log.e("bBinder", e.toString());
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean deleteNote(int notebookId, int pageNumber) {
+		long timestamp = System.currentTimeMillis() / 1000L;
+		String sqlSelectNotes = "select " + NOTES_COLUMN_FILEPATH + " from " + TABLE_NOTES + " where " + NOTES_COLUMN_NOTEBOOK_ID + "=? and " + NOTES_COLUMN_PAGE_NUMBER + "=?";
+		Cursor notesToDelete = getReadableDatabase().rawQuery(sqlSelectNotes, new String[]{""+notebookId, ""+pageNumber});
+		
+		File fileToDelete = null;
+		String filename;
+		if (notesToDelete.moveToFirst()) {
+			filename = notesToDelete.getString(notesToDelete.getColumnIndex(NOTES_COLUMN_FILEPATH));
+			fileToDelete = new File(BBINDERDIRECTORY + "/" + filename + ".png"); 
+			if (!fileToDelete.delete()) {
+				Log.d("onDeleteNote", "Note " + filename + ".png failed to delete");
+				return false;
+			}
+		}
+		
+		String sqlDeleteNote = "delete from " + TABLE_NOTES + " where " + NOTES_COLUMN_NOTEBOOK_ID + "=" + notebookId + " and " + NOTES_COLUMN_PAGE_NUMBER + "=" + pageNumber;
+		String sqlUpdateNotebookPageCount = "update " + TABLE_NOTEBOOKS +
+										    " set " + NOTEBOOKS_COLUMN_MODIFIED + "=" + timestamp + ", " + NOTEBOOKS_COLUMN_NUM_PAGES + "=" + NOTEBOOKS_COLUMN_NUM_PAGES + "- 1" + 
+										    " where " + NOTEBOOKS_COLUMN_ID + "=" + notebookId;
+		String sqlUpdatePageNumbers = "update " + TABLE_NOTES +
+									  " set " + NOTES_COLUMN_PAGE_NUMBER + "=" + NOTES_COLUMN_PAGE_NUMBER + "- 1 " +
+									  " where " + NOTES_COLUMN_NOTEBOOK_ID + "=" + notebookId + " and " + NOTES_COLUMN_PAGE_NUMBER + ">" + pageNumber;
+	
+		try {
+			getWritableDatabase().execSQL(sqlDeleteNote);
+			getWritableDatabase().execSQL(sqlUpdateNotebookPageCount);
+			getWritableDatabase().execSQL(sqlUpdatePageNumbers);
 		} catch (Exception e) {
 			Log.e("bBinder", e.toString());
 			return false;
