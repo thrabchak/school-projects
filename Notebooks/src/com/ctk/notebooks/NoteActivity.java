@@ -38,7 +38,6 @@ public class NoteActivity extends Activity {
 	private final static String		BBINDERDIRECTORY	= Environment
 																.getExternalStorageDirectory()
 																+ "/bBinder";
-
 	private ActionBar				mActionBar;
 	private NoteView				mNoteView;
 	private boolean					mSaveNote			= true;
