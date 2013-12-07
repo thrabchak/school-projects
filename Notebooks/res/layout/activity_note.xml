@@ -116,16 +116,12 @@
 				        android:fontFamily="sans-serif-medium"
 				        android:textSize="18sp"
 				        android:padding="8dp"/>
-				    <Spinner
-					    android:id="@+id/pen_size_spinner"
-					    android:layout_width="fill_parent"
-					    android:layout_height="wrap_content" />
 				    <com.ctk.notebooks.Utils.VerticalSeekBar
 				        android:id="@+id/verticalSeekBar"
 				        android:layout_width="wrap_content"
-				        android:layout_height="250dp"
-				        android:max="4"
-				        android:progress="2" />
+				        android:layout_height="300dp"
+				        android:max="5"
+				        android:progress="1" />
 		        </LinearLayout>
 			</LinearLayout>
 		</ScrollView>

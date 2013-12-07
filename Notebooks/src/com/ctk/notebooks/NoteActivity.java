@@ -69,9 +69,9 @@ public class NoteActivity extends Activity {
 	private final int				mSwatchIds[]		= { R.id.swatch_1,
 			R.id.swatch_2, R.id.swatch_3, R.id.swatch_4, R.id.swatch_5,
 			R.id.swatch_6, R.id.swatch_7				};
-	private Spinner					mStrokeWidthSpinner;
 	private int						mStrokeSize;
 	private VerticalSeekBar	mVerticalSeekBar;
+	private final int[] strokeSizes = {2, 5, 8, 12, 20, 50};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -114,34 +114,29 @@ public class NoteActivity extends Activity {
 		mVerticalSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			
 			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
+			public void onStopTrackingTouch(SeekBar seekBar) {				
 			}
 			
 			@Override
 			public void onStartTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-				
 			}
 			
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
-				// TODO Auto-generated method stub
-				
+				mNoteView.setPaintWidth(strokeSizes[progress]);
+				Log.d("ckt",""+progress);				
 			}
 		});
 
 		mNoteView.setPaintColor(0xFF000000);
-		mNoteView.setPaintWidth(16);
+		mNoteView.setPaintWidth(5);
 
 		mScrollView.setScrollingLocked(true);
 
 		mSelectedColor = 0;
 		mStrokeSize = 5;
 		initSwatches();
-		initStrokeWidthSpinner();
 	}
 
 	private void initSwatches() {
@@ -186,35 +181,6 @@ public class NoteActivity extends Activity {
 		});
 
 		mSwatches[mSelectedColor].setChecked(true);
-	}
-
-	private void initStrokeWidthSpinner() {
-		mStrokeWidthSpinner = (Spinner) findViewById(R.id.pen_size_spinner);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-				this, R.array.toolbar_sizes_array,
-				android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		mStrokeWidthSpinner.setAdapter(adapter);
-		mStrokeWidthSpinner.setSelection(mStrokeSize, false);
-		mStrokeWidthSpinner
-				.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-					@Override
-					public void onItemSelected(AdapterView<?> parent,
-							View view, int pos, long id) {
-						mStrokeSize = pos;
-						if (mSwatches[6].getIsChecked())
-							mNoteView.setPaintWidth(pos * 10);
-						else
-							mNoteView.setPaintWidth(pos);
-					}
-
-					@Override
-					public void onNothingSelected(AdapterView<?> parent) {
-						// Nothing - needed by default
-					}
-				});
-		mNoteView.setPaintWidth(mStrokeSize);
 	}
 
 	@Override
