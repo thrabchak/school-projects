@@ -113,7 +113,10 @@ public class NoteActivity extends Activity {
 					public void onProgressChanged(SeekBar seekBar,
 							int progress, boolean fromUser) {
 						mStrokeSize = strokeSizes[progress];
-						mNoteView.setPaintWidth(strokeSizes[progress]);
+						if (mSwatches[6].getIsChecked())
+							mNoteView.setPaintWidth(strokeSizes[progress] * 10);
+						else
+							mNoteView.setPaintWidth(strokeSizes[progress]);
 					}
 				});
 
@@ -259,9 +262,10 @@ public class NoteActivity extends Activity {
 					+ ".pdf"));
 			emailIntent.putExtra(android.content.Intent.EXTRA_STREAM, uri);
 			emailIntent.putExtra(Intent.EXTRA_SUBJECT, name);
-			Time t =new Time();
+			Time t = new Time();
 			t.setToNow();
-			emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, name +"\n"+ t.format3339(false));
+			emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, name + "\n"
+					+ t.format3339(false));
 			if (pd != null) {
 				pd.dismiss();
 			}
