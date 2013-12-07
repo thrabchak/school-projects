@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -258,6 +259,9 @@ public class NoteActivity extends Activity {
 					+ ".pdf"));
 			emailIntent.putExtra(android.content.Intent.EXTRA_STREAM, uri);
 			emailIntent.putExtra(Intent.EXTRA_SUBJECT, name);
+			Time t =new Time();
+			t.setToNow();
+			emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, name +"\n"+ t.format3339(false));
 			if (pd != null) {
 				pd.dismiss();
 			}
