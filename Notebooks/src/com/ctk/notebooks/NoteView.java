@@ -147,6 +147,7 @@ public class NoteView extends View {
 		if (!mIsDrawingLocked) {
 			switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
+				mCanvas.drawPath(mPath, mPaint);
 				mPath.reset();
 				mPath.moveTo(x, y);
 				mX = x;

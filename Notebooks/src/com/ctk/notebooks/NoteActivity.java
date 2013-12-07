@@ -7,7 +7,6 @@ import java.io.IOException;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -22,18 +21,11 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.ctk.notebooks.Utils.ColorPickerSwatch;
 import com.ctk.notebooks.Utils.ColorPickerSwatch.OnColorSelectedListener;
-import com.ctk.notebooks.Utils.LockableScrollView;
 import com.ctk.notebooks.Utils.RandomStringGenerator;
 import com.ctk.notebooks.Utils.VerticalSeekBar;
 import com.itextpdf.text.Document;
@@ -49,7 +41,6 @@ public class NoteActivity extends Activity {
 
 	private ActionBar				mActionBar;
 	private NoteView				mNoteView;
-	private LockableScrollView		mScrollView;
 	private boolean					mSaveNote			= true;
 	private String					mNotebookName;
 	private int						mNotebookId;
@@ -59,7 +50,6 @@ public class NoteActivity extends Activity {
 	private final String			mNoteName			= null;
 	private String					mFileName;
 	private RandomStringGenerator	mRandomStringGenerator;
-	private Context					mContext;
 	private final int				NUM_SWATCHES		= 7;
 	private int						mSelectedColor;
 	private final int				mSwatchColors[]		= { 0xff000000,
@@ -70,8 +60,8 @@ public class NoteActivity extends Activity {
 			R.id.swatch_2, R.id.swatch_3, R.id.swatch_4, R.id.swatch_5,
 			R.id.swatch_6, R.id.swatch_7				};
 	private int						mStrokeSize;
-	private VerticalSeekBar	mVerticalSeekBar;
-	private final int[] strokeSizes = {2, 5, 8, 12, 20, 50};
+	private VerticalSeekBar			mVerticalSeekBar;
+	private final int[]				strokeSizes			= { 2, 5, 8, 12, 20, 50 };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +69,7 @@ public class NoteActivity extends Activity {
 
 		setContentView(R.layout.activity_note);
 
-		mContext = this;
-
 		mNoteView = (NoteView) findViewById(R.id.note_view);
-		mScrollView = (LockableScrollView) findViewById(R.id.note_scroll_view);
 		mActionBar = getActionBar();
 		mActionBar.setDisplayHomeAsUpEnabled(true);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.toolbar_drawer);
@@ -109,32 +96,32 @@ public class NoteActivity extends Activity {
 			mActionBar.setTitle("Page " + mNotePageNumber);
 			mActionBar.setSubtitle("in " + mNotebookName);
 		}
-		
+
 		mVerticalSeekBar = (VerticalSeekBar) findViewById(R.id.verticalSeekBar);
-		mVerticalSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {				
-			}
-			
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-			}
-			
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress,
-					boolean fromUser) {
-				mNoteView.setPaintWidth(strokeSizes[progress]);
-			}
-		});
+		mVerticalSeekBar
+				.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+					@Override
+					public void onStopTrackingTouch(SeekBar seekBar) {
+					}
+
+					@Override
+					public void onStartTrackingTouch(SeekBar seekBar) {
+					}
+
+					@Override
+					public void onProgressChanged(SeekBar seekBar,
+							int progress, boolean fromUser) {
+						mStrokeSize = strokeSizes[progress];
+						mNoteView.setPaintWidth(strokeSizes[progress]);
+					}
+				});
 
 		mNoteView.setPaintColor(0xFF000000);
-		mNoteView.setPaintWidth(5);
-
-		mScrollView.setScrollingLocked(true);
-
-		mSelectedColor = 0;
 		mStrokeSize = 5;
+		mNoteView.setPaintWidth(5);
+		mSelectedColor = 0;
+
 		initSwatches();
 	}
 
