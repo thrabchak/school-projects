@@ -26,6 +26,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -33,6 +35,7 @@ import com.ctk.notebooks.Utils.ColorPickerSwatch;
 import com.ctk.notebooks.Utils.ColorPickerSwatch.OnColorSelectedListener;
 import com.ctk.notebooks.Utils.LockableScrollView;
 import com.ctk.notebooks.Utils.RandomStringGenerator;
+import com.ctk.notebooks.Utils.VerticalSeekBar;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
@@ -68,6 +71,7 @@ public class NoteActivity extends Activity {
 			R.id.swatch_6, R.id.swatch_7				};
 	private Spinner					mStrokeWidthSpinner;
 	private int						mStrokeSize;
+	private VerticalSeekBar	mVerticalSeekBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -105,8 +109,29 @@ public class NoteActivity extends Activity {
 			mActionBar.setTitle("Page " + mNotePageNumber);
 			mActionBar.setSubtitle("in " + mNotebookName);
 		}
-
-		Toast.makeText(this, "" + mNotePageNumber, Toast.LENGTH_LONG).show();
+		
+		mVerticalSeekBar = (VerticalSeekBar) findViewById(R.id.verticalSeekBar);
+		mVerticalSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 
 		mNoteView.setPaintColor(0xFF000000);
 		mNoteView.setPaintWidth(16);
