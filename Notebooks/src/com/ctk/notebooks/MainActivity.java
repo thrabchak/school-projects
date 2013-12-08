@@ -1,5 +1,6 @@
 package com.ctk.notebooks;
 
+import com.ctk.notebooks.NewNoteDialog.OnCreateNewNotebookListener;
 import com.ctk.notebooks.Utils.Notebook;
 import com.ctk.notebooks.Utils.NotebookGridAdapter;
 import com.ctk.notebooks.Utils.NotebookGridAdapter.OnNotebookActionClickListener;
@@ -91,33 +92,49 @@ public class MainActivity extends FragmentActivity {
 		switch (item.getItemId()) {
 		case R.id.action_new_note:
 			final NewNoteDialog.Builder noteBuilder = (new NewNoteDialog()).new Builder(this);
-		    noteBuilder.setTitle("New note").setPositiveButton("Create", new DialogInterface.OnClickListener() {
+		    noteBuilder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
 				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					//
-				}
-			});
-			noteBuilder.show(getSupportFragmentManager(), "ckt");
-			break;
-//			startActivity(new Intent(this, NoteActivity.class));
-//			return true;
-		case R.id.action_new_notebook:
-			final NewNotebookDialog.Builder notebookBuilder = (new NewNotebookDialog()).new Builder(this);
-		    notebookBuilder.setTitle("Create new notebook").setPositiveButton("Create", new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					mDatabase.addNotebook(notebookBuilder.getNotebookName(), notebookBuilder.getNotebookColor());
-					loadNotebooks();
-				}
-			});
-			notebookBuilder.show(getSupportFragmentManager(), "ckt");
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							Intent i = new Intent(mContext, NoteActivity.class);
+							i.putExtra("notebook_id", noteBuilder.getSelectedNotebookId())
+							 .putExtra("notebook_name", noteBuilder.getSelectedNotebookName())
+							 .putExtra("note_page_number", noteBuilder.getSelectedNotebookPageCount() + 1)
+							 .putExtra("note_page_background_lined", noteBuilder.isNoteLined());
+							startActivity(i);
+						}
+					})
+			           .setCreateNewNotebookListener(new OnCreateNewNotebookListener() {
+						
+						@Override
+						public void onClickCreateNewNotebook() {
+							showNewNotebookDialog();
+						}
+					})
+					.setTitle("New note")
+			        .show(getSupportFragmentManager(), "ckt");
 			
+			break;
+		case R.id.action_new_notebook:
+			showNewNotebookDialog();
 			break;
 		}
 		
 		return false;
+	}
+	
+	private void showNewNotebookDialog() {
+		final NewNotebookDialog.Builder notebookBuilder = (new NewNotebookDialog()).new Builder(this);
+	    notebookBuilder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+			
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							mDatabase.addNotebook(notebookBuilder.getNotebookName(), notebookBuilder.getNotebookColor());
+							loadNotebooks();
+						}
+					})
+		               .setTitle("Create new notebook")
+		               .show(getSupportFragmentManager(), "ckt");
 	}
 
 	private void showConfirmDeleteDialog(final Notebook notebook) {

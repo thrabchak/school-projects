@@ -79,9 +79,13 @@ public class NotebookNotesActivity extends FragmentActivity {
 
 			@Override
 			public void onNoteClicked(Note note) {
-				// TODO: Open note in NoteActivity
-				Toast.makeText(mContext, note.name + " clicked",
-						Toast.LENGTH_SHORT).show();
+				Intent i = new Intent(mContext, NoteActivity.class);
+				i.putExtra("is_open_note", true)
+						.putExtra("filename", note.filepath)
+						.putExtra("notebook_id", note.notebookId)
+						.putExtra("notebook_name", mNotebookName)
+						.putExtra("note_page_number", note.pageNumber);
+				startActivity(i);
 			}
 
 			@Override
@@ -160,7 +164,7 @@ public class NotebookNotesActivity extends FragmentActivity {
 					public void onClick(DialogInterface dialog, int which) {
 						mDatabase.deleteNote(note.notebookId, note.pageNumber);
 						mNotebookNotesGridAdapter.removeNote(note);
-						if (mNotesArray.size() != 0)
+						if (mNotebookNotesGridAdapter.getCount() == 0)
 							mTvNoNotes.setVisibility(View.VISIBLE);
 					}
 				});

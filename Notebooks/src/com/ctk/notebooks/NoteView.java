@@ -8,7 +8,6 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 /**
  * Class extending from View that contains a Canvas on which the user can draw.
@@ -127,10 +126,6 @@ public class NoteView extends View {
 	protected void onDraw(Canvas canvas) {
 		canvas.drawColor(0xFFFFFFFF);
 		canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
-
-		if (mBitmap == null)
-			Toast.makeText(getContext(), "no", Toast.LENGTH_SHORT).show();
-
 		canvas.drawPath(mPath, mPaint);
 	}
 

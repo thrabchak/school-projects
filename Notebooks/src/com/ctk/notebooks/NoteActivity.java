@@ -29,6 +29,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.ctk.notebooks.Utils.ColorPickerSwatch;
 import com.ctk.notebooks.Utils.ColorPickerSwatch.OnColorSelectedListener;
+import com.ctk.notebooks.Utils.LockableScrollView;
 import com.ctk.notebooks.Utils.RandomStringGenerator;
 import com.ctk.notebooks.Utils.VerticalSeekBar;
 import com.itextpdf.text.Document;
@@ -44,6 +45,8 @@ public class NoteActivity extends Activity {
 	private ActionBar				mActionBar;
 	private NoteView				mNoteView;
 	private boolean					mSaveNote			= true;
+	private LockableScrollView		mScrollView;
+	private boolean					mIsNoteLined		= false;
 	private String					mNotebookName;
 	private int						mNotebookId;
 	private int						mNotePageNumber;
@@ -71,7 +74,6 @@ public class NoteActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_note);
-
 		mNoteView = (NoteView) findViewById(R.id.note_view);
 		mActionBar = getActionBar();
 		mActionBar.setDisplayHomeAsUpEnabled(true);
@@ -99,6 +101,17 @@ public class NoteActivity extends Activity {
 			mActionBar.setTitle("Page " + mNotePageNumber);
 			mActionBar.setSubtitle("in " + mNotebookName);
 		}
+
+		if (getIntent().hasExtra("note_page_background_lined")) {
+			mIsNoteLined = getIntent().getExtras().getBoolean(
+					"note_page_background_lined", false);
+		}
+
+		// mNoteView.setBackgroundLined(mIsNoteLined);
+
+		mNoteView.setPaintColor(0xFF000000);
+		mNoteView.setPaintWidth(16);
+		mNoteView.setDrawingLocked(false);
 
 		mVerticalSeekBar = (VerticalSeekBar) findViewById(R.id.verticalSeekBar);
 		mVerticalSeekBar

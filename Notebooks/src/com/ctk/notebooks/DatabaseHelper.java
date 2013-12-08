@@ -245,7 +245,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public ArrayList<Note> getNotes(int notebookId) {
 		ArrayList<Note> notes = new ArrayList<Note>();
 		
-		Cursor result = getReadableDatabase().query(TABLE_NOTES, null, null, null, null, null, null);
+		String sqlGetNotes = "select * from " + TABLE_NOTES + " where " + NOTES_COLUMN_NOTEBOOK_ID + "=?";
+		Cursor result = getReadableDatabase().rawQuery(sqlGetNotes, new String[]{""+notebookId});
 		
 		if (result.moveToFirst()) {
 			do {
