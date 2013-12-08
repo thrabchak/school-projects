@@ -1,10 +1,14 @@
 package com.ctk.notebooks;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,6 +19,8 @@ import android.view.View;
  */
 public class NoteView extends View {
 
+	private LayerDrawable 	mLayers;
+	private Drawable		myImage;
 	private Canvas			mCanvas;
 	private float			mX, mY;
 	private Path			mPath;
@@ -25,6 +31,9 @@ public class NoteView extends View {
 	private float			mPaintWidth			= 0;
 	private final String	fileName			= "test1";
 	private boolean			mIsDrawingLocked	= false;
+	private boolean 		mIsLinedPaper		= true;
+	private Drawable[]		layers 				= new Drawable[2];
+	private Drawable		drawable			= null;
 
 	public NoteView(Context context) {
 		super(context);
@@ -48,7 +57,12 @@ public class NoteView extends View {
 
 		mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 		mPath = new Path();
-
+		if(mIsLinedPaper){
+			createLinedBackground();
+		}
+		else{
+			createBlankBackground();
+		}
 		// Create new Paint object, here we will be able
 		// to change the draw color and width.
 		mPaint = new Paint();
@@ -57,6 +71,36 @@ public class NoteView extends View {
 		mPaint.setStrokeWidth(mPaintWidth);
 		mPaint.setAntiAlias(true);
 		mPaint.setDither(true);
+	}
+	
+	public void createBlankBackground(){
+		Resources res = getContext().getResources();
+		myImage = res.getDrawable(R.drawable.blank);
+		layers[0]=myImage;
+		mCanvas = new Canvas(mBitmap);
+		layers[1]=new BitmapDrawable (getResources(),mBitmap);		
+		mLayers = new LayerDrawable(layers);			
+		drawable = mLayers.mutate();			
+		mBitmap = Bitmap.createBitmap(mLayers.getIntrinsicWidth(),mLayers.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
+		drawable.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
+		drawable.draw(mCanvas);
+
+	}
+	
+	public void createLinedBackground(){
+		Resources res = getContext().getResources();
+		myImage = res.getDrawable(R.drawable.lineback);
+		layers[0]=myImage;
+		mBitmap = Bitmap.createBitmap(44,55, Bitmap.Config.ARGB_8888);
+		mCanvas = new Canvas(mBitmap);
+		layers[1]=new BitmapDrawable (getResources(),mBitmap);			
+		mLayers = new LayerDrawable(layers);			
+		drawable = mLayers.mutate();			
+		mBitmap = Bitmap.createBitmap(mLayers.getIntrinsicWidth(),mLayers.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
+		drawable.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
+		drawable.draw(mCanvas);
+
+		
 	}
 
 	/**
