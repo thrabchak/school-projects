@@ -1,8 +1,9 @@
 
 <?php 
-  $user = $_POST["user"];
-  $password = $_POST["pwd"];
-  $database = "csci305_" . $_POST["user"];
+  session_start();
+  $user = $_SESSION["user"];
+  $password = $_SESSION["pwd"];
+  $database = $_SESSION["database"];
   $conn = mysql_connect("db.eg.bucknell.edu",$user,$password);
   if (!$conn) 
      die("Cound not connect to database");
@@ -16,10 +17,7 @@
   $num_row = mysql_num_rows($result);
   
   echo "<h1>Choose one table:</h1>";
-  echo "<form action=\"showtable.php\" method=\"POST\">";
-  echo "<input type=\"hidden\" name=\"user\" value=\"{$user}\">";
-  echo "<input type=\"hidden\" name=\"pwd\" value=\"{$pwd}\">";
-  echo "<input type=\"hidden\" name=\"database\" value=\"{$database}\">";
+  echo "<form action=\"showtable.php\" method=\"post\">";
   echo "<select name=\"table\" size=\"1\" Font size=\"2\">";
   for($i = 0; $i < $num_row; $i++) {
       $tablename = mysql_fetch_row($result);
