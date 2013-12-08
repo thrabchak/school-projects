@@ -12,6 +12,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 /**
  * Class extending from View that contains a Canvas on which the user can draw.
@@ -31,7 +32,7 @@ public class NoteView extends View {
 	private float			mPaintWidth			= 0;
 	private final String	fileName			= "test1";
 	private boolean			mIsDrawingLocked	= false;
-	private boolean 		mIsLinedPaper		= true;
+	private boolean 		mIsLinedPaper		= false;
 	private Drawable[]		layers 				= new Drawable[2];
 	private Drawable		drawable			= null;
 
@@ -74,32 +75,37 @@ public class NoteView extends View {
 	}
 	
 	public void createBlankBackground(){
+		Toast.makeText(getContext(), "blank", Toast.LENGTH_SHORT).show();
 		Resources res = getContext().getResources();
 		myImage = res.getDrawable(R.drawable.blank);
-		layers[0]=myImage;
-		mCanvas = new Canvas(mBitmap);
-		layers[1]=new BitmapDrawable (getResources(),mBitmap);		
-		mLayers = new LayerDrawable(layers);			
-		drawable = mLayers.mutate();			
-		mBitmap = Bitmap.createBitmap(mLayers.getIntrinsicWidth(),mLayers.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
-		drawable.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
-		drawable.draw(mCanvas);
-
+		Drawable[] layers = new Drawable[2];
+		layers[1]=myImage;
+		layers[0]=new BitmapDrawable(getResources(),mBitmap);
+		mLayers=new LayerDrawable(layers);
+		Drawable d= mLayers.mutate();
+		mBitmap=Bitmap.createBitmap(mLayers.getIntrinsicWidth(),mLayers.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
+		mCanvas=new Canvas(mBitmap);
+		d.setBounds(0,0,mCanvas.getWidth(),mCanvas.getHeight());
+		d.draw(mCanvas);
+		mLayers.draw(mCanvas);
 	}
 	
 	public void createLinedBackground(){
+		
+		Toast.makeText(getContext(), "lined", Toast.LENGTH_SHORT).show();
 		Resources res = getContext().getResources();
 		myImage = res.getDrawable(R.drawable.lineback);
-		layers[0]=myImage;
-		mBitmap = Bitmap.createBitmap(44,55, Bitmap.Config.ARGB_8888);
-		mCanvas = new Canvas(mBitmap);
-		layers[1]=new BitmapDrawable (getResources(),mBitmap);			
-		mLayers = new LayerDrawable(layers);			
-		drawable = mLayers.mutate();			
-		mBitmap = Bitmap.createBitmap(mLayers.getIntrinsicWidth(),mLayers.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
-		drawable.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
-		drawable.draw(mCanvas);
-
+		Drawable[] layers = new Drawable[2];
+		layers[1]=myImage;
+		layers[0]=new BitmapDrawable(getResources(),mBitmap);
+		mLayers=new LayerDrawable(layers);
+		Drawable d= mLayers.mutate();
+		mBitmap=Bitmap.createBitmap(mLayers.getIntrinsicWidth(),mLayers.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
+		mCanvas=new Canvas(mBitmap);
+		d.setBounds(0,0,mCanvas.getWidth(),mCanvas.getHeight());
+		d.draw(mCanvas);
+		mLayers.draw(mCanvas);
+	
 		
 	}
 
@@ -171,6 +177,14 @@ public class NoteView extends View {
 		canvas.drawColor(0xFFFFFFFF);
 		canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
 		canvas.drawPath(mPath, mPaint);
+	}
+
+
+	public void setmIsLinedPaper(boolean b) {
+		mIsLinedPaper = b;
+		if(mIsLinedPaper){
+			createLinedBackground();
+		}
 	}
 
 	/**

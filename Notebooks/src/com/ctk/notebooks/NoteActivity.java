@@ -26,6 +26,11 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.ctk.notebooks.Utils.ColorPickerSwatch;
 import com.ctk.notebooks.Utils.ColorPickerSwatch.OnColorSelectedListener;
@@ -107,7 +112,11 @@ public class NoteActivity extends Activity {
 					"note_page_background_lined", false);
 		}
 
-		// mNoteView.setBackgroundLined(mIsNoteLined);
+		
+		mNoteView.setmIsLinedPaper(mIsNoteLined);
+		if(mIsNoteLined)
+			Toast.makeText(this, "lined here", Toast.LENGTH_SHORT).show();
+		
 
 		mNoteView.setPaintColor(0xFF000000);
 		mNoteView.setPaintWidth(16);
@@ -196,6 +205,7 @@ public class NoteActivity extends Activity {
 		case android.R.id.home:
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
+
 		case R.id.action_send_note:
 			sendNote();
 			return true;
@@ -303,6 +313,7 @@ public class NoteActivity extends Activity {
 			}
 
 			Document d = convertToPDF(name);
+
 			return null;
 		}
 

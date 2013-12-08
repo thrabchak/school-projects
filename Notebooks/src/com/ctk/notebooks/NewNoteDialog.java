@@ -57,7 +57,7 @@ public class NewNoteDialog extends DialogFragment {
 		NewNoteDialog 				dialog;
 		private TextView			mLined, mBlank;
 		int 						mNotebookSelected;
-		int							mNoteBackground;
+		int							mNoteBackground = NOTE_BACKGROUND_BLANK;
 		
 		public Builder(Context context) {
 			dialog = new NewNoteDialog();
