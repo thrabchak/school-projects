@@ -2,12 +2,9 @@ package com.ctk.notebooks;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
-import com.ctk.notebooks.NewNotebookDialog.Builder;
 import com.ctk.notebooks.Utils.Note;
-import com.ctk.notebooks.Utils.Notebook;
 import com.ctk.notebooks.Utils.NotebookNotesGridAdapter;
 import com.ctk.notebooks.Utils.NotebookNotesGridAdapter.OnNoteActionClickListener;
 import com.itextpdf.text.Document;
@@ -22,14 +19,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
-import android.graphics.Bitmap.CompressFormat;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -80,8 +75,13 @@ public class NotebookNotesActivity extends FragmentActivity {
 			
 			@Override
 			public void onNoteClicked(Note note) {
-				// TODO: Open note in NoteActivity
-				Toast.makeText(mContext, note.name + " clicked", Toast.LENGTH_SHORT).show();
+				Intent i = new Intent(mContext, NoteActivity.class);
+				i.putExtra("is_open_note", true)
+				 .putExtra("filename", note.filepath)
+				 .putExtra("notebook_id", note.notebookId)
+				 .putExtra("notebook_name", mNotebookName)
+				 .putExtra("note_page_number", note.pageNumber);
+				startActivity(i);
 			}
 
 			@Override
@@ -152,7 +152,7 @@ public class NotebookNotesActivity extends FragmentActivity {
 				public void onClick(DialogInterface dialog, int which) {
 					mDatabase.deleteNote(note.notebookId, note.pageNumber);
 					mNotebookNotesGridAdapter.removeNote(note);
-					if (mNotesArray.size() != 0)
+					if (mNotebookNotesGridAdapter.getCount() == 0)
 						mTvNoNotes.setVisibility(View.VISIBLE);
 				}
 			});

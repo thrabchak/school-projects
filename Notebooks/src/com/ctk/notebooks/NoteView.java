@@ -1,23 +1,17 @@
 package com.ctk.notebooks;
 
-import com.ctk.notebooks.Utils.LockableScrollView;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.NinePatchDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 /**
  * Class extending from View that contains a Canvas on which the user can draw.
@@ -194,10 +188,6 @@ public class NoteView extends View {
 	protected void onDraw(Canvas canvas) {
 		canvas.drawColor(0xFFFFFFFF);
 		canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
-
-		if (mBitmap == null)
-			Toast.makeText(getContext(), "no", Toast.LENGTH_SHORT).show();
-
 		canvas.drawPath(mPath, mPaint);
 	}
 

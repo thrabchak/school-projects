@@ -8,23 +8,43 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Notebook name:"
+        android:text="Write in which Notebook:"
         android:fontFamily="sans-serif-light"
-        android:textSize="18dp"
+        android:textSize="@dimen/normal_text_size"
         android:layout_marginBottom="16dp"/>
     
-    <ListView 
-        android:id="@+id/dialog_new_note_notebook_list"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:background="@drawable/button_background_selector" />
+    <RelativeLayout 
+        android:layout_height="160dp"
+        android:layout_width="match_parent">
+        
+        <TextView 
+            android:id="@+id/tv_new_note_no_notebooks"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:background="@drawable/button_background_selector"
+            android:padding="16dp"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:textSize="@dimen/small_text_size"
+            android:fontFamily="sans-serif-light"
+            android:textStyle="italic"
+            android:text="You have no Notebooks.\nTap to create one."/>
+        
+        <ListView 
+	        android:id="@+id/dialog_new_note_notebook_list"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent" />
+        
+    </RelativeLayout>
+    
     
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select background type:"
+        android:text="Select page background:"
         android:fontFamily="sans-serif-light"
-        android:textSize="18dp"
+        android:textSize="@dimen/normal_text_size"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"/>
     
     <LinearLayout
@@ -35,33 +55,37 @@
         <Space 
             android:layout_height="1dp"
             android:layout_width="0dp"
-            android:layout_weight="0.3"/>
+            android:layout_weight="0.33"/>
         
-        <ImageView 
-			android:id="@+id/new_note_lined_background"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            android:scaleType="center"
-            android:background="@drawable/selectable_button_background_selector"
-            android:src="@drawable/ic_paper_lined"/>
-        
-        <Space 
-            android:layout_height="1dp"
-            android:layout_width="0dp"
-            android:layout_weight="0.3"/>
-        
-        <ImageView 
+         <TextView 
 			android:id="@+id/new_note_blank_background"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            android:scaleType="center"
-            android:background="@drawable/selectable_button_background_selector"
-            android:src="@drawable/ic_paper_blank"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:background="@drawable/button_background_selector"
+	        android:fontFamily="sans-serif-light"
+	        android:textSize="@dimen/normal_text_size"
+			android:text="Blank" />
         
         <Space 
             android:layout_height="1dp"
             android:layout_width="0dp"
-            android:layout_weight="0.3"/>
+            android:layout_weight="0.33"/>
+        
+        <TextView 
+			android:id="@+id/new_note_lined_background"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:background="@drawable/button_background_selector"
+	        android:fontFamily="sans-serif-light"
+	        android:textSize="@dimen/normal_text_size"
+			android:text="Lined" />
+        
+        <Space 
+            android:layout_height="1dp"
+            android:layout_width="0dp"
+            android:layout_weight="0.33"/>
         
     </LinearLayout>
     

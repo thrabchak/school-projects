@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Context;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -27,7 +26,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.ctk.notebooks.Utils.ColorPickerSwatch;
 import com.ctk.notebooks.Utils.ColorPickerSwatch.OnColorSelectedListener;
@@ -40,12 +38,14 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 public class NoteActivity extends Activity {
 
-	private final static String BBINDERDIRECTORY = Environment.getExternalStorageDirectory() + "/bBinder";
+	private final static String 	BBINDERDIRECTORY = Environment.getExternalStorageDirectory() + "/bBinder";
+	private final int				NUM_SWATCHES = 6;
 	
 	private ActionBar 				mActionBar;
 	private NoteView 				mNoteView;
 	private LockableScrollView		mScrollView;
 	private boolean 				mSaveNote = true;
+	private boolean					mIsNoteLined = false;
 	private String					mNotebookName;
 	private int						mNotebookId;
 	private int						mNotePageNumber;
@@ -54,14 +54,10 @@ public class NoteActivity extends Activity {
 	private String					mNoteName = null;
 	private String					mFileName;
 	private RandomStringGenerator	mRandomStringGenerator;
-	private Context					mContext;
-	private final int				NUM_SWATCHES = 6;
 	private int						mSelectedColor;
-	private final int				mSwatchColors[] = { 0xff000000, 0xff33b5e5, 0xffaa66cc, 
-														0xffff4444, 0xffffbb33, 0xff99cc00 };
+	private final int				mSwatchColors[] = { 0xff000000, 0xff33b5e5, 0xffaa66cc, 0xffff4444, 0xffffbb33, 0xff99cc00 };
 	ColorPickerSwatch				mSwatches[] = new ColorPickerSwatch[NUM_SWATCHES];
-	private final int				mSwatchIds[] = { R.id.swatch_1, R.id.swatch_2, R.id.swatch_3, 
-													 R.id.swatch_4, R.id.swatch_5, R.id.swatch_6 };
+	private final int				mSwatchIds[] = { R.id.swatch_1, R.id.swatch_2, R.id.swatch_3, R.id.swatch_4, R.id.swatch_5, R.id.swatch_6 };
 	private Spinner					mStrokeWidthSpinner;
 	private int						mDefaultStrokeSize;
 
@@ -70,8 +66,6 @@ public class NoteActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_note);
-		
-		mContext = this;
 		
 		mNoteView = (NoteView) findViewById(R.id.note_view);
 		mScrollView = (LockableScrollView) findViewById(R.id.note_scroll_view);
@@ -97,7 +91,11 @@ public class NoteActivity extends Activity {
 			mActionBar.setSubtitle("in " + mNotebookName);
 		}
 		
-		Toast.makeText(this, "" + mNotePageNumber, Toast.LENGTH_LONG).show();
+		if (getIntent().hasExtra("note_page_background_lined")) {
+			mIsNoteLined = getIntent().getExtras().getBoolean("note_page_background_lined", false);
+		}
+		
+//		mNoteView.setBackgroundLined(mIsNoteLined);
 		
 		mNoteView.setPaintColor(0xFF000000);
 		mNoteView.setPaintWidth(16);
