@@ -166,7 +166,7 @@ public class NotebookNotesGridAdapter extends BaseAdapter {
 			BitmapFactory.Options opts = new BitmapFactory.Options();
 			opts.inMutable = true;
 
-			v.image = BitmapFactory.decodeFile(BBINDERDIRECTORY + "/" + v.filepath + ".png", opts);
+			v.image = BitmapFactory.decodeFile(BBINDERDIRECTORY + "/" + v.filepath + "_t.png", opts);
 			return v; 
 		}
 

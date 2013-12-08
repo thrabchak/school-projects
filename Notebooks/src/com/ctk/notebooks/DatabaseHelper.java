@@ -117,6 +117,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				fileToDelete = new File(BBINDERDIRECTORY + "/" + filename + ".png"); 
 				if (!fileToDelete.delete())
 					Log.d("onDeleteNote", "Note " + filename + ".png failed to delete");
+				
+				fileToDelete = new File(BBINDERDIRECTORY + "/" + filename + "_t.png"); 
+				if (!fileToDelete.delete())
+					Log.d("onDeleteNote", "Note " + filename + ".png failed to delete");
 			} while (notesToDelete.moveToNext());
 		}
 		
@@ -216,6 +220,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		if (notesToDelete.moveToFirst()) {
 			filename = notesToDelete.getString(notesToDelete.getColumnIndex(NOTES_COLUMN_FILEPATH));
 			fileToDelete = new File(BBINDERDIRECTORY + "/" + filename + ".png"); 
+			if (!fileToDelete.delete()) {
+				Log.d("onDeleteNote", "Note " + filename + ".png failed to delete");
+				return false;
+			}
+			
+			fileToDelete = new File(BBINDERDIRECTORY + "/" + filename + "_t.png"); 
 			if (!fileToDelete.delete()) {
 				Log.d("onDeleteNote", "Note " + filename + ".png failed to delete");
 				return false;

@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,11 +19,13 @@ import android.os.Environment;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
 import android.text.format.Time;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -73,6 +76,8 @@ public class NoteActivity extends Activity {
 	private int						mStrokeSize;
 	private VerticalSeekBar			mVerticalSeekBar;
 	private final int[]				strokeSizes			= { 2, 5, 8, 12, 20, 50 };
+	private ImageView mToolPen;
+	private ImageView mToolErase;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -360,17 +365,39 @@ public class NoteActivity extends Activity {
 			try {
 				File bBinderDirectory = new File(BBINDERDIRECTORY);
 				bBinderDirectory.mkdir();
+				Bitmap  b = mNoteView.getBitmap();
 
 				FileOutputStream stream = new FileOutputStream(new File(
 						bBinderDirectory, "/" + filepath + ".png"));
-
-				mNoteView.getBitmap().compress(CompressFormat.PNG, 80, stream);
+				b.compress(CompressFormat.PNG, 80, stream);
+				
+				b = getResizedBitmap(b, 624, (int) (624.0/11*8.5));
+				FileOutputStream stream2 = new FileOutputStream(new File(
+						bBinderDirectory, "/" + filepath + "_t.png"));
+				b.compress(CompressFormat.PNG, 80, stream2);
+				
 				stream.close();
+				stream2.close();
 			} catch (IOException e) {
 				Log.e("ckt", "Save file error");
 				e.printStackTrace();
 			}
 			return null;
+		}
+		
+		public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {
+		    int width = bm.getWidth();
+		    int height = bm.getHeight();
+		    float scaleWidth = ((float) newWidth) / width;
+		    float scaleHeight = ((float) newHeight) / height;
+		    // CREATE A MATRIX FOR THE MANIPULATION
+		    Matrix matrix = new Matrix();
+		    // RESIZE THE BIT MAP
+		    matrix.postScale(scaleWidth, scaleHeight);
+
+		    // "RECREATE" THE NEW BITMAP
+		    Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
+		    return resizedBitmap;
 		}
 
 	}
