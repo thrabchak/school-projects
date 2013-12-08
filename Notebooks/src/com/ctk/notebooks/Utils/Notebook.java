@@ -7,16 +7,18 @@ public class Notebook {
 	public long		createdTimestamp;
 	public long		lastModifiedTimestamp;
 	public int		color;
+	public int 		numPages;
 	
-	public Notebook(String name, int id, long createdTimestamp, long lastModifiedTimestamp, int color) {
+	public Notebook(String name, int id, long createdTimestamp, long lastModifiedTimestamp, int color, int numPages) {
 		this.name = name;
 		this.id = id;
 		this.createdTimestamp = createdTimestamp;
 		this.lastModifiedTimestamp = lastModifiedTimestamp;
 		this.color = color;
+		this.numPages = numPages;
 	}
 
-	public void setmName(String newName) {
+	public void setName(String newName) {
 		name = newName;
 	}
 
@@ -26,5 +28,17 @@ public class Notebook {
 
 	public void setColor(int newColor) {
 		color = newColor;
+	}
+	
+	public void setNumPages(int newNumber) {
+		numPages = newNumber;
+	}
+	
+	public void incrementPageCount() {
+		numPages++;
+	}
+	
+	public void decrementPageCount() {
+		numPages--;
 	}
 }

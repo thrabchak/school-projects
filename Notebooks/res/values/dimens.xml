@@ -5,5 +5,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     
     <dimen name="normal_text_size">14sp</dimen>
-
+    <dimen name="small_text_size">12sp</dimen>
+	<dimen name="color_swatch_diameter">40dp</dimen>
 </resources>

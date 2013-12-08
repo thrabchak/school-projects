@@ -47,7 +47,7 @@ public class NewNotebookDialog extends DialogFragment {
 		
 		private int mSwatchColors[] = { 0xff33b5e5, 0xffaa66cc, 0xffff4444, 0xffffbb33, 0xff99cc00, 
 									    0xff0099cc, 0xff9933cc, 0xffcc0000, 0xffff8800, 0xff669900,
-									    0xffdddddd, 0xff888888 };
+									    0xff888888, 0xff000000 };
 		
 		private int mSwatchIds[] 	= { R.id.swatch_1, R.id.swatch_2, R.id.swatch_3, R.id.swatch_4, R.id.swatch_5,
 										R.id.swatch_6, R.id.swatch_7, R.id.swatch_8, R.id.swatch_9, R.id.swatch_10,

@@ -1,20 +1,14 @@
 package com.ctk.notebooks;
 
-import com.ctk.notebooks.Utils.LinedDrawable;
-import com.ctk.notebooks.Utils.LockableScrollView;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.NinePatchDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -80,51 +74,37 @@ public class NoteView extends View {
 	}
 	
 	public void createBlankBackground(){
+		Toast.makeText(getContext(), "blank", Toast.LENGTH_SHORT).show();
 		Resources res = getContext().getResources();
 		myImage = res.getDrawable(R.drawable.blank);
-		layers[0]=myImage;
-		if(mBitmap==null){
-			mBitmap = Bitmap.createBitmap(44,55, Bitmap.Config.ARGB_8888);
-			mCanvas = new Canvas(mBitmap);
-			layers[1]=new BitmapDrawable (getResources(),mBitmap);		
-			mLayers = new LayerDrawable(layers);			
-			drawable = mLayers.mutate();			
-			mBitmap = Bitmap.createBitmap(mLayers.getIntrinsicWidth(),mLayers.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
-			drawable.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
-			drawable.draw(mCanvas);
-		}else{		
-			layers[1]=new BitmapDrawable (getResources(),mBitmap);
-			mLayers = new LayerDrawable(layers);
-			layers[1].draw(mCanvas);
-			drawable = mLayers.mutate();
-			drawable.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
-			drawable.draw(mCanvas);
-			
-		}
+		Drawable[] layers = new Drawable[2];
+		layers[1]=myImage;
+		layers[0]=new BitmapDrawable(getResources(),mBitmap);
+		mLayers=new LayerDrawable(layers);
+		Drawable d= mLayers.mutate();
+		mBitmap=Bitmap.createBitmap(mLayers.getIntrinsicWidth(),mLayers.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
+		mCanvas=new Canvas(mBitmap);
+		d.setBounds(0,0,mCanvas.getWidth(),mCanvas.getHeight());
+		d.draw(mCanvas);
+		mLayers.draw(mCanvas);
 	}
 	
 	public void createLinedBackground(){
+		
+		Toast.makeText(getContext(), "lined", Toast.LENGTH_SHORT).show();
 		Resources res = getContext().getResources();
 		myImage = res.getDrawable(R.drawable.lineback);
-		layers[0]=myImage;
-		if(mBitmap==null){
-			mBitmap = Bitmap.createBitmap(44,55, Bitmap.Config.ARGB_8888);
-			mCanvas = new Canvas(mBitmap);
-			layers[1]=new BitmapDrawable (getResources(),mBitmap);			
-			mLayers = new LayerDrawable(layers);			
-			drawable = mLayers.mutate();			
-			mBitmap = Bitmap.createBitmap(mLayers.getIntrinsicWidth(),mLayers.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
-			drawable.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
-			drawable.draw(mCanvas);
-		}else{		
-			layers[1]=new BitmapDrawable (getResources(),mBitmap);
-			layers[1].setAlpha(0);
-			mLayers = new LayerDrawable(layers);
-			layers[0].draw(mCanvas);
-			drawable = mLayers.mutate();
-			drawable.setBounds(0, 0, mCanvas.getWidth(), mCanvas.getHeight());
-			drawable.draw(mCanvas);
-		}
+		Drawable[] layers = new Drawable[2];
+		layers[1]=myImage;
+		layers[0]=new BitmapDrawable(getResources(),mBitmap);
+		mLayers=new LayerDrawable(layers);
+		Drawable d= mLayers.mutate();
+		mBitmap=Bitmap.createBitmap(mLayers.getIntrinsicWidth(),mLayers.getIntrinsicHeight(),Bitmap.Config.ARGB_8888);
+		mCanvas=new Canvas(mBitmap);
+		d.setBounds(0,0,mCanvas.getWidth(),mCanvas.getHeight());
+		d.draw(mCanvas);
+		mLayers.draw(mCanvas);
+	
 		
 	}
 
@@ -195,21 +175,13 @@ public class NoteView extends View {
 	protected void onDraw(Canvas canvas) {
 		canvas.drawColor(0xFFFFFFFF);
 		canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
-
-		if (mBitmap == null)
-			Toast.makeText(getContext(), "no", Toast.LENGTH_SHORT).show();
-
 		canvas.drawPath(mPath, mPaint);
 	}
 
-	public void setmIsLinedPaper() {
-		boolean b = !(mIsLinedPaper);
-		this.mIsLinedPaper = b;
-		if (mIsLinedPaper){
+	public void setmIsLinedPaper(boolean b) {
+		mIsLinedPaper = b;
+		if(mIsLinedPaper){
 			createLinedBackground();
-		}
-		else{
-			createBlankBackground();
 		}
 	}
 
