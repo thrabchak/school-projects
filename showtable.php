@@ -1,7 +1,7 @@
 <?php 
-  $user = "kmw023";
-  $password = "iexeipiM";
-  $database = "test";
+  $user = $_POST["user"];
+  $password = $_POST["pwd"];
+  $database = $_POST["database"];
   $table = $_POST["table"];
   
   $conn = mysql_connect("db.eg.bucknell.edu",$user,$password);
