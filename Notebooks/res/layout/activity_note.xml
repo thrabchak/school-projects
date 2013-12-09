@@ -74,15 +74,17 @@
 				    <ImageView 
 				        android:id="@+id/tool_pen"
 				        android:src="@drawable/ic_eraser"
-				        android:layout_width="48dp"
-				        android:layout_height="48dp"
-				        android:background="@drawable/selectable_button_background_selector"/>
+				        android:layout_width="50dp"
+				        android:layout_height="50dp"
+				        android:background="@drawable/selectable_button_background_selector"
+				        android:padding="4dp"/>
 				    <ImageView 
 				        android:id="@+id/tool_eraser"
 				        android:src="@drawable/ic_eraser"
-				        android:layout_width="48dp"
-				        android:layout_height="48dp"
-				        android:background="@drawable/selectable_button_background_selector"/>
+				        android:layout_width="50dp"
+				        android:layout_height="50dp"
+				        android:background="@drawable/selectable_button_background_selector"
+				        android:padding="4dp"/>
 				  	
 				  	<!-- Main Color Swatch -->
 				  	<LinearLayout

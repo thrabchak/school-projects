@@ -25,15 +25,11 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.ctk.notebooks.Utils.ColorPickerSwatch;
 import com.ctk.notebooks.Utils.ColorPickerSwatch.OnColorSelectedListener;
@@ -78,6 +74,7 @@ public class NoteActivity extends Activity {
 	private final int[]				strokeSizes			= { 2, 5, 8, 12, 20, 50 };
 	private ImageView mToolPen;
 	private ImageView mToolErase;
+	private LinearLayout mSwatchMainGroup;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -116,12 +113,11 @@ public class NoteActivity extends Activity {
 			mIsNoteLined = getIntent().getExtras().getBoolean(
 					"note_page_background_lined", false);
 		}
-
 		
-		mNoteView.setmIsLinedPaper(mIsNoteLined);
-		if(mIsNoteLined)
-			Toast.makeText(this, "lined here", Toast.LENGTH_SHORT).show();
+		initSwatches();
+		mSwatchMainGroup = (LinearLayout)findViewById(R.id.swatch_main_group);
 		
+		mNoteView.setmIsLinedPaper(mIsNoteLined);		
 
 		mNoteView.setPaintColor(0xFF000000);
 		mNoteView.setPaintWidth(16);
@@ -151,8 +147,30 @@ public class NoteActivity extends Activity {
 		mStrokeSize = 5;
 		mNoteView.setPaintWidth(5);
 		mSelectedColor = 0;
-
-		initSwatches();
+		
+		mToolPen = (ImageView) findViewById(R.id.tool_pen);
+		mToolPen.setActivated(true);
+		mToolPen.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mToolPen.setActivated(true);
+				mToolErase.setActivated(false);
+				mSwatchMainGroup.setVisibility(View.VISIBLE);
+				mSecondarySwatchGroup.setVisibility(View.GONE);
+			}
+		});
+		mToolErase = (ImageView) findViewById(R.id.tool_eraser);
+		mToolErase.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mToolPen.setActivated(false);
+				mToolErase.setActivated(true);
+				mSwatchMainGroup.setVisibility(View.GONE);
+				mSecondarySwatchGroup.setVisibility(View.GONE);
+			}
+		});
 	}
 
 	private void initSwatches() {

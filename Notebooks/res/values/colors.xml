@@ -7,4 +7,5 @@
     <color name="translucent">#00ffffff</color>
     <color name="black">#ff0000</color>
     <color name="button_selected">#10000000</color>
+    <color name="button_selected_border">#25000000</color>
 </resources>
