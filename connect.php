@@ -5,9 +5,15 @@
   $password = $_SESSION["pwd"];
   $database = $_SESSION["database"];
   $conn = mysql_connect("db.eg.bucknell.edu",$user,$password);
+
+/*
+  echo $_SESSION["user"];
+  echo $_SESSION["pwd"];
+  echo $_SESSION["database"];
+*/
   if (!$conn) 
      die("Cound not connect to database");
-  
+
   mysql_select_db($database) or die("Unable to select database");
 
   $result = mysql_query("SHOW TABLES");
@@ -29,5 +35,6 @@
   
   mysql_free_result($result);
   mysql_close($conn);
+
 ?>
 
