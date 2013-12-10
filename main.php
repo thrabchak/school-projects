@@ -6,6 +6,7 @@
   $_SESSION["user"] = $user;
   $_SESSION["pwd"] = $pwd;
   $_SESSION["database"] = $database;
+
 /*
   echo $_SESSION["user"];
   echo $_SESSION["pwd"];
