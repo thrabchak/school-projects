@@ -1,4 +1,8 @@
+<!DOCTYPE html>
+<html><head></head>
+<body>
 <?php 
+  session_destroy();
   session_start();
   $user = $_POST["user"];
   $password = $_POST["pwd"];
@@ -6,6 +10,7 @@
   $_SESSION["user"] = $user;
   $_SESSION["pwd"] = $password;
   $_SESSION["database"] = $database;
+  echo $_SESSION["user"] . "<br>" . $_SESSION["pwd"] . "<br>" . $_SESSION["database"] . "<br>";
 /*
   echo $_SESSION["user"];
   echo $_SESSION["pwd"];
@@ -37,4 +42,5 @@
   echo "<input type=\"submit\" value=\"Submit\">";
   echo "</form>";
 
-?>
+?></body>
+</html>

@@ -1,4 +1,4 @@
 <?php
   session_start();
-  header("Location: ". $url . $_POST["actions"]);
+  header("Location: ". $_SESSION["url"] . $_POST["actions"]);
 ?>
