@@ -56,7 +56,7 @@
         if (!$conn) die("Cound not connect to database");       
         mysql_select_db($_SESSION["database"]) or die("Unable to select database");
       ?>      
-      <h2>Checkout Log</h2>
+      <h2>Active Customers</h2>
       <?php
         $result = mysql_query("SELECT * FROM CheckedOut ORDER BY cartID ASC;");
         if (!$result) 
@@ -81,6 +81,9 @@
         echo "</tbody>\n</table>";
         mysql_free_result($result);
       ?>
+			<h2>Active Cashiers</h2>
+			<h2>Checkout Customer</h2>
+
     </div> <!-- /container -->
 
     <!-- Bootstrap core JavaScript
