@@ -9,8 +9,8 @@
 	$job = $_POST["job"];
     $url = "http://eg.bucknell.edu/~trh010/cs305/";
 	switch ($job) {
-		case "admin":
-			header("Location: ". "./jobs/admin.php");
+            case "admin":
+                header("Location: ". "./jobs/admin.php");
         	break;
 	    case "manager":
 	    	header("Location: ". "./jobs/manager.php");
