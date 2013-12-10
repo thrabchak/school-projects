@@ -56,7 +56,7 @@
         if (!$conn) die("Cound not connect to database");       
         mysql_select_db($_SESSION["database"]) or die("Unable to select database");
       ?>
-      <h2>Customers</h2>
+<!--      <h2>Customers</h2>
       <?php
         $result = mysql_query("SELECT * FROM Customers INNER JOIN CustomerInfo ON Customers.CustomerID=CustomerInfo.CustomerID;");
         if (!$result) 
@@ -106,6 +106,7 @@
         echo "</tbody>\n</table>";
         mysql_free_result($result);            
       ?>
+-->
       <h2>Carts</h2>
       <?php 
         $result = mysql_query("SELECT * FROM Carts ORDER BY cartID ASC;");
@@ -131,7 +132,7 @@
         echo "</tbody>\n</table>";
         mysql_free_result($result);
       ?>
-      <h2>Checkout Log</h2>
+<!--      <h2>Checkout Log</h2>
       <?php
         $result = mysql_query("SELECT * FROM CheckedOut ORDER BY cartID ASC;");
         if (!$result) 
@@ -181,6 +182,7 @@
         echo "</tbody>\n</table>";
         mysql_free_result($result);
       ?>
+-->
       <h2>Items On Shelves</h2>
       <?php
         $result = mysql_query("SELECT * FROM GroceryShelves INNER JOIN ItemList ON GroceryShelves.item=ItemList.Item;");

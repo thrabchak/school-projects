@@ -56,7 +56,7 @@
         if (!$conn) die("Cound not connect to database");       
         mysql_select_db($_SESSION["database"]) or die("Unable to select database");
       ?>      
-      <h2>Carts</h2>
+<!--      <h2>Carts</h2>
       <?php 
         $result = mysql_query("SELECT * FROM Carts ORDER BY cartID ASC;");
         if (!$result) 
@@ -81,6 +81,7 @@
         echo "</tbody>\n</table>";
         mysql_free_result($result);
       ?>
+-->
       <h2>Checkout Log</h2>
       <?php
         $result = mysql_query("SELECT * FROM CheckedOut ORDER BY cartID ASC;");
@@ -106,7 +107,7 @@
         echo "</tbody>\n</table>";
         mysql_free_result($result);
       ?>
-      <h2>Items In Inventory</h2>
+<!-- <h2>Items In Inventory</h2>
       <?php
         $result = mysql_query("SELECT * FROM StockShelves");
         if (!$result) 
@@ -157,6 +158,7 @@
         mysql_free_result($result);
         mysql_close($conn);
       ?>
+-->
     </div> <!-- /container -->
 
     <!-- Bootstrap core JavaScript

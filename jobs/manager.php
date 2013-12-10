@@ -81,7 +81,7 @@
         echo "</tbody>\n</table>";
         mysql_free_result($result);            
       ?>
-      <h2>Carts</h2>
+<!--      <h2>Carts</h2>
       <?php 
         $result = mysql_query("SELECT * FROM Carts ORDER BY cartID ASC;");
         if (!$result) 
@@ -182,6 +182,7 @@
         mysql_free_result($result);
         mysql_close($conn);
       ?>
+-->
     </div> <!-- /container -->
 
     <!-- Bootstrap core JavaScript
