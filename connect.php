@@ -11,6 +11,7 @@
   echo $_SESSION["pwd"];
   echo $_SESSION["database"];
 */
+
   if (!$conn) 
      die("Cound not connect to database");
 

@@ -14,7 +14,7 @@
 */
 
   $job = $_POST["job"];
-  $url = "http://eg.bucknell.edu/~trh010/cs305/";
+  $url = "http://eg.bucknell.edu/~".$user."/cs305/";
   $_SESSION["url"] = $url;
 
   echo "<h1>What would you like to do?</h1>";
