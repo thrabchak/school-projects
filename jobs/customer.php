@@ -185,7 +185,7 @@
 -->
       <h2>Items On Shelves</h2>
       <?php
-        $result = mysql_query("SELECT * FROM GroceryShelves INNER JOIN ItemList ON GroceryShelves.item=ItemList.Item;");
+        $result = mysql_query("SELECT ItemList.item, count, price, description FROM GroceryShelves INNER JOIN ItemList ON GroceryShelves.item=ItemList.item ORDER BY ItemList.item;");
         if (!$result) 
           die("Query to show tuples from table failed!" . mysql_error());
 
@@ -209,6 +209,46 @@
         mysql_free_result($result);
         mysql_close($conn);
       ?>
+      <h2>Get a new cart</h2>
+	<form action="actions/add_customer.php" method="post">
+	<input type="text" name="name" placeholder="Customer Name">
+	<input type="text" name="address" placeholder="Customer Address">
+	<input type="submit" value="Welcome!">
+	</form>
+
+      <h2>Add an item to your cart</h2>
+	<form action="actions/add_item.php" method="post">
+      <?php
+	// Get carts
+	$result = mysql_query("SELECT cartID FROM Customers;");
+	if (!$result) 
+	die("Query to show tables failed");
+	$num_row = mysql_num_rows($result);
+
+	echo "<select name=\"cart\" size=\"1\" Font size=\"2\">";
+	for($i = 0; $i < $num_row; $i++) {
+		$tablename = mysql_fetch_row($result);
+		echo "<option value = \"{$tablename[0]}\" >{$tablename[0]}</option>";
+	}
+	echo "</select>";
+
+	// Get items
+	$result = mysql_query("SELECT item FROM GroceryShelves;");
+	if (!$result) 
+	die("Query to show tables failed?");
+	$num_row = mysql_num_rows($result);
+
+	echo "<select name=\"item\" size=\"1\" Font size=\"2\">";
+	for($i = 0; $i < $num_row; $i++) {
+		$tablename = mysql_fetch_row($result);
+		echo "<option value = \"{$tablename[0]}\" >{$tablename[0]}</option>";
+	}
+	echo "</select>";
+      ?>
+	<input type="text" name="quantity" placeholder="Quantity">
+	<input type="submit" value="Submit">
+	</form>
+
     </div> <!-- /container -->
 
     <!-- Bootstrap core JavaScript

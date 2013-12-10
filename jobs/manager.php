@@ -58,7 +58,7 @@
       ?>
       <h2>Employees</h2>
       <?php
-        $result = mysql_query("SELECT * FROM Employees;");
+        $result = mysql_query("SELECT * FROM Employees ORDER BY employeeID;");
         if (!$result) 
           die("Query to show tuples from table failed!" . mysql_error());
 
@@ -81,6 +81,24 @@
         echo "</tbody>\n</table>";
         mysql_free_result($result);            
       ?>
+      
+	<h2>Add employee:</h2>
+	<form action="actions/add_employee.php" method="post">
+	<input type="text" name="name" placeholder="Employee Name">
+	<input type="text" name="address" placeholder="Employee Address">
+	<select name="job" size="1" Font size="2">
+        <option value = "Manager" >Manager</option>
+    	<option value = "Cashier" >Cashier</option>
+	<option value = "Restocker" >Restocker</option>
+	</select>
+	<input type="submit" value="Submit">
+	</form>
+      
+      	<h2>Remove employee:</h2>
+	<form action="actions/rem_employee.php" method="post" onsubmit="return confirm('Do you really want to remove the employee?');">
+	<input type="text" name="idnum" placeholder="Employee ID">
+	<input type="submit" value="Submit">
+	</form>
 <!--      <h2>Carts</h2>
       <?php 
         $result = mysql_query("SELECT * FROM Carts ORDER BY cartID ASC;");
