@@ -2,9 +2,9 @@
   session_start();
   $user = $_POST["user"];
   $password = $_POST["pwd"];
-  $database = "csci305_" . $_POST["user"];
+  $database = "csci305_" . $user;
   $_SESSION["user"] = $user;
-  $_SESSION["pwd"] = $pwd;
+  $_SESSION["pwd"] = $password;
   $_SESSION["database"] = $database;
 
 /*
@@ -14,7 +14,8 @@
 */
 
   $job = $_POST["job"];
-  $url = "http://eg.bucknell.edu/~kmw023/cs305/";
+  $url = "http://eg.bucknell.edu/~trh010/cs305/";
+  $_SESSION["url"] = $url;
 
   echo "<h1>What would you like to do?</h1>";
   echo "<form action=\"handler.php\" method=\"POST\">";
