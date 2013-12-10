@@ -2,7 +2,7 @@
   session_start();
   $user = $_POST["user"];
   $password = $_POST["pwd"];
-  $database = "csci305_" . $_POST["user"];
+  $database = "csci305_" . $user;
   $_SESSION["user"] = $user;
   $_SESSION["pwd"] = $password;
   $_SESSION["database"] = $database;
