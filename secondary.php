@@ -91,7 +91,7 @@
 			?>
 			<h2>Employees</h2>
 			<?php
-			    	$result = mysql_query("SELECT * FROM Employees");
+			    	$result = mysql_query("SELECT * FROM Employees;");
 					  if (!$result) 
 					    die("Query to show tuples from table failed!" . mysql_error());
 
@@ -118,7 +118,7 @@
 			?>
 			<h2>Carts</h2>
 			<?php 
-			    	$result = mysql_query("SELECT * FROM Carts");
+			    	$result = mysql_query("SELECT * FROM Carts ORDER BY cartID ASC;");
 					  if (!$result) 
 					    die("Query to show tuples from table failed!" . mysql_error());
 
@@ -143,7 +143,7 @@
 			?>
 			<h2>Checkout Log</h2>
 			<?php
-			    	$result = mysql_query("SELECT * FROM CheckedOut");
+			    	$result = mysql_query("SELECT * FROM CheckedOut ORDER BY cartID ASC;");
 					  if (!$result) 
 					    die("Query to show tuples from table failed!" . mysql_error());
 
