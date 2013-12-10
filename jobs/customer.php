@@ -56,57 +56,7 @@
         if (!$conn) die("Cound not connect to database");       
         mysql_select_db($_SESSION["database"]) or die("Unable to select database");
       ?>
-<!--      <h2>Customers</h2>
-      <?php
-        $result = mysql_query("SELECT * FROM Customers INNER JOIN CustomerInfo ON Customers.CustomerID=CustomerInfo.CustomerID;");
-        if (!$result) 
-          die("Query to show tuples from table failed!" . mysql_error());
 
-        $fields_num = mysql_num_fields($result);
-        echo "<table class=\"table table-hover\" ><thead><tr>";
-        // Print headers
-        for($i = 0; $i < $fields_num; $i++) {
-            $field = mysql_fetch_field($result);
-            echo "<th>{$field->name}</th>";
-        }
-        echo "</tr></thead>\n<tbody>\n";
-        
-        // Print data
-        while($row = mysql_fetch_row($result)) {
-            echo "<tr>";
-            foreach($row as $cell)
-                echo "<td>$cell</td>";
-            echo "</tr>\n";
-        }
-        echo "</tbody>\n</table>";
-        mysql_free_result($result);
-      ?>
-      <h2>Employees</h2>
-      <?php
-        $result = mysql_query("SELECT * FROM Employees;");
-        if (!$result) 
-          die("Query to show tuples from table failed!" . mysql_error());
-
-        $fields_num = mysql_num_fields($result);
-        echo "<table class=\"table table-hover\" ><thead><tr>";
-        // Print headers
-        for($i = 0; $i < $fields_num; $i++) {
-            $field = mysql_fetch_field($result);
-            echo "<th>{$field->name}</th>";
-        }
-        echo "</tr></thead>\n<tbody>\n";
-        
-        // Print data
-        while($row = mysql_fetch_row($result)) {
-            echo "<tr>";
-            foreach($row as $cell)
-                echo "<td>$cell</td>";
-            echo "</tr>\n";
-        }
-        echo "</tbody>\n</table>";
-        mysql_free_result($result);            
-      ?>
--->
       <h2>Carts</h2>
       <?php 
         $result = mysql_query("SELECT * FROM Carts ORDER BY cartID ASC;");
@@ -132,57 +82,7 @@
         echo "</tbody>\n</table>";
         mysql_free_result($result);
       ?>
-<!--      <h2>Checkout Log</h2>
-      <?php
-        $result = mysql_query("SELECT * FROM CheckedOut ORDER BY cartID ASC;");
-        if (!$result) 
-          die("Query to show tuples from table failed!" . mysql_error());
 
-        $fields_num = mysql_num_fields($result);
-        echo "<table class=\"table table-hover\" ><thead><tr>";
-        // Print headers
-        for($i = 0; $i < $fields_num; $i++) {
-            $field = mysql_fetch_field($result);
-            echo "<th>{$field->name}</th>";
-        }
-        echo "</tr></thead>\n<tbody>\n";
-        
-        // Print data
-        while($row = mysql_fetch_row($result)) {
-            echo "<tr>";
-            foreach($row as $cell)
-                echo "<td>$cell</td>";
-            echo "</tr>\n";
-        }
-        echo "</tbody>\n</table>";
-        mysql_free_result($result);
-      ?>
-      <h2>Items In Inventory</h2>
-      <?php
-        $result = mysql_query("SELECT * FROM StockShelves");
-        if (!$result) 
-          die("Query to show tuples from table failed!" . mysql_error());
-
-        $fields_num = mysql_num_fields($result);
-        echo "<table class=\"table table-hover\" ><thead><tr>";
-        // Print headers
-        for($i = 0; $i < $fields_num; $i++) {
-            $field = mysql_fetch_field($result);
-            echo "<th>{$field->name}</th>";
-        }
-        echo "</tr></thead>\n<tbody>\n";
-        
-        // Print data
-        while($row = mysql_fetch_row($result)) {
-            echo "<tr>";
-            foreach($row as $cell)
-                echo "<td>$cell</td>";
-            echo "</tr>\n";
-        }
-        echo "</tbody>\n</table>";
-        mysql_free_result($result);
-      ?>
--->
       <h2>Items On Shelves</h2>
       <?php
         $result = mysql_query("SELECT ItemList.item, count, price, description FROM GroceryShelves INNER JOIN ItemList ON GroceryShelves.item=ItemList.item ORDER BY ItemList.item;");
@@ -213,16 +113,22 @@
 	<form action="actions/add_customer.php" method="post">
 	<input type="text" name="name" placeholder="Customer Name">
 	<input type="text" name="address" placeholder="Customer Address">
-	<input type="submit" value="Welcome!">
+	<input type="submit" value="Welcome!">     (Note: Returning customers just need to enter their name)
 	</form>
 
       <h2>Add an item to your cart</h2>
 	<form action="actions/add_item.php" method="post">
-      <?php
+     <?php
+        session_start();
+        $conn = mysql_connect("db.eg.bucknell.edu",$_SESSION["user"],$_SESSION["pwd"]);
+        if (!$conn) die("Cound not connect to database");       
+        mysql_select_db($_SESSION["database"]) or die("Unable to select database");
+
 	// Get carts
+	echo "Cart Number:";
 	$result = mysql_query("SELECT cartID FROM Customers;");
 	if (!$result) 
-	die("Query to show tables failed");
+	  die("Query to show tuples from table failed!" . mysql_error());
 	$num_row = mysql_num_rows($result);
 
 	echo "<select name=\"cart\" size=\"1\" Font size=\"2\">";
@@ -233,6 +139,7 @@
 	echo "</select>";
 
 	// Get items
+	echo "  Item:";
 	$result = mysql_query("SELECT item FROM GroceryShelves;");
 	if (!$result) 
 	die("Query to show tables failed?");
@@ -246,7 +153,7 @@
 	echo "</select>";
       ?>
 	<input type="text" name="quantity" placeholder="Quantity">
-	<input type="submit" value="Submit">
+	<input type="submit" value="Submit">  
 	</form>
 
     </div> <!-- /container -->
