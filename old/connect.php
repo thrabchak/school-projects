@@ -1,10 +1,14 @@
-
+<!DOCTYPE html>
+<html><head></head>
+<body>
 <?php 
   session_start();
   $user = $_SESSION["user"];
   $password = $_SESSION["pwd"];
   $database = $_SESSION["database"];
+  echo $user . "<br>" . $password . "<br>" . $database . "<br>";
   $conn = mysql_connect("db.eg.bucknell.edu",$user,$password);
+<<<<<<< HEAD:connect.php
 
 /*
   echo $_SESSION["user"];
@@ -15,6 +19,10 @@
   if (!$conn) 
      die("Cound not connect to database");
 
+=======
+  if (!$conn) die("Cound not connect to database");
+  
+>>>>>>> bc0d7cb4328f8aaa66074d49d3d8554560eb19b4:old/connect.php
   mysql_select_db($database) or die("Unable to select database");
 
   $result = mysql_query("SHOW TABLES");
@@ -36,6 +44,11 @@
   
   mysql_free_result($result);
   mysql_close($conn);
+<<<<<<< HEAD:connect.php
 
 ?>
 
+=======
+?></body>
+</html>
+>>>>>>> bc0d7cb4328f8aaa66074d49d3d8554560eb19b4:old/connect.php

@@ -46,8 +46,8 @@
       </div>
 
       <div class="jumbotron">
-        <h1>Manager</h1>
-        <p>This is the manager view.</p>
+        <h1>Customer</h1>
+        <p></p>
       </div>
     <div class="container">
       <?php
@@ -55,6 +55,31 @@
         $conn = mysql_connect("db.eg.bucknell.edu",$_SESSION["user"],$_SESSION["pwd"]);
         if (!$conn) die("Cound not connect to database");       
         mysql_select_db($_SESSION["database"]) or die("Unable to select database");
+      ?>
+      <h2>Customers</h2>
+      <?php
+        $result = mysql_query("SELECT * FROM Customers INNER JOIN CustomerInfo ON Customers.CustomerID=CustomerInfo.CustomerID;");
+        if (!$result) 
+          die("Query to show tuples from table failed!" . mysql_error());
+
+        $fields_num = mysql_num_fields($result);
+        echo "<table class=\"table table-hover\" ><thead><tr>";
+        // Print headers
+        for($i = 0; $i < $fields_num; $i++) {
+            $field = mysql_fetch_field($result);
+            echo "<th>{$field->name}</th>";
+        }
+        echo "</tr></thead>\n<tbody>\n";
+        
+        // Print data
+        while($row = mysql_fetch_row($result)) {
+            echo "<tr>";
+            foreach($row as $cell)
+                echo "<td>$cell</td>";
+            echo "</tr>\n";
+        }
+        echo "</tbody>\n</table>";
+        mysql_free_result($result);
       ?>
       <h2>Employees</h2>
       <?php
