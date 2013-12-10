@@ -56,9 +56,9 @@
         if (!$conn) die("Cound not connect to database");       
         mysql_select_db($_SESSION["database"]) or die("Unable to select database");
       ?>      
-      <h2>Active Customers</h2>
+      <h2>Active Carts</h2>
       <?php
-        $result = mysql_query("SELECT * FROM CheckedOut ORDER BY cartID ASC;");
+        $result = mysql_query("SELECT DISTINCT Carts.cartID from Carts WHERE Carts.cartID NOT IN (SELECT CheckedOut.cartID FROM CheckedOut);");
         if (!$result) 
           die("Query to show tuples from table failed!" . mysql_error());
 
@@ -82,7 +82,36 @@
         mysql_free_result($result);
       ?>
 			<h2>Active Cashiers</h2>
-			<h2>Checkout Customer</h2>
+			<?php
+        $result = mysql_query("SELECT * FROM Employees WHERE jobTitle='Cashier';");
+        if (!$result) 
+          die("Query to show tuples from table failed!" . mysql_error());
+
+        $fields_num = mysql_num_fields($result);
+        echo "<table class=\"table table-hover\" ><thead><tr>";
+        // Print headers
+        for($i = 0; $i < $fields_num; $i++) {
+            $field = mysql_fetch_field($result);
+            echo "<th>{$field->name}</th>";
+        }
+        echo "</tr></thead>\n<tbody>\n";
+        
+        // Print data
+        while($row = mysql_fetch_row($result)) {
+            echo "<tr>";
+            foreach($row as $cell)
+                echo "<td>$cell</td>";
+            echo "</tr>\n";
+        }
+        echo "</tbody>\n</table>";
+        mysql_free_result($result);
+      ?>
+			<h2>Checkout Cart</h2>
+			<form action="actions/rem_employee.php" method="post" onsubmit="return confirm('Do you really want to remove the employee?');">
+			<input type="text" name="idnum" placeholder="cartID">
+			<input type="text" name="idnum" placeholder="Cashier Employee ID">
+			<input type="submit" value="Submit">
+			</form>
 
     </div> <!-- /container -->
 
