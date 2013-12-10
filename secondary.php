@@ -18,7 +18,7 @@
 		<!-- Static navbar -->
       <div class="navbar navbar-default" role="navigation">
       	<div class="navbar-header">
-      		<a class="navbar-brand" href="test.html">CS305 - Grocery Store</a>
+      		<a class="navbar-brand" href="index.html">CS305 - Grocery Store</a>
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
@@ -40,7 +40,7 @@
             </li>
           </ul> -->
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="http://www.eg.bucknell.edu/~trh010/cs305/test.html">Login Page</a></li>
+            <li><a href="http://www.eg.bucknell.edu/~trh010/cs305/index.html">Login Page</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
