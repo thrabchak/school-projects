@@ -25,17 +25,17 @@
 
 			<form class="form-signin" action="main.php" method="post"  role="form">
 				<h2 class="form-signin-heading">Please sign in to database</h2>
-				<input type="text" name="user" class="form-control" placeholder="Username" required autofocus><br>
+				<input type="text" name="user" class="form-control" placeholder="Username" required autofocus>
 				<input type="password" name="pwd" class="form-control" placeholder="Password" required>
-				<br>
-			User Job: <select name="job" size="1" Font size="2">
+			<h4> User Role: <select name="job" size="1" Font size="2">
 				<option value="admin" selected>Admin</option>
 				<option value="customer">Customer</option>
 				<option value="manager">Manager</option>
 				<option value="cashier">Cashier</option>
 				<option value="stocker">Stocker</option>
-				</select>
-				<input type="submit" value="Submit">
+				</select></h4>
+				<input type="submit" value="Submit" class="btn btn-lg btn-primary btn-block">
+				
 			</form>
 		</div>
 	</body>
