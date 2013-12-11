@@ -58,7 +58,7 @@
       ?>
       <h2>Customers</h2>
       <?php
-        $result = mysql_query("SELECT * FROM Customers INNER JOIN CustomerInfo ON Customers.CustomerID=CustomerInfo.CustomerID;");
+        $result = mysql_query("SELECT cartID,Customers.customerID,customerName,customerAddress FROM Customers INNER JOIN CustomerInfo ON Customers.CustomerID=CustomerInfo.CustomerID;");
         if (!$result) 
           die("Query to show tuples from table failed!" . mysql_error());
 
@@ -106,7 +106,32 @@
         echo "</tbody>\n</table>";
         mysql_free_result($result);            
       ?>
-      <h2>Carts</h2>
+			<h2>Active Carts</h2>
+      <?php
+        $result = mysql_query("SELECT A.cartID, item, itemQuantity FROM (SELECT cartID FROM Customers WHERE cartID NOT IN (SELECT cartID FROM CheckedOut)) A LEFT JOIN Carts B ON A.cartID = B.cartID ORDER BY A.cartID;");
+        if (!$result) 
+          die("Query to show tuples from table failed!" . mysql_error());
+
+        $fields_num = mysql_num_fields($result);
+        echo "<table class=\"table table-hover\" ><thead><tr>";
+        // Print headers
+        for($i = 0; $i < $fields_num; $i++) {
+            $field = mysql_fetch_field($result);
+            echo "<th>{$field->name}</th>";
+        }
+        echo "</tr></thead>\n<tbody>\n";
+        
+        // Print data
+        while($row = mysql_fetch_row($result)) {
+            echo "<tr>";
+            foreach($row as $cell)
+                echo "<td>$cell</td>";
+            echo "</tr>\n";
+        }
+        echo "</tbody>\n</table>";
+        mysql_free_result($result);
+      ?>
+      <h2>All Carts Ever</h2>
       <?php 
         $result = mysql_query("SELECT * FROM Carts ORDER BY cartID ASC;");
         if (!$result) 

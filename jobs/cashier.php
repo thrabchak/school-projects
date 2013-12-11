@@ -58,7 +58,7 @@
       ?>      
       <h2>Active Carts</h2>
       <?php
-        $result = mysql_query("SELECT DISTINCT cartID FROM  Customers WHERE cartID NOT IN (SELECT cartID FROM CheckedOut);");
+        $result = mysql_query("SELECT A.cartID, item, itemQuantity FROM (SELECT cartID FROM Customers WHERE cartID NOT IN (SELECT cartID FROM CheckedOut)) A LEFT JOIN Carts B ON A.cartID = B.cartID ORDER BY A.cartID;");
         if (!$result) 
           die("Query to show tuples from table failed!" . mysql_error());
 
@@ -111,7 +111,7 @@
      	<?php
         // Get carts
 				echo "Cart Number:";
-				$result = mysql_query("SELECT DISTINCT Carts.cartID from Carts WHERE Carts.cartID NOT IN (SELECT CheckedOut.cartID FROM CheckedOut);");
+				$result = mysql_query("SELECT DISTINCT cartID FROM  Customers WHERE cartID NOT IN (SELECT cartID FROM CheckedOut);");
 				if (!$result) 
 					die("Query to show tuples from table failed!" . mysql_error());
 				$num_row = mysql_num_rows($result);
