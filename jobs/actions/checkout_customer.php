@@ -31,7 +31,7 @@
 	$result = mysql_query("INSERT INTO CustomerInfo VALUES('$idnum', '$name', '$address');");
 	$result = mysql_query("INSERT INTO Customers VALUES('$cartnum', '$idnum');");
 	
-	$url = "http://eg.bucknell.edu/~kmw023/cs305/jobs/customer.php";
+	$url = "../customer.php";
 	while (ob_get_status()) 
 	{
     		ob_end_clean();

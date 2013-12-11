@@ -10,7 +10,7 @@
 	// Remove table
 	$result = mysql_query("DELETE FROM Employees WHERE employeeID = $idnum;");
 	
-	$url = "http://eg.bucknell.edu/~kmw023/cs305/jobs/manager.php";
+	$url = "../manager.php";
 	while (ob_get_status()) 
 	{
     		ob_end_clean();

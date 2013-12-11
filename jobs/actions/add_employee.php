@@ -25,7 +25,7 @@
 	// Create new table value
 	$result = mysql_query("INSERT INTO Employees VALUES('$idnum', '$name', '$address', '$job');");
 	
-	$url = "http://eg.bucknell.edu/~kmw023/cs305/jobs/manager.php";
+	$url = "../manager.php";
 	while (ob_get_status()) 
 	{
     		ob_end_clean();

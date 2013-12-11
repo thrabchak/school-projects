@@ -7,7 +7,8 @@
   $_SESSION["pwd"] = $password;
   $_SESSION["database"] = $database;
   $job = $_POST["job"];
-  $url = "http://eg.bucknell.edu/~".$user."/cs305/";
+	$url = "http://eg.bucknell.edu/~".$user."/cs305/";
+  $_SESSION["url"] = "http://eg.bucknell.edu/~".$user."/cs305/";
   switch ($job) {
     case "admin":
       header("Location: ". "./jobs/admin.php");

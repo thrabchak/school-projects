@@ -59,7 +59,7 @@
 	  		die("Query (7) to show tuples from table failed!" . mysql_error());
 	}
 
-	$url = "http://eg.bucknell.edu/~kmw023/cs305/jobs/customer.php";
+	$url = "../customer.php";
 	while (ob_get_status()) 
 	{
     		ob_end_clean();

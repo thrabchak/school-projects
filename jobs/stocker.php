@@ -107,24 +107,24 @@
         mysql_free_result($result);
       ?>
 			<h2>Stock Shelves</h2>
-			<form action="actions/checkout_customer.php" method="post">
-     	<?php
-        // Get carts
-				echo "Item:";
-				$result = mysql_query("SELECT item FROM StockShelves");
-				if (!$result) 
-					die("Query to show tuples from table failed!" . mysql_error());
-				$num_row = mysql_num_rows($result);
+			<form action="actions/stock_shelves.php" method="post">
+		   	<?php
+		      // Get carts
+					echo "Item:";
+					$result = mysql_query("SELECT item FROM StockShelves");
+					if (!$result) 
+						die("Query to show tuples from table failed!" . mysql_error());
+					$num_row = mysql_num_rows($result);
 
-				echo "<select name=\"cart\" size=\"1\" Font size=\"2\">";
-				for($i = 0; $i < $num_row; $i++) {
-					$tablename = mysql_fetch_row($result);
-					echo "<option value = \"{$tablename[0]}\" >{$tablename[0]}</option>";
-				}
-				echo "</select>  ";				
-			?>
-			<input type="text" name="quantity" placeholder="Quantity">
-			<input type="submit" value="Submit">  
+					echo "<select name=\"item\" size=\"1\" Font size=\"2\">";
+					for($i = 0; $i < $num_row; $i++) {
+						$tablename = mysql_fetch_row($result);
+						echo "<option value = \"{$tablename[0]}\" >{$tablename[0]}</option>";
+					}
+					echo "</select>  ";				
+				?>
+				<input type="text" name="quantity" placeholder="Quantity">
+				<input type="submit" value="Submit">  
 			</form>
 			 <?php mysql_close($conn);?>
     </div> <!-- /container -->
