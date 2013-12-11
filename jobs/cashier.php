@@ -108,22 +108,10 @@
       ?>
 			<h2>Checkout Cart</h2>
 			<form action="actions/checkout_customer.php" method="post">
-			<input type="text" name="idnum" placeholder="cartID">
-			<input type="text" name="idnum" placeholder="Cashier Employee ID">
-			<input type="submit" value="Submit">
-			</form>
-
-			<h2>Add an item to your cart</h2>
-			<form action="actions/add_item.php" method="post">
      	<?php
-        session_start();
-        $conn = mysql_connect("db.eg.bucknell.edu",$_SESSION["user"],$_SESSION["pwd"]);
-        if (!$conn) die("Cound not connect to database");       
-        mysql_select_db($_SESSION["database"]) or die("Unable to select database");
-
-				// Get carts
+        // Get carts
 				echo "Cart Number:";
-				$result = mysql_query("SELECT cartID FROM Customers;");
+				$result = mysql_query("SELECT DISTINCT Carts.cartID from Carts WHERE Carts.cartID NOT IN (SELECT CheckedOut.cartID FROM CheckedOut);");
 				if (!$result) 
 					die("Query to show tuples from table failed!" . mysql_error());
 				$num_row = mysql_num_rows($result);
@@ -133,25 +121,24 @@
 					$tablename = mysql_fetch_row($result);
 					echo "<option value = \"{$tablename[0]}\" >{$tablename[0]}</option>";
 				}
-				echo "</select>";
+				echo "</select>  ";
 
 				// Get items
-				echo "  Item:";
-				$result = mysql_query("SELECT item FROM GroceryShelves;");
+				echo "  Employee ID:";
+				$result = mysql_query("SELECT * FROM Employees WHERE jobTitle='Cashier';");
 				if (!$result) 
 				die("Query to show tables failed?");
 				$num_row = mysql_num_rows($result);
 
-				echo "<select name=\"item\" size=\"1\" Font size=\"2\">";
+				echo "<select name=\"employeeID\" size=\"1\" Font size=\"2\">";
 				for($i = 0; $i < $num_row; $i++) {
 					$tablename = mysql_fetch_row($result);
 					echo "<option value = \"{$tablename[0]}\" >{$tablename[0]}</option>";
 				}
-				echo "</select>";
-						?>
-				<input type="text" name="quantity" placeholder="Quantity">
-				<input type="submit" value="Submit">  
-				</form>
+				echo "</select>   ";
+			?>
+			<input type="submit" value="Submit">  
+			</form>
 
     </div> <!-- /container -->
 
