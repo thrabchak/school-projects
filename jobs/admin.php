@@ -108,7 +108,19 @@
       ?>
 			<h2>Active Carts</h2>
       <?php
-        $result = mysql_query("SELECT A.cartID, item, itemQuantity FROM (SELECT cartID FROM Customers WHERE cartID NOT IN (SELECT cartID FROM CheckedOut)) A LEFT JOIN Carts B ON A.cartID = B.cartID ORDER BY A.cartID;");
+        $result = mysql_query("Select cartID, customerName, item, itemQuantity FROM (
+    			SELECT A.cartID, item, itemQuantity, customerID 	
+    			FROM (SELECT * FROM Customers 		                                         
+          WHERE cartID NOT IN (SELECT cartID 
+                               FROM
+                               CheckedOut)) A 
+    			LEFT JOIN Carts B 
+    			ON A.cartID = B.cartID 
+					ORDER BY A.cartID)C
+					JOIN
+					CustomerInfo D
+					ON C.customerID=D.customerID
+					ORDER BY cartID;");
         if (!$result) 
           die("Query to show tuples from table failed!" . mysql_error());
 

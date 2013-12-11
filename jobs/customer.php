@@ -47,7 +47,7 @@
 
       <div class="jumbotron">
         <h1>Customer</h1>
-        <p>Customers can get a new cart and add items to that cart. To checkout cart, go to cashier view</p>
+        <p>Customers can get a new cart and add items to that cart. A customer can have multiple carts, but must also checkout twice. To checkout cart, go to cashier view</p>
       </div>
     <div class="container">
       <?php
@@ -58,7 +58,19 @@
       ?>
 			<h2>Active Carts</h2>
       <?php
-        $result = mysql_query("SELECT A.cartID, item, itemQuantity FROM (SELECT cartID FROM Customers WHERE cartID NOT IN (SELECT cartID FROM CheckedOut)) A LEFT JOIN Carts B ON A.cartID = B.cartID ORDER BY A.cartID;");
+        $result = mysql_query("Select cartID, customerName, item, itemQuantity FROM (
+    			SELECT A.cartID, item, itemQuantity, customerID 	
+    			FROM (SELECT * FROM Customers 		                                         
+          WHERE cartID NOT IN (SELECT cartID 
+                               FROM
+                               CheckedOut)) A 
+    			LEFT JOIN Carts B 
+    			ON A.cartID = B.cartID 
+					ORDER BY A.cartID)C
+					JOIN
+					CustomerInfo D
+					ON C.customerID=D.customerID
+					ORDER BY cartID;");
         if (!$result) 
           die("Query to show tuples from table failed!" . mysql_error());
 
