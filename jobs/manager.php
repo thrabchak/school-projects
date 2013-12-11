@@ -47,7 +47,7 @@
 
       <div class="jumbotron">
         <h1>Manager</h1>
-        <p>This is the manager view.</p>
+        <p>Managers can hire or fire employees</p>
       </div>
     <div class="container">
       <?php

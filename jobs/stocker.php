@@ -47,7 +47,7 @@
 
       <div class="jumbotron">
         <h1>Stocker</h1>
-        <p></p>
+        <p>Stockers can move items from the store room (inventory) to the grocery shelves</p>
       </div>
     <div class="container">
       <?php

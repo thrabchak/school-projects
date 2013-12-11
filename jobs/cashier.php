@@ -47,7 +47,7 @@
 
       <div class="jumbotron">
         <h1>Cashier</h1>
-        <p></p>
+        <p>Cashiers can checkout active carts</p>
       </div>
     <div class="container">
       <?php
@@ -116,7 +116,7 @@
 					die("Query to show tuples from table failed!" . mysql_error());
 				$num_row = mysql_num_rows($result);
 
-				echo "<select name=\"cart\" size=\"1\" Font size=\"2\">";
+				echo "<select name=\"cartID\" size=\"1\" Font size=\"2\">";
 				for($i = 0; $i < $num_row; $i++) {
 					$tablename = mysql_fetch_row($result);
 					echo "<option value = \"{$tablename[0]}\" >{$tablename[0]}</option>";
