@@ -121,22 +121,9 @@
 					$tablename = mysql_fetch_row($result);
 					echo "<option value = \"{$tablename[0]}\" >{$tablename[0]}</option>";
 				}
-				echo "</select>  ";
-
-				// Get items
-				echo "  Quantity:";
-				$result = mysql_query("SELECT count FROM StockShelves");
-				if (!$result) 
-				die("Query to show tables failed?");
-				$num_row = mysql_num_rows($result);
-
-				echo "<select name=\"employeeID\" size=\"1\" Font size=\"2\">";
-				for($i = 0; $i < $num_row; $i++) {
-					$tablename = mysql_fetch_row($result);
-					echo "<option value = \"{$tablename[0]}\" >{$tablename[0]}</option>";
-				}
-				echo "</select>   ";
+				echo "</select>  ";				
 			?>
+			<input type="text" name="quantity" placeholder="Quantity">
 			<input type="submit" value="Submit">  
 			</form>
 			 <?php mysql_close($conn);?>
