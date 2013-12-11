@@ -58,7 +58,7 @@
       ?>      
       <h2>Active Carts</h2>
       <?php
-        $result = mysql_query("SELECT DISTINCT Carts.cartID from Carts WHERE Carts.cartID NOT IN (SELECT CheckedOut.cartID FROM CheckedOut);");
+        $result = mysql_query("SELECT DISTINCT cartID FROM  Customers WHERE cartID NOT IN (SELECT cartID FROM CheckedOut);");
         if (!$result) 
           die("Query to show tuples from table failed!" . mysql_error());
 
