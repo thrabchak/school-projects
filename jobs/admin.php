@@ -169,6 +169,7 @@
         mysql_free_result($result);
       ?>
       <h2>Checkout Log</h2>
+      <p><b>note: </b>the cartID is the second column</p>
       <?php
         $result = mysql_query("SELECT * FROM CheckedOut ORDER BY cartID ASC;");
         if (!$result) 
