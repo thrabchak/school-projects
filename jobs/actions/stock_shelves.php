@@ -13,6 +13,11 @@
 	if (!$result) die("Query1 failed!" . mysql_error());
 	$row = mysql_fetch_row($result);
 	$num_in_stock = intval($row[0]);
+
+	$result = mysql_query("SELECT DISTINCT count FROM GroceryShelves WHERE item='$item';");
+	if (!$result) die("Query1 failed!" . mysql_error());
+	$row = mysql_fetch_row($result);
+	$num_on_shelves = intval($row[0]);
 	//echo "<br>".$item . "<br>" . $quantity . "<br>" . $num_in_stock . "<br>";
 	
 
@@ -20,7 +25,7 @@
 	if($num_in_stock > $quantity and $num_in_stock > 0){
 
 		// update GroceryShelves
-		$new_onShelves_quant = $num_in_stock + $quantity;
+		$new_onShelves_quant = $num_on_shelves + $quantity;
 		//echo $new_onShelves_quant . "<br>";
 		$result = mysql_query("UPDATE GroceryShelves SET GroceryShelves.count=($new_onShelves_quant) WHERE item='$item';");
 		if (!$result) die("Query2 failed!" . mysql_error());
