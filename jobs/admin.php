@@ -144,6 +144,7 @@
         mysql_free_result($result);
       ?>
       <h2>All Carts Ever</h2>
+      <p><b>note: </b>empty carts are not displayed here</p>
       <?php 
         $result = mysql_query("SELECT * FROM Carts ORDER BY cartID ASC;");
         if (!$result) 
