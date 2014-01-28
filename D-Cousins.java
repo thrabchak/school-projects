@@ -14,7 +14,7 @@ public class Cousins {
 		Node currentNode = tree;
 		Node spec = null;
 
-		for (in i = 1; i < values.size(); i++){
+		for (int i = 1; i < values.size(); i++){
 			if (i != 1 && previousValue + 1 != values.get(i))
 				currentNode = q.remove();
 
