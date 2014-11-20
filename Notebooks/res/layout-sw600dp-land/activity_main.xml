@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e5e5e5"
+    tools:context=".MainActivity" >
+
+    <TextView
+        android:id="@+id/tv_no_notebooks"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:fontFamily="sans-serif-light"
+        android:text="@string/string_no_notebooks"
+        android:textColor="@android:color/secondary_text_light"
+        android:textSize="@dimen/normal_text_size"
+        android:textStyle="italic" />
+
+    <GridView
+        android:layoutAnimation="@anim/grid_anim"
+        android:id="@+id/notebook_grid_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:horizontalSpacing="18dp"
+        android:numColumns="5"
+        android:padding="18dp"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="18dp" >
+    </GridView>
+
+</RelativeLayout>

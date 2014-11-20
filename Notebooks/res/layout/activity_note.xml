@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toolbar_drawer"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">   
+    
+    <!-- The main content view -->
+	<FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"  >
+	  	<com.ctk.notebooks.Utils.LockableScrollView
+	  	    android:id="@+id/note_scroll_view"
+	  	    android:layout_width="match_parent"
+	 		android:layout_height="wrap_content">
+	  	    <LinearLayout 
+		        android:layout_width="match_parent"
+		 		android:layout_height="wrap_content"
+		 		android:orientation="vertical">
+			   	<com.ctk.notebooks.NoteView
+			        android:id="@+id/note_view"
+			        android:layout_width="match_parent"
+			        android:layout_height="1280dp">	
+			   	</com.ctk.notebooks.NoteView>
+	  		</LinearLayout>
+	 	</com.ctk.notebooks.Utils.LockableScrollView>
+	</FrameLayout>   
+    
+    <!-- The navigation drawer -->
+    <LinearLayout
+       	android:id="@+id/toolbar"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" 
+        android:layout_gravity="end"
+        android:orientation="vertical"
+        android:background="#fff">
+		<ScrollView
+		    android:layout_width="wrap_content"
+	        android:layout_height="wrap_content">
+		    <LinearLayout 
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:isScrollContainer="true">
+			   	
+		  	    <!-- Toolbar Header -->
+			  	<LinearLayout 
+			  	    android:layout_width="wrap_content"
+			  	    android:layout_height="wrap_content"
+			  	    android:orientation="vertical"
+		        	android:padding="12dp">
+				  	<TextView
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:text="@string/toolbox_name"
+				        android:fontFamily="sans-serif-bold"
+				        android:textSize="22sp"
+				        android:textColor="#33B5E5"/>
+				</LinearLayout>
+				<View
+				    android:layout_width="match_parent"
+				    android:layout_height="2dp"
+				    android:background="#0099CC"/>
+				
+				<!-- Toolbar Contents -->
+				<LinearLayout
+					android:layout_width="match_parent"
+			  	    android:layout_height="wrap_content"
+			  	    android:orientation="vertical"
+		        	android:padding="12dp"
+		        	android:gravity="center_horizontal"
+        			android:animateLayoutChanges="true">
+				  	
+				    <ImageView 
+				        android:id="@+id/tool_pen"
+				        android:src="@drawable/ic_eraser"
+				        android:layout_width="50dp"
+				        android:layout_height="50dp"
+				        android:background="@drawable/selectable_button_background_selector"
+				        android:padding="4dp"/>
+				    <ImageView 
+				        android:id="@+id/tool_eraser"
+				        android:src="@drawable/ic_eraser"
+				        android:layout_width="50dp"
+				        android:layout_height="50dp"
+				        android:background="@drawable/selectable_button_background_selector"
+				        android:padding="4dp"/>
+				  	
+				  	<!-- Main Color Swatch -->
+				  	<LinearLayout
+				  	    android:id="@+id/swatch_main_group"
+				  	    android:layout_width="wrap_content"
+				  	    android:layout_height="wrap_content"
+				  	    android:orientation="vertical">
+					  	<TextView
+					        android:layout_width="wrap_content"
+					        android:layout_height="wrap_content"
+					        android:text="@string/toolbox_color"
+					        android:fontFamily="sans-serif-medium"
+					        android:textSize="18sp"
+					        android:padding="8dp"/>
+					  	<com.ctk.notebooks.Utils.ColorPickerSwatch
+						        android:id="@+id/swatch_main"
+						        android:layout_margin="4dp"
+						        android:layout_width="50dp"
+						        android:layout_height="50dp"/>
+				  	</LinearLayout>
+				  	
+				  	<!-- Seconday Color Swatches - used for choosing color -->
+				  	<LinearLayout
+				  	    android:id="@+id/swatch_secondary_group"
+				  	    android:layout_width="wrap_content"
+				  	    android:layout_height="wrap_content"
+				  	    android:orientation="vertical"
+				  	    android:visibility="gone" >					  	
+					  	<com.ctk.notebooks.Utils.ColorPickerSwatch
+					        android:id="@+id/swatch_1"
+					        android:layout_margin="4dp"
+					        android:layout_width="50dp"
+					        android:layout_height="50dp"/>
+					    <com.ctk.notebooks.Utils.ColorPickerSwatch
+					        android:id="@+id/swatch_2"
+					        android:layout_margin="4dp"
+					        android:layout_width="50dp"
+					        android:layout_height="50dp"/>
+					    <com.ctk.notebooks.Utils.ColorPickerSwatch
+					        android:id="@+id/swatch_3"
+					        android:layout_margin="4dp"
+					        android:layout_width="50dp"
+					        android:layout_height="50dp"/>
+					    <com.ctk.notebooks.Utils.ColorPickerSwatch
+					        android:id="@+id/swatch_4"
+					        android:layout_margin="4dp"
+					        android:layout_width="50dp"
+					        android:layout_height="50dp"/>
+					    <com.ctk.notebooks.Utils.ColorPickerSwatch
+					        android:id="@+id/swatch_5"
+					        android:layout_margin="4dp"
+					        android:layout_width="50dp"
+					        android:layout_height="50dp"/>
+					    <com.ctk.notebooks.Utils.ColorPickerSwatch
+					        android:id="@+id/swatch_6"
+					        android:layout_margin="4dp"
+					        android:layout_width="50dp"
+					        android:layout_height="50dp"/>
+				    </LinearLayout>
+				    <TextView
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:text="@string/toolbox_size"
+				        android:fontFamily="sans-serif-medium"
+				        android:textSize="18sp"
+				        android:padding="8dp"/>
+				    <com.ctk.notebooks.Utils.VerticalSeekBar
+				        android:id="@+id/verticalSeekBar"
+				        android:layout_width="wrap_content"
+				        android:layout_height="150dp"
+				        android:max="5"
+				        android:progress="1" />
+		        </LinearLayout>
+			</LinearLayout>
+		</ScrollView>
+	</LinearLayout>
+</android.support.v4.widget.DrawerLayout>
