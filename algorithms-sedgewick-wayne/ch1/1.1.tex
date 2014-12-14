@@ -4,10 +4,10 @@
 \usepackage{amsfonts}
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
+\usepackage{qtree}
 
 \newenvironment{problem}[2][Problem]{\begin{trivlist}
 	\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2}]}{\end{trivlist}}
-\renewcommand\part[1]{\vspace{.10in}\textbf{\\(#1)}}
 
 \title{Homework 1.1}
 \author{Thomas Hrabchak}
@@ -18,17 +18,23 @@
 
 \begin{problem}{1.1.1}
 \end{problem}
-\part{a} \( (0+15)/2 =7 \)
-\part{b} 0.000002 * 100000000.1 = 200.0000002
-\part{c} \( true \&\& false \| true \&\& true = false \)
+
+
+\begin{description}
+  \item[a] \( (0+15)/2 =7 \)
+  \item[b] 0.000002 * 100000000.1 = 200.0000002
+  \item[c] \( true \&\& false \| true \&\& true = false \)
+\end{description}
 
 \begin{problem}{1.1.2}
 \end{problem}
 
-\part{a} (1+2.236)/2=1.618, double
-\part{b} 1+2+3+4.0=9.0, double
-\part{c} \(4.1 >= 4 \rightarrow true\), boolean
-\part{d} 1 + 2 + "3" = 33, String
+\begin{description}
+  \item[a] (1+2.236)/2=1.618, double
+  \item[b] 1+2+3+4.0=9.0, double
+  \item[c] \(4.1 >= 4 \rightarrow true\), boolean
+  \item[d] 1 + 2 + "3" = 33, String
+\end{description}
 
 \begin{problem}{1.1.3}coded
 \end{problem}
@@ -36,10 +42,12 @@
 \begin{problem}{1.1.4}
 \end{problem}
 
-\part{a} no need for 'then'
-\part{b} need parenthesis around boolean statement
-\part{c} ok
-\part{d} need semicolon after c=0
+\begin{description}
+  \item[a] no need for 'then'
+  \item[b] need parenthesis around boolean statement
+  \item[c] ok
+  \item[d] need semicolon after c=0
+\end{description}
 
 \begin{problem}{1.1.5}
 \end{problem}
@@ -61,23 +69,20 @@ else
 \begin{problem}{1.1.7}
 \end{problem}
 
-\part{a} 3.0000
-\part{b} \( \sum\limits_{i=1}^{1000} i = \frac{1000^2 + 1000}{2} = 500500 \)
-\part{c} \( (\lg 1000)  \times 1000 = 9 \times 1000 = 9000\)
+\begin{description}
+  \item[a] 3.0000
+  \item[b] \( \sum\limits_{i=1}^{1000} i = \frac{1000^2 + 1000}{2} = 500500 \)
+  \item[c] \( (\lg 1000)  \times 1000 = 9 \times 1000 = 9000\)
+\end{description}
 
 \begin{problem}{1.1.8}
 \end{problem}
 
-\part{a} b
-\part{b} 197
-\part{c} e
-
-\begin{problem}{1.1.9}
-\end{problem}
-
-\part{a} b
-\part{b} 197
-\part{c} e
+\begin{description}
+  \item[a] b
+  \item[b] 197
+  \item[c] e
+\end{description}
 
 \begin{problem}{1.1.9} coded
 \end{problem}
@@ -94,5 +99,74 @@ a[] was never initialized
 \end{problem}
 
 0 1 2 3 4 5 6 7 8 9
+
+\begin{problem}{1.1.13} coded
+\end{problem}
+
+\begin{problem}{1.1.14} coded
+\end{problem}
+
+\begin{problem}{1.1.15} coded
+\end{problem}
+
+\begin{problem}{1.1.16 }
+\end{problem}
+
+\Tree [.exR1(6) 
+	[.exR1(3) 
+		exR1(0)		
+		3 
+		[.exR1(1) 
+			exR1(-2) 
+			1
+			exR1(-1) 
+			1
+		]
+		!\qsetw{1cm}
+		3 
+	]
+	6 
+	[.exR1(4) 
+		[.exR1(1) 
+			exR1(-2)
+			1 
+			exR1(-1) 
+			1
+		] 
+		4
+		[.exR1(2) 
+			exR1(-1) 
+			2
+			exR1(0)
+			2 
+		] 
+		4
+	]
+	!\qsetw{8cm}
+	6 
+]
+\\\\\\\
+To get the answer, do an inorder traversal of the above tree.  
+output: 311361142246
+
+\begin{problem}{1.1.17 }
+\end{problem}
+
+The base case will never be reached.
+
+\begin{problem}{1.1.34 }
+\end{problem}
+
+\begin{itemize}
+  \item Filter. Keep a max/min int, compare to each value in stream.
+  \item Array. Because we don't know how many ints are in the stream, we need to keep track of all of them.
+  \item Array. We don't know how many ints are in the stream.
+  \item Filter.
+  \item Filter.
+  \item Filter.
+  \item Array.
+  \item Array. Depends on how random the output needs to be.
+\end{itemize}
+
 
 \end{document}
